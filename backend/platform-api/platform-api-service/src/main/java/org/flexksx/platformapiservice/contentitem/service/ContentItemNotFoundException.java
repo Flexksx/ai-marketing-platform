@@ -1,4 +1,4 @@
-package org.flexksx.platformapiservice.brandcontentitems.service;
+package org.flexksx.platformapiservice.contentitem.service;
 
 public class ContentItemNotFoundException extends RuntimeException {
 

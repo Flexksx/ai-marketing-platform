@@ -1,11 +1,11 @@
-package org.flexksx.platformapiservice.brandcontentitems.rest;
+package org.flexksx.platformapiservice.contentitem.rest;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.flexksx.platformapiclient.brand.content.BrandContentApi;
 import org.flexksx.platformapiclient.brand.content.ContentItemResponse;
-import org.flexksx.platformapiservice.brandcontentitems.service.ContentItem;
-import org.flexksx.platformapiservice.brandcontentitems.service.ContentItemService;
+import org.flexksx.platformapiservice.contentitem.service.ContentItem;
+import org.flexksx.platformapiservice.contentitem.service.ContentItemService;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

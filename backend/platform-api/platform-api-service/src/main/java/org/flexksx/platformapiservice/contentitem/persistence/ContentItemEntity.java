@@ -1,4 +1,4 @@
-package org.flexksx.platformapiservice.brandcontentitems.persistence;
+package org.flexksx.platformapiservice.contentitem.persistence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

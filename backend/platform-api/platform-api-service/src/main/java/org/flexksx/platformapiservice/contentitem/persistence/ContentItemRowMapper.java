@@ -1,6 +1,6 @@
-package org.flexksx.platformapiservice.brandcontentitems.persistence;
+package org.flexksx.platformapiservice.contentitem.persistence;
 
-import org.flexksx.platformapiservice.brandcontentitems.service.ContentItem;
+import org.flexksx.platformapiservice.contentitem.service.ContentItem;
 import org.springframework.stereotype.Component;
 
 @Component

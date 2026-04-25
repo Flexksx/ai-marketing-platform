@@ -1,7 +1,7 @@
-package org.flexksx.platformapiservice.brandcontentitems.rest;
+package org.flexksx.platformapiservice.contentitem.rest;
 
 import org.flexksx.platformapiclient.brand.content.ContentItemResponse;
-import org.flexksx.platformapiservice.brandcontentitems.service.ContentItem;
+import org.flexksx.platformapiservice.contentitem.service.ContentItem;
 import org.springframework.stereotype.Component;
 
 @Component

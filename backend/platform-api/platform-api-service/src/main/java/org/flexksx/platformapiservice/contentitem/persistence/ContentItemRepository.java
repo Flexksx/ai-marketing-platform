@@ -1,4 +1,4 @@
-package org.flexksx.platformapiservice.brandcontentitems.persistence;
+package org.flexksx.platformapiservice.contentitem.persistence;
 
 import java.util.List;
 import java.util.Optional;

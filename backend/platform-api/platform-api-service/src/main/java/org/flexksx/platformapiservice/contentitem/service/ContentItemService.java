@@ -1,9 +1,9 @@
-package org.flexksx.platformapiservice.brandcontentitems.service;
+package org.flexksx.platformapiservice.contentitem.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.flexksx.platformapiservice.brandcontentitems.persistence.ContentItemRepository;
-import org.flexksx.platformapiservice.brandcontentitems.persistence.ContentItemRowMapper;
+import org.flexksx.platformapiservice.contentitem.persistence.ContentItemRepository;
+import org.flexksx.platformapiservice.contentitem.persistence.ContentItemRowMapper;
 import org.springframework.stereotype.Service;
 
 @Service
