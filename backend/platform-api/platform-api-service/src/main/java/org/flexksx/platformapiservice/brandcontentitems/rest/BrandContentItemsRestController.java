@@ -1,6 +1,7 @@
 package org.flexksx.platformapiservice.brandcontentitems.rest;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.flexksx.platformapiclient.brand.content.BrandContentApi;
 import org.flexksx.platformapiclient.brand.content.ContentItemResponse;
 import org.flexksx.platformapiservice.brandcontentitems.service.ContentItem;
@@ -8,16 +9,11 @@ import org.flexksx.platformapiservice.brandcontentitems.service.ContentItemServi
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class BrandContentItemsRestController implements BrandContentApi {
 
   private final ContentItemService contentItemService;
   private final ContentItemRestMapper contentItemRestMapper;
-
-  public BrandContentItemsRestController(
-      ContentItemService contentItemService, ContentItemRestMapper contentItemRestMapper) {
-    this.contentItemService = contentItemService;
-    this.contentItemRestMapper = contentItemRestMapper;
-  }
 
   @Override
   public List<ContentItemResponse> search(String brandId) {
