@@ -6,6 +6,9 @@ jwt:
 spring:
   application:
     name: platform-api-service
+  docker:
+    compose:
+      enabled: ${SPRING_DOCKER_COMPOSE_ENABLED:false}
   threads:
     virtual:
       enabled: true

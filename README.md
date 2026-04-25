@@ -70,3 +70,5 @@ just dev down all
 Compose split:
 - `backend/docker-compose.dev.yml`: `backend` and `postgres` services for platform API development.
 - `docker-compose.dev.yml`: `frontend` service for webapp development.
+
+`platform-api-service` disables Spring Boot's Docker Compose lifecycle by default (`SPRING_DOCKER_COMPOSE_ENABLED=false`) because `just dev` already manages containers. Set `SPRING_DOCKER_COMPOSE_ENABLED=true` only when running the service standalone and you want Spring to manage `compose.yaml`.
