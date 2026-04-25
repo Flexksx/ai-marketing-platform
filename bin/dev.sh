@@ -28,8 +28,21 @@ repo_root="$(cd "${script_dir}/.." && pwd)"
 backend_compose_file="${repo_root}/backend/docker-compose.dev.yml"
 spa_dir="${repo_root}/apps/webapp/spa"
 
+webapp_pid_file="${repo_root}/.webapp.pid"
+
 run_webapp_up() {
-    cd "${spa_dir}" && pnpm dev
+    cd "${spa_dir}" && pnpm dev &
+    echo $! > "${webapp_pid_file}"
+    echo "webapp started (pid $(cat "${webapp_pid_file}"))"
+}
+
+run_webapp_down() {
+    if [[ -f "${webapp_pid_file}" ]]; then
+        kill "$(cat "${webapp_pid_file}")" 2>/dev/null && echo "webapp stopped"
+        rm -f "${webapp_pid_file}"
+    else
+        echo "webapp pid file not found; process may already be stopped" >&2
+    fi
 }
 
 case "${target}" in
@@ -39,7 +52,7 @@ case "${target}" in
     webapp)
         case "${action}" in
             up) run_webapp_up ;;
-            down) echo "webapp is a local process; stop it with Ctrl+C" >&2 ;;
+            down) run_webapp_down ;;
             *) echo "Unknown action: ${action}" >&2; exit 1 ;;
         esac
         exit 0

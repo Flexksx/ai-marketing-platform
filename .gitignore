@@ -3,3 +3,4 @@ node_modules/
 .nix-java-home
 .nix-nodejs
 .nix-pnpm
+.webapp.pid
