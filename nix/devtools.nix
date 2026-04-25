@@ -5,4 +5,5 @@
   packages = with pkgs; [
     oxker
   ];
+  shellHook="";
 }
