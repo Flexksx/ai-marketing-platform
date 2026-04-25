@@ -7,7 +7,7 @@
     ".": "./src/generated/index.ts"
   },
   "scripts": {
-    "fetch-spec": "curl -sf http://localhost:8080/v3/api-docs -o openapi.json",
+    "fetch-spec": "curl -sf \"${PLATFORM_API_OPENAPI_URL:-http://localhost:8080/v3/api-docs}\" -o openapi.json",
     "generate": "orval"
   },
   "dependencies": {

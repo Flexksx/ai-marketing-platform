@@ -76,3 +76,7 @@ Compose split:
 - `docker-compose.dev.yml`: `frontend` service for webapp development.
 
 `platform-api-service` disables Spring Boot's Docker Compose lifecycle by default (`SPRING_DOCKER_COMPOSE_ENABLED=false`) because `just dev` already manages containers. Set `SPRING_DOCKER_COMPOSE_ENABLED=true` only when running the service standalone and you want Spring to manage `compose.yaml`.
+
+When `just dev up platform` is running, OpenAPI client generation is automatic:
+- backend changes under `backend/platform-api/platform-api-client` or `backend/platform-api/platform-api-service` trigger OpenAPI spec regeneration.
+- endpoint client classes in `lib/platform-api-client/src/generated` are regenerated from the refreshed spec.

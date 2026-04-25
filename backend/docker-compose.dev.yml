@@ -22,6 +22,22 @@ services:
       postgres:
         condition: service_healthy
 
+  openapi-client-generator:
+    image: node:22-alpine
+    working_dir: /workspace
+    environment:
+      PLATFORM_API_OPENAPI_URL: http://backend:8080/v3/api-docs
+    volumes:
+      - ./:/workspace
+      - openapi-generator-node-modules:/workspace/node_modules
+    command: >
+      sh -c "corepack enable &&
+             pnpm install --frozen-lockfile &&
+             ./bin/watch-openapi-client.sh"
+    depends_on:
+      backend:
+        condition: service_started
+
   postgres:
     image: postgres:17-alpine
     environment:
@@ -41,3 +57,4 @@ services:
 volumes:
   gradle-cache:
   postgres-data:
+  openapi-generator-node-modules:
