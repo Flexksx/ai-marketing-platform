@@ -1,3 +1,6 @@
 spring:
   application:
     name: platform-api-service
+  threads:
+    virtual:
+      enabled: true

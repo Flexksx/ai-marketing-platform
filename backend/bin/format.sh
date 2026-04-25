@@ -22,7 +22,7 @@ run_spotless() {
 }
 
 case "${module}" in
-    platform | platform-api)
+    platform)
         run_spotless "platform-api/platform-api-client" "platform-api-client"
         run_spotless "platform-api/platform-api-service" "platform-api-service"
         ;;
@@ -34,7 +34,7 @@ case "${module}" in
         ;;
     *)
         echo "Unknown module: ${module}" >&2
-        echo "Supported modules: platform, platform-api, platform-api-client, platform-api-service" >&2
+        echo "Supported modules: platform, platform-api-client, platform-api-service" >&2
         exit 1
         ;;
 esac
