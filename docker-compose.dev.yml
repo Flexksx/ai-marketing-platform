@@ -3,15 +3,15 @@ name: ai-marketing-platform-dev
 services:
   frontend:
     build:
-      context: ./apps/webapp
-      dockerfile: Dockerfile
+      context: ./apps/webapp/spa
+      dockerfile: ../Dockerfile
       target: dev
     working_dir: /workspace
     volumes:
-      - ./apps/webapp:/workspace
-      - webapp-node-modules:/workspace/node_modules
+      - ./apps/webapp/spa:/workspace
+      - webapp-spa-node-modules:/workspace/node_modules
     ports:
       - "5173:5173"
 
 volumes:
-  webapp-node-modules:
+  webapp-spa-node-modules:

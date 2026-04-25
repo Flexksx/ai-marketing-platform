@@ -36,6 +36,11 @@
           shellHook =
             ''
               echo "Entering Grain development environment..."
+              REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+
+              ln -sfn "${pkgs.jdk25}" "$REPO_ROOT/.nix-java-home"
+              ln -sfn "${pkgs.nodejs_24}" "$REPO_ROOT/.nix-nodejs"
+              ln -sfn "${pkgs.pnpm}" "$REPO_ROOT/.nix-pnpm"
             ''
             + allShellHooks;
         };

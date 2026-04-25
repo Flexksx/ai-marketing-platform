@@ -38,6 +38,10 @@ Supported modules: `platform` (both), `platform-api-client`, `platform-api-servi
 The project uses **Nix** for environment management (`flake.nix`). 
 - If using `direnv`, run `direnv allow`.
 - Otherwise, use `nix develop` to enter the development shell.
+- Entering the shell creates root-level symlinks for IDE toolchain paths:
+  - `.nix-java-home`
+  - `.nix-nodejs`
+  - `.nix-pnpm`
 
 ## Docker Compose
 

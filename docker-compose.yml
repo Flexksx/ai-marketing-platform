@@ -9,6 +9,6 @@ services:
 
   frontend-build:
     build:
-      context: ./apps/webapp
-      dockerfile: Dockerfile
+      context: ./apps/webapp/spa
+      dockerfile: ../Dockerfile
       target: build
