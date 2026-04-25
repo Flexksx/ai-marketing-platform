@@ -21,8 +21,9 @@
         devtools = import ./nix/devtools.nix {inherit pkgs;};
         infra = import ./nix/infra.nix {inherit pkgs;};
         java = import ./backend/platform-api/nix/java.nix {inherit pkgs;};
+        typescript = import ./apps/webapp/nix/typescript.nix {inherit pkgs;};
 
-        modules = [devtools infra java];
+        modules = [devtools infra java typescript];
 
         allPackages = builtins.concatLists (map (m: m.packages) modules);
         allShellHooks = builtins.concatStringsSep "\n" (map (m: m.shellHook) modules);

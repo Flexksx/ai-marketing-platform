@@ -1,0 +1,9 @@
+{
+  "name": "ai-marketing-platform",
+  "private": true,
+  "packageManager": "pnpm@10.9.0",
+  "scripts": {
+    "generate": "pnpm --filter @ai-marketing-platform/platform-api-client generate",
+    "fetch-spec": "pnpm --filter @ai-marketing-platform/platform-api-client fetch-spec"
+  }
+}

@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ai-marketing-platform.iml" filepath="$PROJECT_DIR$/.idea/ai-marketing-platform.iml" />
-      <module fileurl="file://$PROJECT_DIR$/backend/platform-api/platform-api-client-starter/platform-api-client-starter.iml" filepath="$PROJECT_DIR$/backend/platform-api/platform-api-client-starter/platform-api-client-starter.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/platform-api-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/platform-api-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/platform-api-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/platform-api-service.test.iml" />
     </modules>
