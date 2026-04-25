@@ -55,22 +55,31 @@ class AuthenticationAndBrandAccessIntegrationTest {
     brandRepository.deleteAll();
     userRepository.deleteAll();
 
-    userA = userRepository.save(UserEntity.create("user.a@example.com", passwordEncoder.encode("passwordA")));
-    userB = userRepository.save(UserEntity.create("user.b@example.com", passwordEncoder.encode("passwordB")));
+    userA =
+        userRepository.save(
+            UserEntity.create("user.a@example.com", passwordEncoder.encode("passwordA")));
+    userB =
+        userRepository.save(
+            UserEntity.create("user.b@example.com", passwordEncoder.encode("passwordB")));
 
-    brandA = brandRepository.save(new BrandEntity(null, "Brand A", "http://logo.a", "http://brand.a"));
-    brandAccessRepository.save(BrandAccessEntity.of(userA.getId(), brandA.getId(), BrandMemberRole.OWNER));
+    brandA =
+        brandRepository.save(new BrandEntity(null, "Brand A", "http://logo.a", "http://brand.a"));
+    brandAccessRepository.save(
+        BrandAccessEntity.of(userA.getId(), brandA.getId(), BrandMemberRole.OWNER));
   }
 
   @Test
   void testAuthenticationSuccess() throws Exception {
     LoginRequest loginRequest = new LoginRequest("user.a@example.com", "passwordA");
 
-    MvcResult result = mockMvc.perform(post("/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(loginRequest)))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult result =
+        mockMvc
+            .perform(
+                post("/auth/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(loginRequest)))
+            .andExpect(status().isOk())
+            .andReturn();
 
     String content = result.getResponse().getContentAsString();
     LoginResponse loginResponse = objectMapper.readValue(content, LoginResponse.class);
@@ -82,9 +91,11 @@ class AuthenticationAndBrandAccessIntegrationTest {
   void testAuthenticationFailure() throws Exception {
     LoginRequest loginRequest = new LoginRequest("user.a@example.com", "wrongpassword");
 
-    mockMvc.perform(post("/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(loginRequest)))
+    mockMvc
+        .perform(
+            post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
         .andExpect(status().isUnauthorized());
   }
 
@@ -94,56 +105,64 @@ class AuthenticationAndBrandAccessIntegrationTest {
     String tokenA = login("user.a@example.com", "passwordA");
 
     // User A can see Brand A
-    mockMvc.perform(get("/brands/" + brandA.getId())
-            .header("Authorization", "Bearer " + tokenA))
+    mockMvc
+        .perform(get("/brands/" + brandA.getId()).header("Authorization", "Bearer " + tokenA))
         .andExpect(status().isOk());
 
     // 2. Authenticate as User B
     String tokenB = login("user.b@example.com", "passwordB");
 
     // User B CANNOT see Brand A (expect 404 based on BrandService implementation)
-    mockMvc.perform(get("/brands/" + brandA.getId())
-            .header("Authorization", "Bearer " + tokenB))
+    mockMvc
+        .perform(get("/brands/" + brandA.getId()).header("Authorization", "Bearer " + tokenB))
         .andExpect(status().isNotFound());
 
     // 3. Search brands
     // User A search should return Brand A
-    MvcResult searchA = mockMvc.perform(get("/brands")
-            .header("Authorization", "Bearer " + tokenA))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult searchA =
+        mockMvc
+            .perform(get("/brands").header("Authorization", "Bearer " + tokenA))
+            .andExpect(status().isOk())
+            .andReturn();
 
-    List<BrandResponse> brandsA = objectMapper.readValue(
-        searchA.getResponse().getContentAsString(),
-        objectMapper.getTypeFactory().constructCollectionType(List.class, BrandResponse.class));
+    List<BrandResponse> brandsA =
+        objectMapper.readValue(
+            searchA.getResponse().getContentAsString(),
+            objectMapper.getTypeFactory().constructCollectionType(List.class, BrandResponse.class));
     assertThat(brandsA).extracting(BrandResponse::id).contains(brandA.getId());
 
     // User B search should return EMPTY list
-    MvcResult searchB = mockMvc.perform(get("/brands")
-            .header("Authorization", "Bearer " + tokenB))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult searchB =
+        mockMvc
+            .perform(get("/brands").header("Authorization", "Bearer " + tokenB))
+            .andExpect(status().isOk())
+            .andReturn();
 
-    List<BrandResponse> brandsB = objectMapper.readValue(
-        searchB.getResponse().getContentAsString(),
-        objectMapper.getTypeFactory().constructCollectionType(List.class, BrandResponse.class));
+    List<BrandResponse> brandsB =
+        objectMapper.readValue(
+            searchB.getResponse().getContentAsString(),
+            objectMapper.getTypeFactory().constructCollectionType(List.class, BrandResponse.class));
     assertThat(brandsB).isEmpty();
   }
 
   @Test
   void testUnauthorizedAccess() throws Exception {
-    mockMvc.perform(get("/brands"))
-        .andExpect(status().isForbidden());
+    mockMvc.perform(get("/brands")).andExpect(status().isForbidden());
   }
 
   private String login(String email, String password) throws Exception {
     LoginRequest loginRequest = new LoginRequest(email, password);
-    MvcResult result = mockMvc.perform(post("/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(loginRequest)))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult result =
+        mockMvc
+            .perform(
+                post("/auth/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(loginRequest)))
+            .andExpect(status().isOk())
+            .andReturn();
 
-    return objectMapper.readValue(result.getResponse().getContentAsString(), LoginResponse.class).token();
+    return objectMapper
+        .readValue(result.getResponse().getContentAsString(), LoginResponse.class)
+        .token();
   }
 }

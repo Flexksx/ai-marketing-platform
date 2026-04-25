@@ -25,12 +25,7 @@ To automatically format code using Spotless:
 ```bash
 just format <module>
 ```
-Supported modules: `platform` (both), `platform-api-client`, `platform-api-service`.
-
-To format all Nix files in the repository:
-```bash
-just format-nix
-```
+Supported format targets: `nix`, `platform` (both), `platform-api-client`, `platform-api-service`.
 
 #### Linting
 To run style checks:
