@@ -1,9 +1,23 @@
-#c!/usr/bin/env bash
+#!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 2 ]]; then
-    echo "Usage: $0 <up|down> <platform|webapp|all>" >&2
+usage() {
+    echo "Usage: $0 [-c] <up|down> <platform|webapp|all>" >&2
+    echo "  -c  Clean build (--build --force-recreate)" >&2
     exit 1
+}
+
+clean_build=false
+while getopts "c" opt; do
+    case "${opt}" in
+        c) clean_build=true ;;
+        *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -ne 2 ]]; then
+    usage
 fi
 
 action="$1"
@@ -33,7 +47,11 @@ esac
 
 case "${action}" in
     up)
-        docker compose --project-directory "${repo_root}" "${compose_files[@]}" up -d
+        up_flags=(-d)
+        if [[ "${clean_build}" == true ]]; then
+            up_flags+=(--build --force-recreate)
+        fi
+        docker compose --project-directory "${repo_root}" "${compose_files[@]}" up "${up_flags[@]}"
         ;;
     down)
         docker compose --project-directory "${repo_root}" "${compose_files[@]}" down

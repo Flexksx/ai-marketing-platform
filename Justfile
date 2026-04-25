@@ -4,5 +4,5 @@ format module:
 lint module:
     ./backend/bin/lint.sh {{module}}
 
-dev action target:
-    ./bin/dev.sh {{action}} {{target}}
+dev action target *flags:
+    ./bin/dev.sh {{flags}} {{action}} {{target}}
