@@ -1,8 +1,7 @@
-package org.flexksx.platformapiservice.brand.mapper;
+package org.flexksx.platformapiservice.brand.persistence;
 
-import org.flexksx.platformapiservice.brand.domain.Brand;
-import org.flexksx.platformapiservice.brand.domain.BrandData;
-import org.flexksx.platformapiservice.brand.persistence.BrandEntity;
+import org.flexksx.platformapiservice.brand.service.Brand;
+import org.flexksx.platformapiservice.brand.service.BrandData;
 import org.springframework.stereotype.Component;
 
 @Component

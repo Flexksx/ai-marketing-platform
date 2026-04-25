@@ -1,10 +1,10 @@
-package org.flexksx.platformapiservice.brand.mapper;
+package org.flexksx.platformapiservice.brand.rest;
 
 import org.flexksx.platformapiclient.brand.BrandDataResponse;
 import org.flexksx.platformapiclient.brand.BrandResponse;
 import org.flexksx.platformapiclient.brand.CreateBrandRequest;
-import org.flexksx.platformapiservice.brand.domain.Brand;
-import org.flexksx.platformapiservice.brand.domain.BrandData;
+import org.flexksx.platformapiservice.brand.service.Brand;
+import org.flexksx.platformapiservice.brand.service.BrandData;
 import org.springframework.stereotype.Component;
 
 @Component

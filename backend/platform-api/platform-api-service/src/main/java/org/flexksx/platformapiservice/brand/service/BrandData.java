@@ -1,3 +1,3 @@
-package org.flexksx.platformapiservice.brand.domain;
+package org.flexksx.platformapiservice.brand.service;
 
 public record BrandData(String logoUrl, String websiteUrl) {}

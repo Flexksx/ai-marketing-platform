@@ -1,8 +1,8 @@
-package org.flexksx.platformapiservice.brandcontentitems.domain;
+package org.flexksx.platformapiservice.brandcontentitems.service;
 
 import java.util.List;
-import org.flexksx.platformapiservice.brandcontentitems.mapper.ContentItemRowMapper;
 import org.flexksx.platformapiservice.brandcontentitems.persistence.ContentItemRepository;
+import org.flexksx.platformapiservice.brandcontentitems.persistence.ContentItemRowMapper;
 import org.springframework.stereotype.Service;
 
 @Service

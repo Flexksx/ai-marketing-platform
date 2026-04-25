@@ -1,12 +1,11 @@
-package org.flexksx.platformapiservice.brand.controller;
+package org.flexksx.platformapiservice.brand.rest;
 
 import java.util.List;
 import org.flexksx.platformapiclient.brand.BrandApi;
 import org.flexksx.platformapiclient.brand.BrandResponse;
 import org.flexksx.platformapiclient.brand.CreateBrandRequest;
-import org.flexksx.platformapiservice.brand.domain.Brand;
-import org.flexksx.platformapiservice.brand.domain.BrandService;
-import org.flexksx.platformapiservice.brand.mapper.BrandRestMapper;
+import org.flexksx.platformapiservice.brand.service.Brand;
+import org.flexksx.platformapiservice.brand.service.BrandService;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

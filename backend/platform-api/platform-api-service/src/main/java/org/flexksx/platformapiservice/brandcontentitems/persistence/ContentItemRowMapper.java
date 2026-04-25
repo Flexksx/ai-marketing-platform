@@ -1,7 +1,6 @@
-package org.flexksx.platformapiservice.brandcontentitems.mapper;
+package org.flexksx.platformapiservice.brandcontentitems.persistence;
 
-import org.flexksx.platformapiservice.brandcontentitems.domain.ContentItem;
-import org.flexksx.platformapiservice.brandcontentitems.persistence.ContentItemEntity;
+import org.flexksx.platformapiservice.brandcontentitems.service.ContentItem;
 import org.springframework.stereotype.Component;
 
 @Component

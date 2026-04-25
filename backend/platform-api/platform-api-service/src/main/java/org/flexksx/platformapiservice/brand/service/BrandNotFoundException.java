@@ -1,4 +1,4 @@
-package org.flexksx.platformapiservice.brand.domain;
+package org.flexksx.platformapiservice.brand.service;
 
 public class BrandNotFoundException extends RuntimeException {
 

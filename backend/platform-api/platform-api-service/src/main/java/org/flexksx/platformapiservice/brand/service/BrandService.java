@@ -1,9 +1,8 @@
-package org.flexksx.platformapiservice.brand.domain;
+package org.flexksx.platformapiservice.brand.service;
 
 import java.util.List;
-import org.flexksx.platformapiservice.brand.mapper.BrandRowMapper;
-import org.flexksx.platformapiservice.brand.persistence.BrandEntity;
 import org.flexksx.platformapiservice.brand.persistence.BrandRepository;
+import org.flexksx.platformapiservice.brand.persistence.BrandRowMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,9 +28,7 @@ public class BrandService {
   }
 
   public Brand create(Brand brand) {
-    BrandEntity entity = brandRowMapper.toEntity(brand);
-    BrandEntity saved = brandRepository.save(entity);
-    return brandRowMapper.toDomain(saved);
+    return brandRowMapper.toDomain(brandRepository.save(brandRowMapper.toEntity(brand)));
   }
 
   public void delete(String id) {

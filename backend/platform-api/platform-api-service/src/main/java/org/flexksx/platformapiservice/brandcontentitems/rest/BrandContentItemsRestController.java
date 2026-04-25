@@ -1,11 +1,10 @@
-package org.flexksx.platformapiservice.brandcontentitems.controller;
+package org.flexksx.platformapiservice.brandcontentitems.rest;
 
 import java.util.List;
 import org.flexksx.platformapiclient.brand.content.BrandContentApi;
 import org.flexksx.platformapiclient.brand.content.ContentItemResponse;
-import org.flexksx.platformapiservice.brandcontentitems.domain.ContentItem;
-import org.flexksx.platformapiservice.brandcontentitems.domain.ContentItemService;
-import org.flexksx.platformapiservice.brandcontentitems.mapper.ContentItemRestMapper;
+import org.flexksx.platformapiservice.brandcontentitems.service.ContentItem;
+import org.flexksx.platformapiservice.brandcontentitems.service.ContentItemService;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
