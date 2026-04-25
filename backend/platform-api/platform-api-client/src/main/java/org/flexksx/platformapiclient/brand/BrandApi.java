@@ -2,6 +2,7 @@ package org.flexksx.platformapiclient.brand;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -17,7 +18,7 @@ public interface BrandApi {
   BrandResponse get(@PathVariable String id);
 
   @PostExchange()
-  BrandResponse create(CreateBrandRequest request);
+  BrandResponse create(@RequestBody CreateBrandRequest request);
 
   @DeleteExchange("/{id}")
   void delete(@PathVariable String id);

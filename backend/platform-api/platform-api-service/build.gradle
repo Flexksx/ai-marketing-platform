@@ -17,6 +17,7 @@ java {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 spotless {
@@ -26,6 +27,7 @@ spotless {
 }
 
 dependencies {
+    implementation 'org.flexksx:platform-api-client:0.0.1-SNAPSHOT'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'

@@ -1,0 +1,32 @@
+package org.flexksx.platformapiservice.brandcontentitems.domain;
+
+import java.util.List;
+import org.flexksx.platformapiservice.brandcontentitems.mapper.ContentItemRowMapper;
+import org.flexksx.platformapiservice.brandcontentitems.persistence.ContentItemRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ContentItemService {
+
+  private final ContentItemRepository contentItemRepository;
+  private final ContentItemRowMapper contentItemRowMapper;
+
+  public ContentItemService(
+      ContentItemRepository contentItemRepository, ContentItemRowMapper contentItemRowMapper) {
+    this.contentItemRepository = contentItemRepository;
+    this.contentItemRowMapper = contentItemRowMapper;
+  }
+
+  public List<ContentItem> searchByBrand(String brandId) {
+    return contentItemRepository.findAllByBrandId(brandId).stream()
+        .map(contentItemRowMapper::toDomain)
+        .toList();
+  }
+
+  public ContentItem get(String id, String brandId) {
+    return contentItemRepository
+        .findByIdAndBrandId(id, brandId)
+        .map(contentItemRowMapper::toDomain)
+        .orElseThrow(() -> new ContentItemNotFoundException(id, brandId));
+  }
+}
