@@ -3,7 +3,7 @@ name: ai-marketing-platform-dev
 services:
   backend:
     build:
-      context: ./platform-api
+      context: ./backend/platform-api
       dockerfile: Dockerfile
       target: dev
     working_dir: /workspace
@@ -11,9 +11,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
       JWT_SECRET: dev-secret-change-me
     volumes:
-      - ./platform-api:/workspace
+      - ./backend/platform-api:/workspace
       - gradle-cache:/root/.gradle
     ports:
       - "8080:8080"

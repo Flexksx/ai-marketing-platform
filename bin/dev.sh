@@ -33,10 +33,10 @@ esac
 
 case "${action}" in
     up)
-        docker compose "${compose_files[@]}" up -d
+        docker compose --project-directory "${repo_root}" "${compose_files[@]}" up -d
         ;;
     down)
-        docker compose "${compose_files[@]}" down
+        docker compose --project-directory "${repo_root}" "${compose_files[@]}" down
         ;;
     *)
         echo "Unknown action: ${action}" >&2
