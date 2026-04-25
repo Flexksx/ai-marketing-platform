@@ -6,9 +6,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "content_items")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ContentItemEntity {
 
   @Id
@@ -17,19 +23,4 @@ public class ContentItemEntity {
 
   @Column(name = "brand_id", nullable = false)
   private String brandId;
-
-  public ContentItemEntity() {}
-
-  public ContentItemEntity(String id, String brandId) {
-    this.id = id;
-    this.brandId = brandId;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public String getBrandId() {
-    return brandId;
-  }
 }

@@ -6,9 +6,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "brands")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BrandEntity {
 
   @Id
@@ -23,29 +29,4 @@ public class BrandEntity {
 
   @Column(name = "website_url")
   private String websiteUrl;
-
-  public BrandEntity() {}
-
-  public BrandEntity(String id, String name, String logoUrl, String websiteUrl) {
-    this.id = id;
-    this.name = name;
-    this.logoUrl = logoUrl;
-    this.websiteUrl = websiteUrl;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getLogoUrl() {
-    return logoUrl;
-  }
-
-  public String getWebsiteUrl() {
-    return websiteUrl;
-  }
 }

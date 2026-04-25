@@ -1,20 +1,17 @@
 package org.flexksx.platformapiservice.brand.service;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.flexksx.platformapiservice.brand.persistence.BrandRepository;
 import org.flexksx.platformapiservice.brand.persistence.BrandRowMapper;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class BrandService {
 
   private final BrandRepository brandRepository;
   private final BrandRowMapper brandRowMapper;
-
-  public BrandService(BrandRepository brandRepository, BrandRowMapper brandRowMapper) {
-    this.brandRepository = brandRepository;
-    this.brandRowMapper = brandRowMapper;
-  }
 
   public List<Brand> search() {
     return brandRepository.findAll().stream().map(brandRowMapper::toDomain).toList();
