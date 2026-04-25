@@ -1,0 +1,2 @@
+format module="platform-api-client":
+    ../../bin/format.sh {{module}}

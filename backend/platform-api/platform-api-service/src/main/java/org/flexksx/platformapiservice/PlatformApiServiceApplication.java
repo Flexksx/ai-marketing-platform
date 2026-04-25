@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PlatformApiServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PlatformApiServiceApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(PlatformApiServiceApplication.class, args);
+  }
 }

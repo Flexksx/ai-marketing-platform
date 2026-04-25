@@ -1,0 +1,2 @@
+format module:
+    ./bin/format.sh {{module}}
