@@ -1,0 +1,42 @@
+name: ai-marketing-platform-dev
+
+services:
+  backend:
+    build:
+      context: ./platform-api
+      dockerfile: Dockerfile
+      target: dev
+    working_dir: /workspace
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: secret
+      JWT_SECRET: dev-secret-change-me
+    volumes:
+      - ./platform-api:/workspace
+      - gradle-cache:/root/.gradle
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  gradle-cache:
+  postgres-data:

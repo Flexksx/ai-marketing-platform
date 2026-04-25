@@ -3,3 +3,6 @@ format module:
 
 lint module:
     ./backend/bin/lint.sh {{module}}
+
+dev action target:
+    ./bin/dev.sh {{action}} {{target}}

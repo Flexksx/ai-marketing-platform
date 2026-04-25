@@ -51,13 +51,22 @@ docker compose build
 
 ### Development Compose (hot reload)
 
-Use the dev compose file for local development:
+Use `just dev` targets for local development:
 
 ```bash
-docker compose -f docker-compose.dev.yml up
+just dev up platform
+just dev up webapp
+just dev up all
 ```
 
-It runs:
-- `backend`: JDK 25 image from `backend/platform-api/Dockerfile`, running `bootRun --continuous`
-- `frontend`: image from `apps/webapp/Dockerfile`, running the webapp dev server
-- `postgres`: local PostgreSQL instance for backend runtime
+To stop the same targets:
+
+```bash
+just dev down platform
+just dev down webapp
+just dev down all
+```
+
+Compose split:
+- `backend/docker-compose.dev.yml`: `backend` and `postgres` services for platform API development.
+- `docker-compose.dev.yml`: `frontend` service for webapp development.
