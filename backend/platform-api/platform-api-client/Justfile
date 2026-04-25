@@ -1,2 +1,5 @@
 format module="platform-api-client":
     ../../bin/format.sh {{module}}
+
+lint module="platform-api-client":
+    ../../bin/lint.sh {{module}}
