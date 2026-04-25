@@ -27,6 +27,11 @@ just format <module>
 ```
 Supported modules: `platform` (both), `platform-api-client`, `platform-api-service`.
 
+To format all Nix files in the repository:
+```bash
+just format-nix
+```
+
 #### Linting
 To run style checks:
 ```bash

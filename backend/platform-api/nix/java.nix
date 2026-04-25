@@ -1,5 +1,4 @@
-{ pkgs }:
-{
+{pkgs}: {
   packages = with pkgs; [
     jdk25
     gradle
