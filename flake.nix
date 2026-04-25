@@ -20,7 +20,7 @@
         infra = import ./nix/infra.nix { inherit pkgs; };
         java = import ./backend/platform-api/nix/java.nix { inherit pkgs; };
 
-        modules = [ devtools infra python java localDev ];
+        modules = [ devtools infra java ];
 
         allPackages = builtins.concatLists (map (m: m.packages) modules);
         allShellHooks = builtins.concatStringsSep "\n" (map (m: m.shellHook) modules);

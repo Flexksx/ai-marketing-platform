@@ -1,6 +1,7 @@
 { pkgs }:
 {
   packages = with pkgs; [
+    just
     postgresql
     postgresql.lib
     docker-compose
