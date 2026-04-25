@@ -1,5 +1,8 @@
 .direnv/
 node_modules/
+.pnpm-store/
+dist/
+.vite/
 .nix-java-home
 .nix-nodejs
 .nix-pnpm
