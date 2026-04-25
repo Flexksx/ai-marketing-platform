@@ -1,0 +1,14 @@
+name: ai-marketing-platform
+
+services:
+  backend-build:
+    build:
+      context: ./backend/platform-api
+      dockerfile: Dockerfile
+      target: build
+
+  frontend-build:
+    build:
+      context: ./apps/webapp
+      dockerfile: Dockerfile
+      target: build

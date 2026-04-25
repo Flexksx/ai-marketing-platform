@@ -41,6 +41,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.flexksx:platform-api-client-starter:0.0.1-SNAPSHOT'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'
     testCompileOnly 'org.projectlombok:lombok'

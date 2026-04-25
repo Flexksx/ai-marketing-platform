@@ -38,3 +38,26 @@ Supported modules: `platform` (both), `platform-api-client`, `platform-api-servi
 The project uses **Nix** for environment management (`flake.nix`). 
 - If using `direnv`, run `direnv allow`.
 - Otherwise, use `nix develop` to enter the development shell.
+
+## Docker Compose
+
+### Build-only Compose
+
+Use the root compose file to build backend and frontend images from their Dockerfiles:
+
+```bash
+docker compose build
+```
+
+### Development Compose (hot reload)
+
+Use the dev compose file for local development:
+
+```bash
+docker compose -f docker-compose.dev.yml up
+```
+
+It runs:
+- `backend`: JDK 25 image from `backend/platform-api/Dockerfile`, running `bootRun --continuous`
+- `frontend`: image from `apps/webapp/Dockerfile`, running the webapp dev server
+- `postgres`: local PostgreSQL instance for backend runtime
