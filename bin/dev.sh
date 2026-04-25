@@ -26,17 +26,26 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 
 backend_compose_file="${repo_root}/backend/docker-compose.dev.yml"
-webapp_compose_file="${repo_root}/docker-compose.dev.yml"
+spa_dir="${repo_root}/apps/webapp/spa"
+
+run_webapp_up() {
+    cd "${spa_dir}" && pnpm dev
+}
 
 case "${target}" in
     platform)
         compose_files=(-f "${backend_compose_file}")
         ;;
     webapp)
-        compose_files=(-f "${webapp_compose_file}")
+        case "${action}" in
+            up) run_webapp_up ;;
+            down) echo "webapp is a local process; stop it with Ctrl+C" >&2 ;;
+            *) echo "Unknown action: ${action}" >&2; exit 1 ;;
+        esac
+        exit 0
         ;;
     all)
-        compose_files=(-f "${backend_compose_file}" -f "${webapp_compose_file}")
+        compose_files=(-f "${backend_compose_file}")
         ;;
     *)
         echo "Unknown target: ${target}" >&2
@@ -52,6 +61,9 @@ case "${action}" in
             up_flags+=(--build --force-recreate)
         fi
         docker compose --project-directory "${repo_root}" "${compose_files[@]}" up "${up_flags[@]}"
+        if [[ "${target}" == "all" ]]; then
+            run_webapp_up
+        fi
         ;;
     down)
         docker compose --project-directory "${repo_root}" "${compose_files[@]}" down
