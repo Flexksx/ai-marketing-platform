@@ -14,6 +14,10 @@ public interface AuthApi {
   @Operation(summary = "Login", description = "Authenticate a user and return a JWT token")
   LoginResponse login(@RequestBody LoginRequest request);
 
+  @PostExchange("/register")
+  @Operation(summary = "Register", description = "Create a new user account and return a JWT token")
+  LoginResponse register(@RequestBody LoginRequest request);
+
   @PostExchange("/logout")
   @Operation(summary = "Logout", description = "Invalidate the current user session")
   void logout();

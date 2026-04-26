@@ -25,6 +25,17 @@ public class AuthService {
   }
 
   @Transactional
+  public String register(String email, String password) {
+    if (userRepository.findByEmail(email).isPresent()) {
+      throw new EmailAlreadyRegisteredException(email);
+    }
+    UserEntity user =
+        userRepository.save(
+            UserEntity.create(email, passwordEncoder.encode(password)));
+    return jwtService.issue(user);
+  }
+
+  @Transactional
   public void logout(String userId) {
     UserEntity user = userRepository.findById(userId).orElseThrow();
     user.incrementTokenVersion();

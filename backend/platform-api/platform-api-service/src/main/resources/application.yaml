@@ -1,6 +1,7 @@
 jwt:
-  # Generate with: openssl rand -base64 32
-  secret: REPLACE_WITH_BASE64_ENCODED_256BIT_SECRET
+  # Env overrides for Docker / prod. Default is 32+ bytes; HS256 is applied in JwtService.
+  # Generate: openssl rand -base64 32
+  secret: ${JWT_SECRET:dGVzdC1kZWYtaHMtMjU2LWtleS0zMmJ5dGUtYmFzZTY0LXBhZGRlZA==}
   expiration-ms: 86400000 # 24 hours
 
 spring:

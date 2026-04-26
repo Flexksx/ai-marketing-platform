@@ -1,6 +1,17 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 
-const PLATFORM_API_BASE_URL = import.meta.env?.VITE_PLATFORM_API_URL ?? 'http://localhost:8080';
+function platformApiBaseUrl(): string {
+	const fromEnv = import.meta.env.VITE_PLATFORM_API_URL;
+	if (fromEnv != null && fromEnv !== "") {
+		return fromEnv;
+	}
+	if (import.meta.env.DEV) {
+		return "";
+	}
+	return "http://localhost:8080";
+}
+
+const PLATFORM_API_BASE_URL = platformApiBaseUrl();
 
 export const platformApiInstance = axios.create({
   baseURL: PLATFORM_API_BASE_URL,

@@ -20,6 +20,12 @@ public class AuthRestController implements AuthApi {
   }
 
   @Override
+  public LoginResponse register(LoginRequest request) {
+    String token = authService.register(request.email(), request.password());
+    return new LoginResponse(token);
+  }
+
+  @Override
   public void logout() {
     UserPrincipal principal =
         (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

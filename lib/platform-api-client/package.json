@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/generated/index.ts",
-    "./models": "./src/generated/models/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "fetch-spec": "curl -sf \"${PLATFORM_API_OPENAPI_URL:-http://localhost:8080/v3/api-docs}\" -o openapi.json",

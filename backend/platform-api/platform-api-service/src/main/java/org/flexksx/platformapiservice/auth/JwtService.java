@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.flexksx.platformapiservice.user.persistence.UserEntity;
@@ -36,7 +37,31 @@ public class JwtService {
     return Jwts.parser().verifyWith(signingKey()).build().parseSignedClaims(token).getPayload();
   }
 
+  private static final int HS256_MIN_KEY_BYTES = 32;
+
   private SecretKey signingKey() {
-    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    return Keys.hmacShaKeyFor(resolveHmacKeyBytes());
+  }
+
+  private byte[] resolveHmacKeyBytes() {
+    String s = secret.trim();
+    try {
+      byte[] decoded = Decoders.BASE64.decode(s);
+      if (decoded.length >= HS256_MIN_KEY_BYTES) {
+        return decoded;
+      }
+    } catch (Exception e) {
+      // DecodingException may wrap checked IO; invalid base64 or too-short decoded use UTF-8
+    }
+    return requireKeyLength(
+        s.getBytes(StandardCharsets.UTF_8),
+        "need Base64(≥32 decoded bytes) or ≥32 UTF-8 bytes; e.g. openssl rand -base64 32");
+  }
+
+  private static byte[] requireKeyLength(byte[] key, String problem) {
+    if (key.length < HS256_MIN_KEY_BYTES) {
+      throw new IllegalStateException("jwt.secret: " + problem);
+    }
+    return key;
   }
 }

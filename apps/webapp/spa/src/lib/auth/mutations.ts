@@ -1,31 +1,43 @@
 import type { LoginRequest, LoginResponse } from "@ai-marketing-platform/platform-api-client";
-import { getAuthRestController } from "@ai-marketing-platform/platform-api-client";
-import { useMutation, useQueryClient } from "@tanstack/vue-query";
+import { useMutation, type UseMutationOptions } from "@tanstack/vue-query";
 
-import { authQueryKeys } from "./queryKeys";
-import { clearAccessToken, setAccessToken } from "./useLocalStorageToken";
+import {
+	queryAuthLoginWithCredentials,
+	queryAuthLogout,
+	queryAuthRegisterWithCredentials,
+} from "./queries";
 
-const auth = getAuthRestController();
+export type AuthJwtTokenMutationOptions = Omit<
+	UseMutationOptions<LoginResponse, Error, LoginRequest, unknown>,
+	"mutationFn"
+>;
 
-export function useLogin() {
-	return useMutation<LoginResponse, Error, LoginRequest>({
-		mutationFn: (body) => auth.login(body),
-		onSuccess: (data) => {
-			if (data.token) {
-				setAccessToken(data.token);
-			}
-		},
+export type ResetJwtTokenMutationOptions = Omit<
+	UseMutationOptions<void, Error, void, unknown>,
+	"mutationFn"
+>;
+
+export function useAuthJwtTokenWithCredentials(
+	options?: AuthJwtTokenMutationOptions,
+) {
+	return useMutation<LoginResponse, Error, LoginRequest, unknown>({
+		...options,
+		mutationFn: (body) => queryAuthLoginWithCredentials(body),
 	});
 }
 
-export function useLogout() {
-	const queryClient = useQueryClient();
+export function useAuthRegisterWithCredentials(
+	options?: AuthJwtTokenMutationOptions,
+) {
+	return useMutation<LoginResponse, Error, LoginRequest, unknown>({
+		...options,
+		mutationFn: (body) => queryAuthRegisterWithCredentials(body),
+	});
+}
 
-	return useMutation({
-		mutationFn: () => auth.logout(),
-		onSettled: () => {
-			clearAccessToken();
-			void queryClient.removeQueries({ queryKey: authQueryKeys.root() });
-		},
+export function useResetJwtToken(options?: ResetJwtTokenMutationOptions) {
+	return useMutation<void, Error, void, unknown>({
+		...options,
+		mutationFn: () => queryAuthLogout(),
 	});
 }
