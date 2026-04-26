@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { provide } from "vue";
+import ContentCalendarView from "./components/calendar/ContentCalendarView.vue";
 import LoginView from "./components/LoginView.vue";
 import { authKey, useAuth } from "./lib/auth/useAuth";
 
@@ -32,8 +33,8 @@ const { isAuthenticated, signOut, isLoggingOut } = auth;
 				{{ isLoggingOut ? "Signing out…" : "Log out" }}
 			</button>
 		</header>
-		<main class="p-6">
-			<p class="text-muted-foreground text-sm">You are authenticated.</p>
+		<main class="mx-auto max-w-6xl p-4 sm:p-6">
+			<ContentCalendarView />
 		</main>
 	</div>
 </template>

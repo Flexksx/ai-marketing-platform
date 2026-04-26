@@ -17,12 +17,18 @@ importers:
       '@ai-marketing-platform/platform-api-client':
         specifier: workspace:*
         version: link:../../../lib/platform-api-client
+      '@internationalized/date':
+        specifier: ^3.12.1
+        version: 3.12.1
       '@tailwindcss/vite':
         specifier: ^4.2.4
         version: 4.2.4(vite@8.0.10(@types/node@24.12.2)(jiti@2.6.1)(stylus@0.57.0)(yaml@2.8.3))
       '@tanstack/vue-query':
         specifier: ^5.100.5
         version: 5.100.5(vue@3.5.33(typescript@6.0.3))
+      '@vueuse/core':
+        specifier: ^14.2.1
+        version: 14.2.1(vue@3.5.33(typescript@6.0.3))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
