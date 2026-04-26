@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, unref } from "vue";
 
 import { useAuth } from "@/lib/auth/useAuth";
 
@@ -8,29 +8,20 @@ const password = ref("");
 const showPassword = ref(false);
 const isRegisterMode = ref(false);
 
-const {
-	signIn,
-	signUp,
-	isLoggingIn,
-	isRegistering,
-	isLoginError,
-	loginError,
-	isRegisterError,
-	registerError,
-} = useAuth();
+const { signIn, signUp } = useAuth();
 
 const isSubmitting = computed(
 	() =>
-		(isRegisterMode.value && isRegistering.value) ||
-		(!isRegisterMode.value && isLoggingIn.value),
+		(isRegisterMode.value && unref(signUp.isPending)) ||
+		(!isRegisterMode.value && unref(signIn.isPending)),
 );
 
 const displayError = computed(() => {
-	if (isRegisterMode.value && isRegisterError.value) {
-		return registerError.value;
+	if (isRegisterMode.value && unref(signUp.isError)) {
+		return unref(signUp.error);
 	}
-	if (!isRegisterMode.value && isLoginError.value) {
-		return loginError.value;
+	if (!isRegisterMode.value && unref(signIn.isError)) {
+		return unref(signIn.error);
 	}
 	return null;
 });
@@ -47,9 +38,9 @@ async function onSubmit() {
 	try {
 		const body = { email: email.value, password: password.value };
 		if (isRegisterMode.value) {
-			await signUp(body);
+			await signUp.mutateAsync(body);
 		} else {
-			await signIn(body);
+			await signIn.mutateAsync(body);
 		}
 	} catch {
 		/* mutation surfaces error */
@@ -129,10 +120,10 @@ async function onSubmit() {
 				class="ring-offset-background focus-visible:ring-ring inline-flex h-9 items-center justify-center rounded-md bg-zinc-900 px-4 text-sm font-medium text-zinc-50 transition-colors hover:bg-zinc-900/90 focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
 			>
 				<template v-if="isRegisterMode">
-					{{ isRegistering ? "Creating account…" : "Create account" }}
+					{{ signUp.isPending ? "Creating account…" : "Create account" }}
 				</template>
 				<template v-else>
-					{{ isLoggingIn ? "Signing in…" : "Sign in" }}
+					{{ signIn.isPending ? "Signing in…" : "Sign in" }}
 				</template>
 			</button>
 

@@ -1,7 +1,4 @@
-import type {
-	LoginRequest,
-	LoginResponse,
-} from "@ai-marketing-platform/platform-api-client";
+import type { LoginResponse } from "@ai-marketing-platform/platform-api-client";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed, type InjectionKey, inject, provide, unref } from "vue";
 
@@ -29,36 +26,21 @@ function buildAuth() {
 		});
 	};
 
-	const signInMutation = useSignInMutation({
-		onSuccess: persistSession,
-	});
-	const signUpMutation = useSignUpMutation({
-		onSuccess: persistSession,
-	});
-	const signOutMutation = useSignOutMutation({
+	const signIn = useSignInMutation({ onSuccess: persistSession });
+	const signUp = useSignUpMutation({ onSuccess: persistSession });
+	const signOut = useSignOutMutation({
 		onSettled: () => {
 			authTokenStorage.clear();
 			void queryClient.setQueryData<AuthSession>(queryKeys.authSession(), null);
 		},
 	});
 
-	const isAuthenticated = computed(() => !!unref(session.data)?.accessToken);
-
 	return {
 		session,
-		isAuthenticated,
-		signIn: (credentials: LoginRequest) =>
-			signInMutation.mutateAsync(credentials),
-		signUp: (credentials: LoginRequest) =>
-			signUpMutation.mutateAsync(credentials),
-		signOut: () => signOutMutation.mutateAsync(),
-		isLoggingIn: signInMutation.isPending,
-		isRegistering: signUpMutation.isPending,
-		isLoggingOut: signOutMutation.isPending,
-		isLoginError: signInMutation.isError,
-		loginError: signInMutation.error,
-		isRegisterError: signUpMutation.isError,
-		registerError: signUpMutation.error,
+		isAuthenticated: computed(() => !!unref(session.data)?.accessToken),
+		signIn,
+		signUp,
+		signOut,
 	};
 }
 

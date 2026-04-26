@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { computed, unref } from "vue";
 import ContentCalendarView from "./components/calendar/ContentCalendarView.vue";
 import LoginView from "./components/LoginView.vue";
 import { useAuthProvider } from "./lib/auth/useAuth";
 
 const auth = useAuthProvider();
-const { isAuthenticated, signOut, isLoggingOut } = auth;
+const { isAuthenticated, signOut } = auth;
+const isSigningOut = computed(() => unref(signOut.isPending));
 </script>
 
 <template>
@@ -24,11 +26,11 @@ const { isAuthenticated, signOut, isLoggingOut } = auth;
 			<div class="text-sm text-zinc-600">Signed in</div>
 			<button
 				type="button"
-				:disabled="isLoggingOut"
+				:disabled="isSigningOut"
 				class="ring-offset-background focus-visible:ring-ring inline-flex h-9 items-center justify-center rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50"
-				@click="signOut()"
+				@click="() => void signOut.mutateAsync()"
 			>
-				{{ isLoggingOut ? "Signing out…" : "Log out" }}
+				{{ isSigningOut ? "Signing out…" : "Log out" }}
 			</button>
 		</header>
 		<main class="mx-auto max-w-6xl p-4 sm:p-6">
