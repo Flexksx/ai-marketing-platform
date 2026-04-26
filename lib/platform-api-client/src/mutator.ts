@@ -14,6 +14,8 @@ platformApiInstance.interceptors.request.use((config) => {
   return config;
 });
 
-export default <T>(config: AxiosRequestConfig): Promise<T> => {
+export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
   return platformApiInstance(config).then(({ data }) => data);
 };
+
+export default customInstance;

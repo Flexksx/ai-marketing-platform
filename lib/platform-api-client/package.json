@@ -4,16 +4,20 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/generated/index.ts"
+    ".": "./src/generated/index.ts",
+    "./models": "./src/generated/models/index.ts"
   },
   "scripts": {
     "fetch-spec": "curl -sf \"${PLATFORM_API_OPENAPI_URL:-http://localhost:8080/v3/api-docs}\" -o openapi.json",
-    "generate": "orval"
+    "format:generated": "biome format --write ./src/generated",
+    "generate": "orval && pnpm run format:generated",
+    "clean": "rm -rf src/generated"
   },
   "dependencies": {
     "axios": "^1.7.9"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.13",
     "orval": "^7.3.0",
     "typescript": "^5.7.3"
   }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
@@ -31,9 +32,21 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/backend/platform-api/platform-api-client" name="platform-api-client">
+                <projects>
+                  <project path="$PROJECT_DIR$/backend/platform-api/platform-api-client" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend/platform-api/platform-api-service" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/backend/platform-api/platform-api-client" />
             <option value="$PROJECT_DIR$/backend/platform-api/platform-api-service" />
           </set>
         </option>

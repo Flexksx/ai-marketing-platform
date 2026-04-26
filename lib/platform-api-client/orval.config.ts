@@ -6,15 +6,15 @@ export default defineConfig({
       target: './openapi.json',
     },
     output: {
-      mode: 'tags-split',
-      target: './src/generated',
-      schemas: './src/generated/models',
+      mode: 'tags',
+      target: './src/generated/api.ts',
       client: 'axios',
+      httpClient:"axios",
       clean: true,
       override: {
         mutator: {
           path: './src/mutator.ts',
-          name: 'platformApiInstance',
+          name: 'customInstance',
         },
       },
     },

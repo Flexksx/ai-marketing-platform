@@ -12,7 +12,9 @@
     "check": "biome check --write ."
   },
   "dependencies": {
+    "@ai-marketing-platform/platform-api-client": "workspace:*",
     "@tailwindcss/vite": "^4.2.4",
+    "@tanstack/vue-query": "^5.100.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^1.0.0",

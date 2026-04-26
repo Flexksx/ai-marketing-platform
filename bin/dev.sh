@@ -29,11 +29,18 @@ backend_compose_file="${repo_root}/backend/docker-compose.dev.yml"
 spa_dir="${repo_root}/apps/webapp/spa"
 
 webapp_pid_file="${repo_root}/.webapp.pid"
+openapi_pid_file="${repo_root}/.openapi-watcher.pid"
 
 run_webapp_up() {
     cd "${spa_dir}" && pnpm dev &
     echo $! > "${webapp_pid_file}"
     echo "webapp started (pid $(cat "${webapp_pid_file}"))"
+}
+
+run_openapi_watcher_up() {
+    "${repo_root}/bin/watch-openapi-client.sh" &
+    echo $! > "${openapi_pid_file}"
+    echo "openapi watcher started (pid $(cat "${openapi_pid_file}"))"
 }
 
 run_webapp_down() {
@@ -42,6 +49,15 @@ run_webapp_down() {
         rm -f "${webapp_pid_file}"
     else
         echo "webapp pid file not found; process may already be stopped" >&2
+    fi
+}
+
+run_openapi_watcher_down() {
+    if [[ -f "${openapi_pid_file}" ]]; then
+        # kill the entire process group to make sure chokidar and children are dead
+        pkill -P "$(cat "${openapi_pid_file}")" 2>/dev/null || true
+        kill "$(cat "${openapi_pid_file}")" 2>/dev/null && echo "openapi watcher stopped"
+        rm -f "${openapi_pid_file}"
     fi
 }
 
@@ -74,11 +90,14 @@ case "${action}" in
             up_flags+=(--build --force-recreate)
         fi
         docker compose --project-directory "${repo_root}" "${compose_files[@]}" up "${up_flags[@]}"
+        run_openapi_watcher_up
         if [[ "${target}" == "all" ]]; then
             run_webapp_up
         fi
         ;;
     down)
+        run_openapi_watcher_down
+        run_webapp_down
         docker compose --project-directory "${repo_root}" "${compose_files[@]}" down
         ;;
     *)

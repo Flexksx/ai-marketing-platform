@@ -18,6 +18,6 @@ repo_root="$(cd "${script_dir}/.." && pwd)"
             "backend/platform-api/platform-api-client/src/main/resources/**/*.yaml" \
             "backend/platform-api/platform-api-client/src/main/resources/**/*.properties" \
             -i "**/build/**" \
-            --debounce 1000 \
-            -c "./bin/regenerate-openapi-client.sh"
+            --debounce 2000 \
+            -c "sleep 2 && ./bin/regenerate-openapi-client.sh"
 )
