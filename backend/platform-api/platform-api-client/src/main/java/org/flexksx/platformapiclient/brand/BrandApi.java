@@ -15,7 +15,9 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface BrandApi {
 
   @GetExchange()
-  @Operation(summary = "Search brands", description = "Retrieve a list of brands the user has access to")
+  @Operation(
+      summary = "Search brands",
+      description = "Retrieve a list of brands the user has access to")
   List<BrandResponse> search();
 
   @GetExchange("/{id}")

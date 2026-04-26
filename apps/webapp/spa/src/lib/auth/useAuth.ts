@@ -1,7 +1,7 @@
 import type { LoginResponse } from "@ai-marketing-platform/platform-api-client";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed, type InjectionKey, inject, provide, unref } from "vue";
-
+import { queryKeys } from "@/lib/queryKeys";
 import { authTokenStorage } from "./authTokenStorage";
 import {
 	useSignInMutation,
@@ -9,7 +9,6 @@ import {
 	useSignUpMutation,
 } from "./mutations";
 import { useAuthSession } from "./queries";
-import { queryKeys } from "./queryKeys";
 import type { AuthSession } from "./types";
 
 function buildAuth() {
@@ -21,7 +20,7 @@ function buildAuth() {
 			return;
 		}
 		authTokenStorage.set(data.token);
-		void queryClient.setQueryData<AuthSession>(queryKeys.authSession(), {
+		void queryClient.setQueryData<AuthSession>(queryKeys.auth.session(), {
 			accessToken: data.token,
 		});
 	};
@@ -31,7 +30,10 @@ function buildAuth() {
 	const signOut = useSignOutMutation({
 		onSettled: () => {
 			authTokenStorage.clear();
-			void queryClient.setQueryData<AuthSession>(queryKeys.authSession(), null);
+			void queryClient.setQueryData<AuthSession>(
+				queryKeys.auth.session(),
+				null,
+			);
 		},
 	});
 

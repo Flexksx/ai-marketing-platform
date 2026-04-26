@@ -24,7 +24,11 @@ public class DevHttpRequestLoggingFilter extends OncePerRequestFilter {
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    log.info("{} {}  Origin: {}", request.getMethod(), request.getRequestURI(), request.getHeader("Origin"));
+    log.info(
+        "{} {}  Origin: {}",
+        request.getMethod(),
+        request.getRequestURI(),
+        request.getHeader("Origin"));
     filterChain.doFilter(request, response);
   }
 }

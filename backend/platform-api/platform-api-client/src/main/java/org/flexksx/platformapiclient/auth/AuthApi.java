@@ -7,7 +7,9 @@ import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
 @HttpExchange("/auth")
-@Tag(name = "Authentication", description = "Endpoints for user authentication and session management")
+@Tag(
+    name = "Authentication",
+    description = "Endpoints for user authentication and session management")
 public interface AuthApi {
 
   @PostExchange("/login")

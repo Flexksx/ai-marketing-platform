@@ -30,8 +30,7 @@ public class AuthService {
       throw new EmailAlreadyRegisteredException(email);
     }
     UserEntity user =
-        userRepository.save(
-            UserEntity.create(email, passwordEncoder.encode(password)));
+        userRepository.save(UserEntity.create(email, passwordEncoder.encode(password)));
     return jwtService.issue(user);
   }
 

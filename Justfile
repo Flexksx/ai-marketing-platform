@@ -1,4 +1,4 @@
-format module:
+format module="all":
     ./bin/format.sh {{module}}
 
 lint module:

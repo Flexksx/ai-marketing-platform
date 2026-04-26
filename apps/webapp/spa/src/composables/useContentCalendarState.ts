@@ -10,7 +10,10 @@ import { computed, ref, type ComputedRef, type Ref } from "vue";
 import type { CalendarDate, DateValue } from "@internationalized/date";
 import type { CalendarViewMode, DateRange } from "@/lib/calendar/types";
 import { asCalendarDate } from "@/lib/calendar/asCalendarDate";
-import { formatViewPeriodLabel, weekColumnDays } from "@/composables/useContentCalendarStateFormat";
+import {
+	formatViewPeriodLabel,
+	weekColumnDays,
+} from "@/composables/useContentCalendarStateFormat";
 
 const WEEK_START = "mon" as const;
 

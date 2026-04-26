@@ -23,8 +23,11 @@ run_spotless() {
 
 case "${module}" in
     platform)
-        run_spotless "platform-api/platform-api-client" "platform-api-client"
-        run_spotless "platform-api/platform-api-service" "platform-api-service"
+        run_spotless "platform-api/platform-api-client" "platform-api-client" &
+        pid_client=$!
+        run_spotless "platform-api/platform-api-service" "platform-api-service" &
+        pid_service=$!
+        wait "${pid_client}" "${pid_service}"
         ;;
     platform-api-client)
         run_spotless "platform-api/platform-api-client" "platform-api-client"

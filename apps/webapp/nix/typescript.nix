@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   packages = with pkgs; [
-  nodejs_24
+    nodejs_24
     typescript
     pnpm
   ];

@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/vue-query";
-
+import { queryKeys } from "@/lib/queryKeys";
 import { authTokenStorage } from "./authTokenStorage";
-import { queryKeys } from "./queryKeys";
 import type { AuthSession } from "./types";
 
 function readSessionFromStorage(): AuthSession {
@@ -14,7 +13,7 @@ function readSessionFromStorage(): AuthSession {
 
 export function useAuthSession() {
 	return useQuery<AuthSession>({
-		queryKey: queryKeys.authSession(),
+		queryKey: queryKeys.auth.session(),
 		queryFn: readSessionFromStorage,
 		initialData: readSessionFromStorage,
 		staleTime: Number.POSITIVE_INFINITY,

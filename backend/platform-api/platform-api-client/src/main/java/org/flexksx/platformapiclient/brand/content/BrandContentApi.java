@@ -12,10 +12,14 @@ import org.springframework.web.service.annotation.HttpExchange;
 public interface BrandContentApi {
 
   @GetExchange
-  @Operation(summary = "Search brand content", description = "Retrieve a list of content items for a specific brand")
+  @Operation(
+      summary = "Search brand content",
+      description = "Retrieve a list of content items for a specific brand")
   List<ContentItemResponse> search(@PathVariable String brandId);
 
   @GetExchange("/{id}")
-  @Operation(summary = "Get brand content item", description = "Retrieve details of a specific content item by ID")
+  @Operation(
+      summary = "Get brand content item",
+      description = "Retrieve details of a specific content item by ID")
   ContentItemResponse get(@PathVariable String brandId, @PathVariable String id);
 }

@@ -16,7 +16,9 @@ import org.springframework.web.service.annotation.PutExchange;
 public interface BrandMemberApi {
 
   @GetExchange
-  @Operation(summary = "List brand members", description = "Retrieve a list of members for a specific brand")
+  @Operation(
+      summary = "List brand members",
+      description = "Retrieve a list of members for a specific brand")
   List<BrandMemberResponse> list(@PathVariable String brandId);
 
   @PostExchange
@@ -28,7 +30,9 @@ public interface BrandMemberApi {
   void remove(@PathVariable String brandId, @PathVariable String userId);
 
   @PutExchange("/{userId}/role")
-  @Operation(summary = "Update brand member role", description = "Update the role of a specific brand member")
+  @Operation(
+      summary = "Update brand member role",
+      description = "Update the role of a specific brand member")
   BrandMemberResponse updateRole(
       @PathVariable String brandId,
       @PathVariable String userId,
