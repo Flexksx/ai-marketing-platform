@@ -1,4 +1,4 @@
-export const authQueryKeys = {
-	root: () => ["auth"] as const,
-	session: () => [...authQueryKeys.root(), "session"] as const,
+export const queryKeys = {
+	auth: () => ["auth"] as const,
+	authSession: () => ["auth", "session"] as const,
 } as const;

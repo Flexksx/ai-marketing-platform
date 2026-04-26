@@ -1,71 +1,83 @@
-import type { LoginRequest, LoginResponse } from "@ai-marketing-platform/platform-api-client";
+import type {
+	LoginRequest,
+	LoginResponse,
+} from "@ai-marketing-platform/platform-api-client";
 import { useQueryClient } from "@tanstack/vue-query";
-import { computed, inject, unref, type InjectionKey } from "vue";
+import { computed, type InjectionKey, inject, provide, unref } from "vue";
 
+import { authTokenStorage } from "./authTokenStorage";
 import {
-	useAuthJwtTokenWithCredentials,
-	useAuthRegisterWithCredentials,
-	useResetJwtToken,
+	useSignInMutation,
+	useSignOutMutation,
+	useSignUpMutation,
 } from "./mutations";
 import { useAuthSession } from "./queries";
-import { authQueryKeys } from "./queryKeys";
+import { queryKeys } from "./queryKeys";
 import type { AuthSession } from "./types";
-import { clearAccessToken, setAccessToken } from "./useLocalStorageToken";
 
-function createAuth() {
+function buildAuth() {
 	const queryClient = useQueryClient();
-
 	const session = useAuthSession();
 
-	const onAuthSuccess = (data: LoginResponse) => {
+	const persistSession = (data: LoginResponse) => {
 		if (!data.token) {
 			return;
 		}
-		setAccessToken(data.token);
-		void queryClient.setQueryData<AuthSession>(authQueryKeys.session(), {
+		authTokenStorage.set(data.token);
+		void queryClient.setQueryData<AuthSession>(queryKeys.authSession(), {
 			accessToken: data.token,
 		});
 	};
 
-	const signInRequest = useAuthJwtTokenWithCredentials({
-		onSuccess: onAuthSuccess,
+	const signInMutation = useSignInMutation({
+		onSuccess: persistSession,
 	});
-
-	const signUpRequest = useAuthRegisterWithCredentials({
-		onSuccess: onAuthSuccess,
+	const signUpMutation = useSignUpMutation({
+		onSuccess: persistSession,
 	});
-
-	const signOutRequest = useResetJwtToken({
+	const signOutMutation = useSignOutMutation({
 		onSettled: () => {
-			clearAccessToken();
-			void queryClient.setQueryData<AuthSession>(authQueryKeys.session(), null);
+			authTokenStorage.clear();
+			void queryClient.setQueryData<AuthSession>(queryKeys.authSession(), null);
 		},
 	});
 
-	const isAuthenticated = computed(
-		() => !!unref(session.data)?.accessToken,
-	);
+	const isAuthenticated = computed(() => !!unref(session.data)?.accessToken);
 
 	return {
 		session,
 		isAuthenticated,
-		signIn: (credentials: LoginRequest) => signInRequest.mutateAsync(credentials),
-		signUp: (credentials: LoginRequest) => signUpRequest.mutateAsync(credentials),
-		signOut: () => signOutRequest.mutateAsync(),
-		isLoggingIn: signInRequest.isPending,
-		isRegistering: signUpRequest.isPending,
-		isLoggingOut: signOutRequest.isPending,
-		isLoginError: signInRequest.isError,
-		loginError: signInRequest.error,
-		isRegisterError: signUpRequest.isError,
-		registerError: signUpRequest.error,
+		signIn: (credentials: LoginRequest) =>
+			signInMutation.mutateAsync(credentials),
+		signUp: (credentials: LoginRequest) =>
+			signUpMutation.mutateAsync(credentials),
+		signOut: () => signOutMutation.mutateAsync(),
+		isLoggingIn: signInMutation.isPending,
+		isRegistering: signUpMutation.isPending,
+		isLoggingOut: signOutMutation.isPending,
+		isLoginError: signInMutation.isError,
+		loginError: signInMutation.error,
+		isRegisterError: signUpMutation.isError,
+		registerError: signUpMutation.error,
 	};
 }
 
-export type UseAuth = ReturnType<typeof createAuth>;
+export type UseAuth = ReturnType<typeof buildAuth>;
 
 export const authKey: InjectionKey<UseAuth> = Symbol("auth");
 
-export function useAuth() {
-	return inject(authKey) ?? createAuth();
+export function useAuthProvider() {
+	const context = buildAuth();
+	provide(authKey, context);
+	return context;
+}
+
+export function useAuth(): UseAuth {
+	const context = inject(authKey);
+	if (!context) {
+		throw new Error(
+			"useAuth() must be used under a parent that called useAuthProvider()",
+		);
+	}
+	return context;
 }

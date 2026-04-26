@@ -1,43 +1,39 @@
-import type { LoginRequest, LoginResponse } from "@ai-marketing-platform/platform-api-client";
-import { useMutation, type UseMutationOptions } from "@tanstack/vue-query";
-
 import {
-	queryAuthLoginWithCredentials,
-	queryAuthLogout,
-	queryAuthRegisterWithCredentials,
-} from "./queries";
+	getAuthentication,
+	type LoginRequest,
+	type LoginResponse,
+} from "@ai-marketing-platform/platform-api-client";
+import { type UseMutationOptions, useMutation } from "@tanstack/vue-query";
 
-export type AuthJwtTokenMutationOptions = Omit<
+const auth = getAuthentication();
+
+export type CredentialsMutationOptions = Omit<
 	UseMutationOptions<LoginResponse, Error, LoginRequest, unknown>,
 	"mutationFn"
 >;
 
-export type ResetJwtTokenMutationOptions = Omit<
+export type SignOutMutationOptions = Omit<
 	UseMutationOptions<void, Error, void, unknown>,
 	"mutationFn"
 >;
 
-export function useAuthJwtTokenWithCredentials(
-	options?: AuthJwtTokenMutationOptions,
-) {
+export function useSignInMutation(options?: CredentialsMutationOptions) {
 	return useMutation<LoginResponse, Error, LoginRequest, unknown>({
 		...options,
-		mutationFn: (body) => queryAuthLoginWithCredentials(body),
+		mutationFn: (body) => auth.login(body),
 	});
 }
 
-export function useAuthRegisterWithCredentials(
-	options?: AuthJwtTokenMutationOptions,
-) {
+export function useSignUpMutation(options?: CredentialsMutationOptions) {
 	return useMutation<LoginResponse, Error, LoginRequest, unknown>({
 		...options,
-		mutationFn: (body) => queryAuthRegisterWithCredentials(body),
+		mutationFn: (body) => auth.register(body),
 	});
 }
 
-export function useResetJwtToken(options?: ResetJwtTokenMutationOptions) {
+export function useSignOutMutation(options?: SignOutMutationOptions) {
 	return useMutation<void, Error, void, unknown>({
 		...options,
-		mutationFn: () => queryAuthLogout(),
+		mutationFn: () => auth.logout(),
 	});
 }

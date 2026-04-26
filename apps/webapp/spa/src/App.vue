@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { provide } from "vue";
 import ContentCalendarView from "./components/calendar/ContentCalendarView.vue";
 import LoginView from "./components/LoginView.vue";
-import { authKey, useAuth } from "./lib/auth/useAuth";
+import { useAuthProvider } from "./lib/auth/useAuth";
 
-const auth = useAuth();
-provide(authKey, auth);
+const auth = useAuthProvider();
 const { isAuthenticated, signOut, isLoggingOut } = auth;
 </script>
 
