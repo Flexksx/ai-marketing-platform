@@ -10,14 +10,14 @@ const isSigningOut = computed(() => unref(signOut.isPending));
 
 const navItems = [
 	{
-		name: "calendar",
-		label: "Calendar",
-		to: { name: "calendar" },
-	},
-	{
 		name: "brands",
 		label: "Brands",
 		to: { name: "brands" },
+	},
+	{
+		name: "calendar",
+		label: "Calendar",
+		to: { name: "calendar" },
 	},
 ] as const;
 
@@ -30,11 +30,18 @@ const isActive = (itemName: string) => {
 </script>
 
 <template>
-	<aside class="flex h-svh w-56 shrink-0 flex-col border-r border-border bg-background">
-		<div class="flex h-14 items-center border-b border-border px-4">
-			<span class="text-sm font-semibold tracking-tight">AI Marketing</span>
+	<aside class="flex h-svh w-52 shrink-0 flex-col border-r border-border bg-sidebar">
+		<!-- Logo -->
+		<div class="flex h-14 items-center px-4 border-b border-border">
+			<div class="size-6 rounded-md bg-primary flex items-center justify-center">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3.5 text-primary-foreground">
+					<path d="M8.5 2.75a.75.75 0 0 0-1.5 0v5.19L5.03 5.97a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.5 7.94V2.75Z" />
+					<path d="M3.25 13a.75.75 0 0 0 0 1.5h9.5a.75.75 0 0 0 0-1.5h-9.5Z" />
+				</svg>
+			</div>
 		</div>
 
+		<!-- Nav -->
 		<nav class="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
 			<RouterLink
 				v-for="item in navItems"
@@ -46,15 +53,26 @@ const isActive = (itemName: string) => {
 				<a
 					:href="href"
 					:class="[
-						'flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors',
+						'flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors cursor-pointer',
 						isActive(item.name)
 							? 'bg-primary/10 text-primary font-medium'
-							: 'text-muted-foreground hover:bg-muted hover:text-foreground',
+							: 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
 					]"
 					@click="navigate"
 				>
+					<!-- Brands icon -->
 					<svg
-						v-if="item.name === 'calendar'"
+						v-if="item.name === 'brands'"
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 16 16"
+						fill="currentColor"
+						class="size-4 shrink-0"
+					>
+						<path fill-rule="evenodd" d="M4 4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1.5a.75.75 0 0 1-1.5 0V4a.5.5 0 0 0-.5-.5H6a.5.5 0 0 0-.5.5v1.5a.75.75 0 0 1-1.5 0V4Zm-2 5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9Z" clip-rule="evenodd" />
+					</svg>
+					<!-- Calendar icon -->
+					<svg
+						v-else-if="item.name === 'calendar'"
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 16 16"
 						fill="currentColor"
@@ -63,25 +81,17 @@ const isActive = (itemName: string) => {
 						<path d="M5.75 7.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM5 10.25a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0ZM10.25 7.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM9.5 10.25a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0ZM8 7.5a.75.75 0 1 0 0 1.5A.75.75 0 0 0 8 7.5ZM7.25 10.25a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0Z" />
 						<path fill-rule="evenodd" d="M4.75 1a.75.75 0 0 0-.75.75V3a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2V1.75a.75.75 0 0 0-1.5 0V3h-5V1.75A.75.75 0 0 0 4.75 1ZM3.5 7a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v4.5a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V7Z" clip-rule="evenodd" />
 					</svg>
-					<svg
-						v-else-if="item.name === 'brands'"
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="size-4 shrink-0"
-					>
-						<path fill-rule="evenodd" d="M4 4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1.5a.75.75 0 0 1-1.5 0V4a.5.5 0 0 0-.5-.5H6a.5.5 0 0 0-.5.5v1.5a.75.75 0 0 1-1.5 0V4Zm-2 5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9Z" clip-rule="evenodd" />
-					</svg>
 					{{ item.label }}
 				</a>
 			</RouterLink>
 		</nav>
 
+		<!-- Footer -->
 		<div class="border-t border-border px-2 py-3">
 			<Button
 				variant="ghost"
 				size="sm"
-				class="w-full justify-start gap-2.5 text-muted-foreground"
+				class="w-full justify-start gap-2.5 text-muted-foreground hover:text-foreground cursor-pointer"
 				:disabled="isSigningOut"
 				@click="() => void signOut.mutateAsync()"
 			>

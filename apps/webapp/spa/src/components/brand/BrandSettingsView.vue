@@ -33,22 +33,23 @@ const applyChanges = () => {
 </script>
 
 <template>
-	<div class="pb-24 space-y-6">
-		<div>
-			<h1 class="text-xl font-semibold">Brand Settings</h1>
-			<p class="text-sm text-muted-foreground mt-1">
-				{{ brand?.name ?? (isLoading ? 'Loading…' : '') }}
+	<div class="pb-28 space-y-6">
+		<!-- Page header -->
+		<div class="space-y-0.5">
+			<h1 class="text-xl font-semibold tracking-tight">Brand Settings</h1>
+			<p class="text-sm text-muted-foreground">
+				{{ brand?.name ?? (isLoading ? 'Loading…' : 'Configure your brand identity and content strategy.') }}
 			</p>
 		</div>
 
 		<div
 			v-if="isError"
-			class="rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+			class="rounded-xl border border-destructive/30 bg-destructive/8 px-4 py-3 text-sm text-destructive"
 		>
 			{{ error instanceof Error ? error.message : 'Failed to load brand.' }}
 		</div>
 
-		<div class="grid gap-6">
+		<div class="grid gap-4">
 			<BrandGeneralSection
 				:form="form"
 				:is-loading="isLoading"
@@ -68,28 +69,30 @@ const applyChanges = () => {
 		<Transition name="footer-slide">
 			<div
 				v-if="isDirty"
-				class="fixed bottom-0 inset-x-0 z-50 flex justify-center px-4 pb-4 pointer-events-none"
+				class="fixed bottom-0 inset-x-0 z-50 flex justify-center px-4 pb-5 pointer-events-none"
 			>
-				<div class="pointer-events-auto flex items-center gap-3 rounded-xl border border-border bg-background/95 backdrop-blur-sm px-4 py-3 shadow-lg ring-1 ring-black/5">
-					<p class="text-sm text-muted-foreground">You have unsaved changes.</p>
-					<div class="flex items-center gap-2">
+				<div class="pointer-events-auto flex items-center gap-3 rounded-2xl glass px-5 py-3 shadow-xl shadow-primary/10">
+					<div class="size-1.5 rounded-full bg-amber-400 shrink-0" />
+					<p class="text-sm text-muted-foreground">Unsaved changes</p>
+					<div class="flex items-center gap-2 ml-1">
 						<Button
 							variant="outline"
 							size="sm"
 							type="button"
+							class="h-7 cursor-pointer"
 							:disabled="isSaving"
 							@click="discard"
 						>
 							Discard
 						</Button>
 						<Button
-							variant="default"
 							size="sm"
 							type="button"
+							class="h-7 cursor-pointer"
 							:disabled="isSaving"
 							@click="applyChanges"
 						>
-							{{ isSaving ? 'Saving…' : 'Apply changes' }}
+							{{ isSaving ? 'Saving…' : 'Save changes' }}
 						</Button>
 					</div>
 				</div>
@@ -101,12 +104,12 @@ const applyChanges = () => {
 <style scoped>
 .footer-slide-enter-active,
 .footer-slide-leave-active {
-	transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+	transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease;
 }
 
 .footer-slide-enter-from,
 .footer-slide-leave-to {
-	transform: translateY(100%);
+	transform: translateY(16px);
 	opacity: 0;
 }
 </style>

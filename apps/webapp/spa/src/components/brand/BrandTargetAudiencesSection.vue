@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import type { AudienceFormItem } from "@/lib/brands/useBrandSettingsForm";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
 	Select,
@@ -30,12 +21,6 @@ const FUNNEL_STAGES = [
 	{ value: "BOFU", label: "Bottom of funnel" },
 ] as const;
 
-const funnelStageBadgeVariant = (stage: string): "default" | "secondary" | "outline" => {
-	if (stage === "TOFU") return "default";
-	if (stage === "MOFU") return "secondary";
-	return "outline";
-};
-
 const addAudience = () => {
 	props.audiences.push({ name: "", funnel_stage: "", desires: [], pain_points: [] });
 };
@@ -54,22 +39,25 @@ const removeStringItem = (list: string[], index: number) => {
 </script>
 
 <template>
-	<Card>
-		<CardHeader>
-			<CardTitle>Target Audiences</CardTitle>
-			<CardDescription>Audience segments grouped by funnel stage.</CardDescription>
-		</CardHeader>
-		<CardContent class="space-y-4">
+	<section class="rounded-xl border border-border bg-card overflow-hidden">
+		<div class="px-5 py-4 border-b border-border flex items-start justify-between gap-3">
+			<div>
+				<h2 class="text-sm font-semibold tracking-tight">Target Audiences</h2>
+				<p class="text-xs text-muted-foreground mt-0.5">Audience segments grouped by funnel stage.</p>
+			</div>
+		</div>
+
+		<div class="px-5 py-4 space-y-3">
 			<template v-if="isLoading">
-				<Skeleton class="h-20 w-full" />
-				<Skeleton class="h-20 w-full" />
+				<Skeleton class="h-24 w-full" />
+				<Skeleton class="h-24 w-full" />
 			</template>
 
 			<template v-else>
 				<div
 					v-for="(audience, audienceIndex) in audiences"
 					:key="audienceIndex"
-					class="rounded-lg border border-border p-4 space-y-4"
+					class="rounded-lg border border-border bg-background/60 p-4 space-y-4"
 				>
 					<div class="flex items-start gap-2">
 						<div class="grid gap-1.5 flex-1">
@@ -93,17 +81,15 @@ const removeStringItem = (list: string[], index: number) => {
 								</SelectContent>
 							</Select>
 						</div>
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							class="mt-5 shrink-0 text-muted-foreground hover:text-destructive"
+						<button
 							type="button"
+							class="mt-5 shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-colors cursor-pointer"
 							@click="removeAudience(audienceIndex)"
 						>
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
 								<path fill-rule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clip-rule="evenodd" />
 							</svg>
-						</Button>
+						</button>
 					</div>
 
 					<div class="grid gap-1.5">
@@ -119,27 +105,26 @@ const removeStringItem = (list: string[], index: number) => {
 									placeholder="What this audience desires…"
 									class="flex-1"
 								/>
-								<Button
-									variant="ghost"
-									size="icon-sm"
+								<button
 									type="button"
-									class="shrink-0 text-muted-foreground hover:text-destructive"
+									class="shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-colors cursor-pointer"
 									@click="removeStringItem(audience.desires, desireIndex)"
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
 										<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
 									</svg>
-								</Button>
+								</button>
 							</div>
-							<Button
-								variant="ghost"
-								size="sm"
+							<button
 								type="button"
-								class="text-muted-foreground h-7 px-2"
+								class="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors px-1 py-0.5 cursor-pointer"
 								@click="addStringItem(audience.desires)"
 							>
-								+ Add desire
-							</Button>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3.5">
+									<path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+								</svg>
+								Add desire
+							</button>
 						</div>
 					</div>
 
@@ -156,41 +141,41 @@ const removeStringItem = (list: string[], index: number) => {
 									placeholder="A pain point…"
 									class="flex-1"
 								/>
-								<Button
-									variant="ghost"
-									size="icon-sm"
+								<button
 									type="button"
-									class="shrink-0 text-muted-foreground hover:text-destructive"
+									class="shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-colors cursor-pointer"
 									@click="removeStringItem(audience.pain_points, pointIndex)"
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
 										<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
 									</svg>
-								</Button>
+								</button>
 							</div>
-							<Button
-								variant="ghost"
-								size="sm"
+							<button
 								type="button"
-								class="text-muted-foreground h-7 px-2"
+								class="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors px-1 py-0.5 cursor-pointer"
 								@click="addStringItem(audience.pain_points)"
 							>
-								+ Add pain point
-							</Button>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3.5">
+									<path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+								</svg>
+								Add pain point
+							</button>
 						</div>
 					</div>
 				</div>
 
-				<Button
-					variant="outline"
-					size="sm"
+				<button
 					type="button"
-					class="w-full"
+					class="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-dashed border-border py-2.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary hover:bg-primary/4"
 					@click="addAudience"
 				>
-					+ Add audience
-				</Button>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3.5">
+						<path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+					</svg>
+					Add audience
+				</button>
 			</template>
-		</CardContent>
-	</Card>
+		</div>
+	</section>
 </template>

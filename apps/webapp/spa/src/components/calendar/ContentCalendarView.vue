@@ -2,12 +2,6 @@
 import { getBrands, getBrandContent } from "@ai-marketing-platform/platform-api-client";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, ref, watch, type Ref } from "vue";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
 	Select,
@@ -16,7 +10,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { useContentCalendarState } from "@/composables/useContentCalendarState";
 import { asCalendarDate } from "@/lib/calendar/asCalendarDate";
 import { groupScheduledContentByDay, placeContentInRange } from "@/lib/calendar/scheduledContent";
@@ -92,12 +85,11 @@ const monthGridAnchor = computed(() => asCalendarDate(focused.value));
 </script>
 
 <template>
-	<Card class="border-border ring-foreground/10 w-full min-w-0">
-		<CardHeader
-			class="border-border flex flex-col gap-3 border-b pb-3 sm:gap-4"
-		>
+	<section class="rounded-xl border border-border bg-card overflow-hidden w-full min-w-0">
+		<!-- Header -->
+		<div class="px-5 py-4 border-b border-border space-y-3">
 			<div class="flex w-full min-w-0 flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-3">
-				<CardTitle class="text-foreground/95 shrink-0">Content calendar</CardTitle>
+				<h1 class="text-xl font-semibold tracking-tight shrink-0">Content calendar</h1>
 				<Select v-model="selectedBrandId">
 					<SelectTrigger class="h-8 w-full min-w-[12rem] sm:max-w-xs" size="sm" aria-label="Active brand">
 						<SelectValue
@@ -122,41 +114,38 @@ const monthGridAnchor = computed(() => asCalendarDate(focused.value));
 				@prev="goPrevious"
 				@next="goNext"
 			/>
-		</CardHeader>
-		<CardContent class="pt-0">
-			<WeekViewCalendarPage
-				v-if="view === 'week'"
-				:locale="locale"
-				:week-days="weekDays"
-				:content-by-day="contentByDay"
-			/>
-			<MonthViewCalendarPage
-				v-else
-				:locale="locale"
-				:month-anchor="monthGridAnchor"
-				:content-by-day="contentByDay"
-			/>
-		</CardContent>
-		<CardContent v-if="showNoContent || showUnscheduled" class="pt-0">
-			<Separator class="mb-3" />
+		</div>
+
+		<!-- Calendar grid -->
+		<WeekViewCalendarPage
+			v-if="view === 'week'"
+			:locale="locale"
+			:week-days="weekDays"
+			:content-by-day="contentByDay"
+		/>
+		<MonthViewCalendarPage
+			v-else
+			:locale="locale"
+			:month-anchor="monthGridAnchor"
+			:content-by-day="contentByDay"
+		/>
+
+		<!-- Footer: no content / unscheduled -->
+		<div v-if="showNoContent || showUnscheduled" class="px-5 py-4 border-t border-border">
 			<p
 				v-if="showNoContent"
 				class="text-muted-foreground text-sm"
 			>
 				No content for this brand yet. When items include
-				<code class="bg-muted rounded px-1">scheduledAt</code>
+				<code class="bg-muted rounded px-1 text-xs">scheduledAt</code>
 				they will show in the grid.
 			</p>
 			<template v-else-if="showUnscheduled">
-				<p
-					class="text-muted-foreground text-sm"
-				>
+				<p class="text-muted-foreground text-sm mb-2">
 					Not on the calendar: items without
-					<code class="bg-muted rounded px-1">scheduledAt</code>.
+					<code class="bg-muted rounded px-1 text-xs">scheduledAt</code>.
 				</p>
-				<div
-					class="mt-2 flex flex-wrap gap-1.5"
-				>
+				<div class="flex flex-wrap gap-1.5">
 					<Badge
 						v-for="u in inRange.unscheduled"
 						:key="u.id ?? 'unknown'"
@@ -167,6 +156,6 @@ const monthGridAnchor = computed(() => asCalendarDate(focused.value));
 					</Badge>
 				</div>
 			</template>
-		</CardContent>
-	</Card>
+		</div>
+	</section>
 </template>

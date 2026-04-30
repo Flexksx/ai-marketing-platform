@@ -2,7 +2,6 @@
 import { useRoute, RouterLink } from "vue-router";
 import { computed } from "vue";
 import BrandSettingsView from "@/components/brand/BrandSettingsView.vue";
-import { Button } from "@/components/ui/button";
 
 const route = useRoute();
 const brandId = computed(() => route.params.brandId as string);

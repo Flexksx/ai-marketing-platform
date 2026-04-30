@@ -8,7 +8,13 @@ const { isAuthenticated } = useAuthProvider();
 </script>
 
 <template>
-	<div v-if="!isAuthenticated" class="min-h-svh">
+	<div v-if="!isAuthenticated" class="min-h-svh bg-background relative overflow-hidden flex items-center justify-center">
+		<!-- Subtle background gradient orbs -->
+		<div class="pointer-events-none absolute inset-0 overflow-hidden">
+			<div class="absolute -top-32 -left-32 size-96 rounded-full bg-primary/8 blur-3xl" />
+			<div class="absolute -bottom-32 -right-32 size-96 rounded-full bg-primary/6 blur-3xl" />
+			<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full bg-primary/4 blur-3xl" />
+		</div>
 		<LoginView />
 	</div>
 
