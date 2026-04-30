@@ -1,6 +1,7 @@
 import {
 	type BrandResponse,
 	type CreateBrandRequest,
+	type UpdateBrandRequest,
 	getBrands,
 } from "@ai-marketing-platform/platform-api-client";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
@@ -17,6 +18,17 @@ export const useCreateBrandMutation = () => {
 			void queryClient.invalidateQueries({
 				queryKey: queryKeys.brands(),
 			});
+		},
+	});
+};
+
+export const useUpdateBrandMutation = () => {
+	const queryClient = useQueryClient();
+	return useMutation<BrandResponse, Error, { id: string; body: UpdateBrandRequest }>({
+		mutationFn: ({ id, body }) => brands.update(id, body),
+		onSuccess: (_data, { id }) => {
+			void queryClient.invalidateQueries({ queryKey: queryKeys.brand(id) });
+			void queryClient.invalidateQueries({ queryKey: queryKeys.brands() });
 		},
 	});
 };
