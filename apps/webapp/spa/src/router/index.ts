@@ -5,12 +5,7 @@ export const router = createRouter({
 	routes: [
 		{
 			path: "/",
-			redirect: "/calendar",
-		},
-		{
-			path: "/calendar",
-			name: "calendar",
-			component: () => import("@/views/CalendarPage.vue"),
+			redirect: "/brands",
 		},
 		{
 			path: "/brands",
@@ -18,9 +13,18 @@ export const router = createRouter({
 			component: () => import("@/views/BrandsPage.vue"),
 		},
 		{
+			path: "/brands/:brandId",
+			redirect: (to) => `/brands/${to.params.brandId}/settings`,
+		},
+		{
 			path: "/brands/:brandId/settings",
 			name: "brand-settings",
 			component: () => import("@/views/BrandSettingsPage.vue"),
+		},
+		{
+			path: "/brands/:brandId/calendar",
+			name: "brand-calendar",
+			component: () => import("@/views/CalendarPage.vue"),
 		},
 	],
 });

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, unref } from "vue";
+import { Layers } from "lucide-vue-next";
 
 import { useAuth } from "@/lib/auth/useAuth";
 
@@ -56,10 +57,7 @@ async function onSubmit() {
 			<div class="mb-7">
 				<div class="mb-5">
 					<div class="size-7 rounded-md bg-primary flex items-center justify-center">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4 text-primary-foreground">
-							<path d="M8.5 2.75a.75.75 0 0 0-1.5 0v5.19L5.03 5.97a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 0 0-1.06-1.06L8.5 7.94V2.75Z" />
-							<path d="M3.25 13a.75.75 0 0 0 0 1.5h9.5a.75.75 0 0 0 0-1.5h-9.5Z" />
-						</svg>
+						<Layers class="size-4 text-primary-foreground" :stroke-width="2.5" />
 					</div>
 				</div>
 				<h1 class="text-xl font-semibold tracking-tight text-foreground">

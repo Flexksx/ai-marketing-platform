@@ -43,7 +43,8 @@
 	--chart-4: oklch(0.87 0.03 278);
 	--chart-5: oklch(0.93 0.01 278);
 
-	--radius: 0.625rem;
+	/* Base corner scale: buttons, inputs, toggles, cards (see --radius-* in @theme). */
+	--radius: 0.875rem;
 
 	--sidebar: oklch(0.99 0.003 275);
 	--sidebar-foreground: oklch(0.13 0.018 275);

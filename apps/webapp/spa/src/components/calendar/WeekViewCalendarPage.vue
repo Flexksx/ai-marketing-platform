@@ -19,11 +19,14 @@ function isTodayCell(d: CalendarDate) {
 </script>
 
 <template>
-	<div class="border-border w-full min-w-0 overflow-x-auto">
-		<div
-			class="grid w-full"
-			:style="{ gridTemplateColumns: `repeat(${Math.max(weekDays.length, 1)}, minmax(6rem, 1fr))` }"
-		>
+	<div
+		class="border-border w-full min-w-0 overflow-hidden rounded-xl border"
+	>
+		<div class="overflow-x-auto">
+			<div
+				class="grid w-full min-w-max"
+				:style="{ gridTemplateColumns: `repeat(${Math.max(weekDays.length, 1)}, minmax(6rem, 1fr))` }"
+			>
 			<div
 				v-for="d in props.weekDays"
 				:key="d.toString()"
@@ -65,6 +68,7 @@ function isTodayCell(d: CalendarDate) {
 					</template>
 				</div>
 			</div>
+		</div>
 		</div>
 	</div>
 </template>

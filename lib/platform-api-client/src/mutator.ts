@@ -6,7 +6,7 @@ function platformApiBaseUrl(): string {
 		return fromEnv;
 	}
 	if (import.meta.env.DEV) {
-		return "";
+		return "/api";
 	}
 	return "http://localhost:8080";
 }

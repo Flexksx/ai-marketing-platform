@@ -37,27 +37,30 @@ const weekHeaderLabels = computed(() => {
 </script>
 
 <template>
-	<div class="border-border w-full min-w-0 overflow-x-auto">
-		<div
-			class="text-muted-foreground/90 border-border border-b p-1 text-center text-xs font-medium"
-		>
+	<div
+		class="border-border w-full min-w-0 overflow-hidden rounded-xl border"
+	>
+		<div class="overflow-x-auto">
 			<div
-				class="grid w-full"
-				:style="{ gridTemplateColumns: `repeat(${weekDayCount}, minmax(0, 1fr))` }"
+				class="text-muted-foreground/90 border-border min-w-max border-b p-1 text-center text-xs font-medium"
 			>
 				<div
-					v-for="(label, i) in weekHeaderLabels"
-					:key="i"
-					class="p-1"
+					class="grid w-full"
+					:style="{ gridTemplateColumns: `repeat(${weekDayCount}, minmax(0, 1fr))` }"
 				>
-					{{ label }}
+					<div
+						v-for="(label, i) in weekHeaderLabels"
+						:key="i"
+						class="p-1"
+					>
+						{{ label }}
+					</div>
 				</div>
 			</div>
-		</div>
-		<div
-			class="grid w-full"
-			:style="{ gridTemplateColumns: `repeat(${weekDayCount}, minmax(0, 1fr))` }"
-		>
+			<div
+				class="grid w-full min-w-max"
+				:style="{ gridTemplateColumns: `repeat(${weekDayCount}, minmax(0, 1fr))` }"
+			>
 			<div
 				v-for="(d, idx) in gridDays"
 				:key="`d-${d.toString()}-${idx}`"
@@ -89,6 +92,7 @@ const weekHeaderLabels = computed(() => {
 						more
 					</span>
 				</div>
+			</div>
 			</div>
 		</div>
 	</div>
