@@ -19,6 +19,10 @@
     "TypeScript": {
       "language_servers": ["biomejs/biome"],
     },
+    "Svelte": {
+      "language_servers": ["svelte-language-server", "biome"],
+      "format_on_save": "on",
+    },
   },
   "file_scan_exclusions": [
     "**/.git",

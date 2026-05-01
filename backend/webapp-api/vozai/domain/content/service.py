@@ -1,8 +1,6 @@
-import public
-from fastapi import Depends
-
+from db.session_factory import DbSessionFactory
+from vozai.domain.content import repository as content_repository
 from vozai.domain.content.model import Content
-from vozai.domain.content.repository import ContentRepository
 from vozai.domain.content.schema import (
     ContentCreateRequest,
     ContentListRequest,
@@ -10,19 +8,27 @@ from vozai.domain.content.schema import (
 )
 
 
-@public.add
-class ContentService:
-    def __init__(self, repository: ContentRepository = Depends()):
-        self.repository = repository
+async def search(
+    session_factory: DbSessionFactory,
+    request: ContentListRequest,
+) -> list[Content]:
+    return await content_repository.search(session_factory, request)
 
-    async def search(self, request: ContentListRequest) -> list[Content]:
-        return await self.repository.search(request)
 
-    async def get(self, post_id: str) -> Content:
-        return await self.repository.get(post_id)
+async def get(session_factory: DbSessionFactory, post_id: str) -> Content:
+    return await content_repository.get(session_factory, post_id)
 
-    async def create(self, request: ContentCreateRequest) -> Content:
-        return await self.repository.create(request)
 
-    async def update(self, post_id: str, request: ContentUpdateRequest) -> Content:
-        return await self.repository.update(post_id, request)
+async def create(
+    session_factory: DbSessionFactory,
+    request: ContentCreateRequest,
+) -> Content:
+    return await content_repository.create(session_factory, request)
+
+
+async def update(
+    session_factory: DbSessionFactory,
+    post_id: str,
+    request: ContentUpdateRequest,
+) -> Content:
+    return await content_repository.update(session_factory, post_id, request)

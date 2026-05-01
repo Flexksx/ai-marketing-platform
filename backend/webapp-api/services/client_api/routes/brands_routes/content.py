@@ -2,12 +2,13 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, Query
 
+import vozai.domain.content.service as content_service
+from db.session_factory import DbSessionFactory
 from services.client_api.auth.access_validation import validate_brand_access
 from vozai.domain.content.schema import (
     ContentListRequest,
     ContentResponse,
 )
-from vozai.domain.content.service import ContentService
 from vozai.domain.content_channel.model import ContentChannelName
 
 
@@ -22,9 +23,10 @@ async def search(
     limit: int = Query(10, ge=1, le=1000),
     offset: int = Query(0, ge=0),
     channel: ContentChannelName | None = Query(None),  # noqa: B008
-    post_service: ContentService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
-    return await post_service.search(
+    return await content_service.search(
+        session_factory,
         ContentListRequest(
             brand_id=brand_id,
             scheduled_after=scheduled_after,
@@ -32,5 +34,5 @@ async def search(
             channel=channel,
             limit=limit,
             offset=offset,
-        )
+        ),
     )

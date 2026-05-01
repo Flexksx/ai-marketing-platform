@@ -1,7 +1,6 @@
-from fastapi import Depends
-
+import vozai.domain.campaign.repository as campaign_repository
+from db.session_factory import DbSessionFactory
 from vozai.domain.campaign.model import Campaign
-from vozai.domain.campaign.repository import CampaignRepository
 from vozai.domain.campaign.schema import (
     CampaignCreateRequest,
     CampaignListRequest,
@@ -9,23 +8,34 @@ from vozai.domain.campaign.schema import (
 )
 
 
-class CampaignService:
-    def __init__(self, repository: CampaignRepository = Depends()):
-        self.repository = repository
+async def create(
+    session_factory: DbSessionFactory,
+    request: CampaignCreateRequest,
+) -> Campaign:
+    return await campaign_repository.create(session_factory, request)
 
-    async def create(self, request: CampaignCreateRequest) -> Campaign:
-        return await self.repository.create(request)
 
-    async def get(self, campaign_id: str) -> Campaign | None:
-        return await self.repository.get(campaign_id)
+async def get(
+    session_factory: DbSessionFactory,
+    campaign_id: str,
+) -> Campaign | None:
+    return await campaign_repository.get(session_factory, campaign_id)
 
-    async def search(self, request: CampaignListRequest) -> list[Campaign]:
-        return await self.repository.search(request)
 
-    async def update(
-        self, campaign_id: str, request: CampaignUpdateRequest
-    ) -> Campaign | None:
-        return await self.repository.update(campaign_id, request)
+async def search(
+    session_factory: DbSessionFactory,
+    request: CampaignListRequest,
+) -> list[Campaign]:
+    return await campaign_repository.search(session_factory, request)
 
-    async def delete(self, campaign_id: str) -> None:
-        await self.repository.delete(campaign_id)
+
+async def update(
+    session_factory: DbSessionFactory,
+    campaign_id: str,
+    request: CampaignUpdateRequest,
+) -> Campaign | None:
+    return await campaign_repository.update(session_factory, campaign_id, request)
+
+
+async def delete(session_factory: DbSessionFactory, campaign_id: str) -> None:
+    await campaign_repository.delete(session_factory, campaign_id)

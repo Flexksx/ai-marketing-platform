@@ -3,9 +3,11 @@ import logging
 import public
 from fastapi import Depends
 
+import vozai.domain.campaign.service as campaign_service
+import vozai.domain.content.service as content_service
+from db.session_factory import DbSessionFactory
 from vozai.domain.campaign.model import Campaign, CampaignData
 from vozai.domain.campaign.schema import CampaignCreateRequest
-from vozai.domain.campaign.service import CampaignService
 from vozai.domain.campaign_generation.errors import (
     CampaignGenerationJobCreationFailedException,
     CampaignGenerationJobResultNotFoundException,
@@ -30,7 +32,6 @@ from vozai.domain.content.model import (
     TextWithSingleImageContentData,
 )
 from vozai.domain.content.schema import ContentCreateRequest
-from vozai.domain.content.service import ContentService
 from vozai.domain.content_plan_item.repository import ContentPlanItemRepository
 from vozai.domain.content_plan_item.schema import ContentPlanItemUpdateRequest
 from vozai.lib.cloudtasks.service import CloudTasksService
@@ -45,14 +46,12 @@ class CampaignGenerationJobService:
         self,
         repository: CampaignGenerationJobRepository = Depends(),
         content_plan_item_repository: ContentPlanItemRepository = Depends(),
-        campaign_service: CampaignService = Depends(),
-        content_service: ContentService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         tasks_service: CloudTasksService = Depends(),
     ):
         self.repository = repository
         self.content_plan_item_repository = content_plan_item_repository
-        self.campaign_service = campaign_service
-        self.content_service = content_service
+        self.session_factory = session_factory
         self.tasks_service = tasks_service
 
     async def create(
@@ -108,7 +107,7 @@ class CampaignGenerationJobService:
             data=campaign_data,
         )
 
-        campaign = await self.campaign_service.create(campaign_request)
+        campaign = await campaign_service.create(self.session_factory, campaign_request)
 
         if job.result.content_plan_items is None:
             raise CampaignGenerationJobResultNotFoundException(job_id)
@@ -163,7 +162,7 @@ class CampaignGenerationJobService:
                 data=data,
                 scheduled_at=scheduled_at,
             )
-            await self.content_service.create(post_request)
+            await content_service.create(self.session_factory, post_request)
         return campaign
 
     async def validate_access(self, job_id: str, user_id: str) -> bool:

@@ -3,9 +3,10 @@ import logging
 import public
 from fastapi import Depends
 
+import vozai.domain.content.service as content_service
+from db.session_factory import DbSessionFactory
 from vozai.domain.content import TextOnlyContentData
 from vozai.domain.content.schema import ContentCreateRequest
-from vozai.domain.content.service import ContentService
 from vozai.domain.content_generation_job.content_type.text_with_single_image import (
     TextWithSingleImageContentGenerationJobResult,
 )
@@ -34,11 +35,11 @@ class ContentGenerationJobService:
         self,
         repository: ContentGenerationJobRepository = Depends(),
         tasks_service: CloudTasksService = Depends(),
-        posts_service: ContentService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
     ):
         self.repository = repository
         self.tasks_service = tasks_service
-        self.posts_service = posts_service
+        self.session_factory = session_factory
 
     async def create(
         self, request: ContentGenerationJobCreateRequest
@@ -86,6 +87,6 @@ class ContentGenerationJobService:
                 channel=result.channel,
                 scheduled_at=user_input.scheduled_at,
             )
-            return await self.posts_service.create(request)
+            return await content_service.create(self.session_factory, request)
 
         return job
