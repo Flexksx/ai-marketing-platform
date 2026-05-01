@@ -5,8 +5,10 @@ import public
 from fastapi import Depends
 from pydantic_ai import format_as_xml
 
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
 from services.worker_api.shared import TextWithSingleImageContentGenerator
-from vozai.domain.brand import Brand, BrandService
+from vozai.domain.brand import Brand
 from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
@@ -27,11 +29,13 @@ class UserImagesOnlyPostGenerationCampaignGenerationStep:
     def __init__(
         self,
         campaign_generation_job_service: CampaignGenerationJobService = Depends(),
-        brand_service: BrandService = Depends(),
-        text_with_single_image_generation_service: TextWithSingleImageContentGenerator = Depends(),
+        session_factory: DbSessionFactory = Depends(),
+        text_with_single_image_generation_service: (
+            TextWithSingleImageContentGenerator
+        ) = Depends(),
     ):
         self.campaign_generation_job_service = campaign_generation_job_service
-        self.brand_service = brand_service
+        self.session_factory = session_factory
         self.text_with_single_image_generation_service = (
             text_with_single_image_generation_service
         )
@@ -40,7 +44,7 @@ class UserImagesOnlyPostGenerationCampaignGenerationStep:
         if not job.result or not job.result.content_plan_items:
             raise ValueError("Content plan items not found")
 
-        brand = await self.brand_service.get(job.brand_id)
+        brand = await brand_service.get(self.session_factory, job.brand_id)
         plan_items = job.result.content_plan_items
 
         logger.info(f"Starting generation of {len(plan_items)} posts")
@@ -66,7 +70,8 @@ class UserImagesOnlyPostGenerationCampaignGenerationStep:
             if not image_url:
                 raise ValueError(f"No image URL for item {item.id}")
 
-            caption = await self.text_with_single_image_generation_service.generate_caption_for_image(
+            tws = self.text_with_single_image_generation_service
+            caption = await tws.generate_caption_for_image(
                 brand_id=brand.id,
                 channel=item.channel,
                 caption_prompt_template_name=PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_CAPTION,

@@ -3,7 +3,6 @@ import logging
 import public
 from fastapi import Depends
 
-from vozai.domain.brand.service import BrandService
 from vozai.domain.campaign.model import Campaign, CampaignData
 from vozai.domain.campaign.schema import CampaignCreateRequest
 from vozai.domain.campaign.service import CampaignService
@@ -46,14 +45,12 @@ class CampaignGenerationJobService:
         self,
         repository: CampaignGenerationJobRepository = Depends(),
         content_plan_item_repository: ContentPlanItemRepository = Depends(),
-        brand_service: BrandService = Depends(),
         campaign_service: CampaignService = Depends(),
         content_service: ContentService = Depends(),
         tasks_service: CloudTasksService = Depends(),
     ):
         self.repository = repository
         self.content_plan_item_repository = content_plan_item_repository
-        self.brand_service = brand_service
         self.campaign_service = campaign_service
         self.content_service = content_service
         self.tasks_service = tasks_service

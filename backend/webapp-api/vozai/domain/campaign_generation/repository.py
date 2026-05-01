@@ -13,9 +13,9 @@ from vozai.domain.campaign_generation.errors import (
     PostingPlanItemNotFoundException,
 )
 from vozai.domain.campaign_generation.model import (
-    ContentPlanItem,
     CampaignGenerationJob,
     CampaignGenerationJobResult,
+    ContentPlanItem,
 )
 from vozai.domain.campaign_generation.schema import (
     CampaignCreationJobUpdateInput,

@@ -128,4 +128,3 @@ export const MediaService = {
 	downloadAndUploadImage,
 	uploadMultipleImages
 };
-

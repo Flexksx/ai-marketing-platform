@@ -1,8 +1,10 @@
 import public
 from fastapi import Depends, Path
 
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
 from vozai.auth import get_current_user_id
-from vozai.domain.brand import BrandNotFoundError, BrandService
+from vozai.domain.brand import BrandNotFoundError
 from vozai.domain.brand_extraction import (
     BrandGenerationJobNotFoundError,
     BrandGenerationJobService,
@@ -19,9 +21,13 @@ from vozai.domain.campaign_generation.errors import (
 async def validate_brand_access(
     brand_id: str = Path(...),
     user_id: str = Depends(get_current_user_id),
-    brand_service: BrandService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ) -> str:
-    has_access = await brand_service.validate_access(brand_id, user_id)
+    has_access = await brand_service.validate_access(
+        session_factory,
+        brand_id,
+        user_id,
+    )
     if not has_access:
         raise BrandNotFoundError(brand_id)
     return brand_id

@@ -2,10 +2,10 @@ from fastapi import Depends
 from pydantic import BaseModel, ConfigDict
 from pydantic_ai import Agent, ImageUrl, RunContext
 
-from services.worker_api.content_generation.text_with_single_image.base_strategy import (
-    BaseTextWithSingleImageContentGenerationJobStrategy,
-)
-from vozai.domain.brand import Brand, BrandService
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
+from services.worker_api.content_generation.text_with_single_image import base_strategy
+from vozai.domain.brand import Brand
 from vozai.domain.content import TextWithSingleImageContentData
 from vozai.domain.content_channel import ContentChannelName
 from vozai.domain.content_generation_job import (
@@ -30,14 +30,14 @@ class _AgentOutputFromUserMedia(BaseModel):
 
 
 class FromUserMediaTextWithSingleImageContentGenerationJobStrategy(
-    BaseTextWithSingleImageContentGenerationJobStrategy
+    base_strategy.BaseTextWithSingleImageContentGenerationJobStrategy
 ):
     def __init__(
         self,
-        brand_service: BrandService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         prompt_service: PromptService = Depends(),
     ):
-        self.brand_service = brand_service
+        self.session_factory = session_factory
         self.prompt_service = prompt_service
         self.__agent = Agent(
             model=PydanticAiModel.GEMINI_FLASH_LATEST,
@@ -56,7 +56,7 @@ class FromUserMediaTextWithSingleImageContentGenerationJobStrategy(
         self, job: ContentGenerationJob
     ) -> TextWithSingleImageContentGenerationJobResult:
         user_input = self.__get_from_user_media_user_input_or_raise(job)
-        brand: Brand = await self.brand_service.get(job.brand_id)
+        brand: Brand = await brand_service.get(self.session_factory, job.brand_id)
         agent_dependencies = _AgentDependencies(brand=brand, channel=user_input.channel)
         agent_run = await self.__agent.run(
             user_prompt=[
@@ -84,6 +84,9 @@ class FromUserMediaTextWithSingleImageContentGenerationJobStrategy(
         ):
             raise ContentGenerationJobInvalidUserInputException(
                 job.id,
-                "User input type is not valid for text with single image content generation job.",
+                (
+                    "User input type is not valid for text with single image "
+                    "content generation job."
+                ),
             )
         return job.user_input

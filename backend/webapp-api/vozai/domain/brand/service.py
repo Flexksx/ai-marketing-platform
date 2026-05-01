@@ -1,10 +1,8 @@
 import builtins
 
-import public
-from fastapi import Depends
-
+from db.session_factory import DbSessionFactory
+from vozai.domain.brand import repository as brand_repository
 from vozai.domain.brand.model import Brand
-from vozai.domain.brand.repository import BrandRepository
 from vozai.domain.brand.schema import (
     BrandCreateRequest,
     BrandSearchRequest,
@@ -12,36 +10,44 @@ from vozai.domain.brand.schema import (
 )
 
 
-@public.add
-class BrandService:
-    def __init__(self, repository: BrandRepository = Depends()):
-        self.repository = repository
+async def get(session_factory: DbSessionFactory, brand_id: str) -> Brand:
+    return await brand_repository.get(session_factory, brand_id)
 
-    async def get(self, brand_id: str) -> Brand:
-        return await self.repository.get(brand_id)
 
-    async def search(
-        self,
-        request: BrandSearchRequest,
-    ) -> builtins.list[Brand]:
-        return await self.repository.search(request)
+async def search(
+    session_factory: DbSessionFactory,
+    request: BrandSearchRequest,
+) -> builtins.list[Brand]:
+    return await brand_repository.search(session_factory, request)
 
-    async def create(
-        self,
-        user_id: str,
-        request: BrandCreateRequest,
-    ) -> Brand:
-        return await self.repository.create(user_id, request)
 
-    async def update(
-        self,
-        brand_id: str,
-        request: BrandUpdateRequest,
-    ) -> Brand:
-        return await self.repository.update(brand_id, request)
+async def create(
+    session_factory: DbSessionFactory,
+    user_id: str,
+    request: BrandCreateRequest,
+) -> Brand:
+    return await brand_repository.create(session_factory, user_id, request)
 
-    async def remove(self, brand_id: str) -> Brand:
-        return await self.repository.remove(brand_id)
 
-    async def validate_access(self, brand_id: str, user_id: str) -> bool:
-        return await self.repository.exists_for_user(brand_id, user_id)
+async def update(
+    session_factory: DbSessionFactory,
+    brand_id: str,
+    request: BrandUpdateRequest,
+) -> Brand:
+    return await brand_repository.update(session_factory, brand_id, request)
+
+
+async def remove(session_factory: DbSessionFactory, brand_id: str) -> Brand:
+    return await brand_repository.remove(session_factory, brand_id)
+
+
+async def validate_access(
+    session_factory: DbSessionFactory,
+    brand_id: str,
+    user_id: str,
+) -> bool:
+    return await brand_repository.exists_for_user(
+        session_factory,
+        brand_id,
+        user_id,
+    )

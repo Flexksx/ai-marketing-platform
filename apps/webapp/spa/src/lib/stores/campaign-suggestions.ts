@@ -35,4 +35,3 @@ export const clearJobIds = (brandId: string) => {
 		return newState;
 	});
 };
-

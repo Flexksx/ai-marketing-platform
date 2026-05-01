@@ -12,4 +12,3 @@ export const load = async () => {
 
 	throw redirect(303, `/brands/${brands[0].id}`);
 };
-

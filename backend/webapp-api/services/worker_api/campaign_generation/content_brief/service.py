@@ -3,7 +3,9 @@ from fastapi import Depends
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, ImageUrl, RunContext
 
-from vozai.domain.brand import Brand, BrandService
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
+from vozai.domain.brand import Brand
 from vozai.domain.brand_settings import ContentPillarBusinessGoal
 from vozai.domain.campaign_generation import CampaignGenerationJobService
 from vozai.domain.campaign_generation.model import (
@@ -45,12 +47,12 @@ class CampaignContentBriefGenerator:
     def __init__(
         self,
         prompt_service: PromptService = Depends(),
-        brand_service: BrandService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         campaign_generation_job_service: CampaignGenerationJobService = Depends(),
         content_channel_service: ContentChannelService = Depends(),
     ):
         self.prompt_service = prompt_service
-        self.brand_service = brand_service
+        self.session_factory = session_factory
         self.content_channel_service = content_channel_service
         self.campaign_generation_job_service = campaign_generation_job_service
 
@@ -76,7 +78,7 @@ class CampaignContentBriefGenerator:
         image_urls: list[ImageUrl],
         description_prompt_name: PromptTemplateName,
     ) -> CampaignGenerationJobResult:
-        brand = await self.brand_service.get(brand_id)
+        brand = await brand_service.get(self.session_factory, brand_id)
         content_channels = self.content_channel_service.search()
         deps = CampaignContentBriefAgentDependencies(
             brand=brand,

@@ -16,6 +16,9 @@
       "language_servers": ["jinja-lsp"],
       "format_on_save": "on",
     },
+    "TypeScript": {
+      "language_servers": ["biomejs/biome"],
+    },
   },
   "file_scan_exclusions": [
     "**/.git",

@@ -59,4 +59,3 @@ export const BrandStatsService = {
 	get,
 	list
 };
-

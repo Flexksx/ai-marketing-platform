@@ -5,11 +5,12 @@ from fastapi import Depends
 from pydantic import BaseModel
 from pydantic_ai import ImageUrl
 
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
 from services.worker_api.campaign_generation.content_brief.service import (
     CampaignContentBriefGenerator,
 )
 from vozai.domain.brand import Brand
-from vozai.domain.brand.service import BrandService
 from vozai.domain.campaign_generation import (
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
@@ -34,18 +35,18 @@ class _CampaignDescriptionDeps(BaseModel):
 class UserMediaContentBriefGenerator:
     def __init__(
         self,
-        brand_service: BrandService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         prompt_service: PromptService = Depends(),
         content_channel_service: ContentChannelService = Depends(),
         content_brief_generator: CampaignContentBriefGenerator = Depends(),
     ):
-        self.brand_service = brand_service
+        self.session_factory = session_factory
         self.prompt_service = prompt_service
         self.content_channel_service = content_channel_service
         self.content_brief_generator = content_brief_generator
 
     async def generate(self, job: CampaignGenerationJob) -> CampaignGenerationJobResult:
-        brand = await self.brand_service.get(job.brand_id)
+        brand = await brand_service.get(self.session_factory, job.brand_id)
         user_input = self.__get_user_input_or_raise(job)
         return await self.content_brief_generator.generate(
             job_id=job.id,

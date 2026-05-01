@@ -9,4 +9,3 @@ export type {
 	StorageUploadParams,
 	StorageUploadResult
 } from './media.types';
-

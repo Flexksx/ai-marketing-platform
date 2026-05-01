@@ -6,14 +6,17 @@ function parseCookies(cookieString: string): Record<string, string> {
 		.split(';')
 		.map((cookie) => cookie.trim())
 		.filter((cookie) => cookie.length > 0)
-		.reduce((acc, cookie) => {
-			const [key, ...valueParts] = cookie.split('=');
-			const value = valueParts.join('=');
-			if (key) {
-				acc[decodeURIComponent(key)] = decodeURIComponent(value || '');
-			}
-			return acc;
-		}, {} as Record<string, string>);
+		.reduce(
+			(acc, cookie) => {
+				const [key, ...valueParts] = cookie.split('=');
+				const value = valueParts.join('=');
+				if (key) {
+					acc[decodeURIComponent(key)] = decodeURIComponent(value || '');
+				}
+				return acc;
+			},
+			{} as Record<string, string>
+		);
 }
 
 if (browser) {

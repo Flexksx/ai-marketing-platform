@@ -29,7 +29,7 @@ export function useUpdateBrand() {
 			queryClient.invalidateQueries({ queryKey: queryKeys.brands() });
 		}
 	}));
-};
+}
 
 export function useDeleteBrand() {
 	const queryClient = useQueryClient();
@@ -45,4 +45,4 @@ export function useDeleteBrand() {
 			queryClient.invalidateQueries({ queryKey: queryKeys.brands() });
 		}
 	}));
-};
+}

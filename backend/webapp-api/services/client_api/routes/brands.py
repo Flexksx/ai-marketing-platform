@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
 
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
 from services.client_api.auth import validate_brand_access
 from services.client_api.routes.brands_routes.campaign_generation_jobs import (
     router as campaign_creation_router,
@@ -22,7 +24,6 @@ from vozai.domain.brand import (
     BrandData,
     BrandResponse,
     BrandSearchRequest,
-    BrandService,
     BrandUpdateRequest,
 )
 from vozai.lib.supabase_client import (
@@ -57,24 +58,25 @@ async def search(
     name: str | None = Query(None),
     limit: int = Query(5, ge=1, le=1000),
     offset: int = Query(0, ge=0),
-    service: BrandService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
-    return await service.search(
+    return await brand_service.search(
+        session_factory,
         BrandSearchRequest(
             user_id=user_id,
             name=name,
             limit=limit,
             offset=offset,
-        )
+        ),
     )
 
 
 @router.get("/{brand_id}", response_model=BrandResponse, tags=["Brands"])
 async def get(
     brand_id: str = Depends(validate_brand_access),
-    service: BrandService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
-    brand = await service.get(brand_id)
+    brand = await brand_service.get(session_factory, brand_id)
     return BrandResponse.model_validate(brand)
 
 
@@ -82,9 +84,9 @@ async def get(
 async def create(
     request: BrandCreateRequest,
     user_id: str = Depends(get_current_user_id),
-    service: BrandService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
-    brand = await service.create(user_id, request)
+    brand = await brand_service.create(session_factory, user_id, request)
     return BrandResponse.model_validate(brand)
 
 
@@ -93,7 +95,7 @@ async def update(
     brand_id: str = Depends(validate_brand_access),
     request_data: str | None = Form(default=None),
     logo_file: UploadFile | None = File(default=None),  # noqa: B008
-    service: BrandService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
     supabase_storage_service: SupabaseStorageService = Depends(),
 ):
     if request_data is None:
@@ -116,14 +118,14 @@ async def update(
         else:
             request.data.logo_url = upload_result.public_url
 
-    brand = await service.update(brand_id, request)
+    brand = await brand_service.update(session_factory, brand_id, request)
     return BrandResponse.model_validate(brand)
 
 
 @router.delete("/{brand_id}", response_model=BrandResponse, tags=["Brands"])
 async def delete(
     brand_id: str = Depends(validate_brand_access),
-    service: BrandService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
-    brand = await service.remove(brand_id)
+    brand = await brand_service.remove(session_factory, brand_id)
     return BrandResponse.model_validate(brand)

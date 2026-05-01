@@ -29,7 +29,10 @@ export class BrandStatsEndpoints {
 		}
 	}
 
-	static async list(accessToken: string, props?: BrandStatsListRequest): Promise<BrandStatsListResponse> {
+	static async list(
+		accessToken: string,
+		props?: BrandStatsListRequest
+	): Promise<BrandStatsListResponse> {
 		const client = createBackendClient(accessToken);
 		const params = new URLSearchParams();
 		if (props?.limit !== undefined) params.append('limit', props.limit.toString());

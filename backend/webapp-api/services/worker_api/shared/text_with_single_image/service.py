@@ -15,10 +15,12 @@ from pydantic_ai import (
     RunContext,
 )
 
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
 from services.worker_api.shared.text_with_single_image.model import (
     TextWithSingleImageContent,
 )
-from vozai.domain.brand import Brand, BrandService
+from vozai.domain.brand import Brand
 from vozai.domain.content_channel import (
     ContentChannelName,
     ContentChannelService,
@@ -63,13 +65,13 @@ class CaptionAgentDependencies(BaseModel):
 class TextWithSingleImageContentGenerator:
     def __init__(
         self,
-        brand_service: BrandService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         content_channel_service: ContentChannelService = Depends(),
         supabase_storage_service: SupabaseStorageService = Depends(),
         prompt_service: PromptService = Depends(),
         nano_banana_service: NanoBananaService = Depends(),
     ):
-        self.brand_service = brand_service
+        self.session_factory = session_factory
         self.content_channel_service = content_channel_service
         self.supabase_storage_service = supabase_storage_service
         self.prompt_service = prompt_service
@@ -146,7 +148,7 @@ class TextWithSingleImageContentGenerator:
         user_prompt: str,
         image_url: str | None,
     ) -> TextWithSingleImageContent:
-        brand = await self.brand_service.get(brand_id)
+        brand = await brand_service.get(self.session_factory, brand_id)
         deps = TextWithSingleImageAgentDependencies(
             brand=brand,
             channel=channel,
@@ -262,7 +264,7 @@ class TextWithSingleImageContentGenerator:
         user_prompt: str,
         image_url: str,
     ) -> str:
-        brand = await self.brand_service.get(brand_id)
+        brand = await brand_service.get(self.session_factory, brand_id)
         deps = CaptionAgentDependencies(
             brand=brand,
             channel=channel,

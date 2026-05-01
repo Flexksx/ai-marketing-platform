@@ -89,11 +89,7 @@ export const logRequest = (
 	}
 };
 
-export const logQuery = (
-	query: string,
-	duration: number,
-	context?: Record<string, unknown>
-) => {
+export const logQuery = (query: string, duration: number, context?: Record<string, unknown>) => {
 	const logContext = {
 		type: 'query',
 		query: query.length > 100 ? query.substring(0, 100) + '...' : query,
@@ -162,4 +158,3 @@ export const logHttpRequest = (
 
 export default logger;
 export { logger };
-

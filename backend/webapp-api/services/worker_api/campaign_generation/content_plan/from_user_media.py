@@ -5,6 +5,8 @@ from fastapi import Depends
 from pydantic import BaseModel, ConfigDict
 from pydantic_ai import Agent, ImageUrl, RunContext, format_as_xml
 
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
 from services.worker_api.campaign_generation.content_plan.model import (
     AgentGeneratedPostingPlanItem,
     AgentGeneratedPostingPlanResult,
@@ -12,7 +14,7 @@ from services.worker_api.campaign_generation.content_plan.model import (
 from services.worker_api.campaign_generation.errors import (
     CampaignGenerationJobGenerationFailureException,
 )
-from vozai.domain.brand import Brand, BrandService
+from vozai.domain.brand import Brand
 from vozai.domain.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResultElementNotFoundException,
@@ -49,12 +51,12 @@ class UserImagesOnlyContentPlanGenerationOutput(AgentGeneratedPostingPlanResult)
 class UserMediaContentPlanGenerator:
     def __init__(
         self,
-        brand_service: BrandService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         prompt_service: PromptService = Depends(),
         content_channel_service: ContentChannelService = Depends(),
         content_plan_item_service: ContentPlanItemService = Depends(),
     ):
-        self.brand_service = brand_service
+        self.session_factory = session_factory
         self.prompt_service = prompt_service
         self.content_channel_service = content_channel_service
         self.content_plan_item_service = content_plan_item_service
@@ -74,7 +76,7 @@ class UserMediaContentPlanGenerator:
             )
 
     async def generate(self, job: CampaignGenerationJob) -> CampaignGenerationJobResult:
-        brand = await self.brand_service.get(job.brand_id)
+        brand = await brand_service.get(self.session_factory, job.brand_id)
         user_input = self.__get_user_input_or_raise(job)
         content_brief = self.__get_campaign_description_result(job)
         available_channels = self.content_channel_service.search()

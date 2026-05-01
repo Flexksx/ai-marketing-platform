@@ -1,7 +1,7 @@
-import { writable } from "svelte/store";
-import { browser } from "$app/environment";
+import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
 
-const SIDEBAR_STORAGE_KEY = "sidebar:state";
+const SIDEBAR_STORAGE_KEY = 'sidebar:state';
 
 const createSidebarStore = () => {
 	const { subscribe, set, update } = writable<boolean>(true);
@@ -37,9 +37,8 @@ const createSidebarStore = () => {
 				}
 				return newValue;
 			});
-		},
+		}
 	};
 };
 
 export const sidebarStore = createSidebarStore();
-

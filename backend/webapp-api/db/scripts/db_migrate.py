@@ -6,8 +6,9 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-from alembic import command
 from alembic.config import Config
+
+from alembic import command
 
 
 def main():

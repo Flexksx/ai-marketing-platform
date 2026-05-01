@@ -2,7 +2,12 @@ import { brandDataFromResponse } from '$lib/api/brand-data/model/BrandData';
 import type { BrandDataParsed } from '$lib/api/brand-data/model/BrandData';
 import type { BrandGenerationJobResponse } from '../schema/BrandGenerationJobResponse';
 
-export type BrandGenerationJobStatus = 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
+export type BrandGenerationJobStatus =
+	| 'pending'
+	| 'in_progress'
+	| 'completed'
+	| 'failed'
+	| 'cancelled';
 
 export interface ScrapeResult {
 	text: string;

@@ -9,9 +9,9 @@ from services.worker_api.shared.text_with_single_image import (
     TextWithSingleImageContentGenerator,
 )
 from vozai.domain.campaign_generation.model import (
-    ContentPlanItem,
     CampaignGenerationJob,
     CampaignGenerationJobResult,
+    ContentPlanItem,
 )
 from vozai.domain.campaign_generation.service import CampaignGenerationJobService
 from vozai.domain.content.model import TextWithSingleImageContentData

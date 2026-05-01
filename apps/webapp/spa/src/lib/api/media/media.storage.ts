@@ -30,7 +30,9 @@ const uploadToStorage = async (params: StorageUploadParams): Promise<StorageUplo
 	});
 
 	if (error) {
-		throw new Error(`Failed to upload to storage: ${error.message} (bucket: ${bucket}, file: ${fileName})`);
+		throw new Error(
+			`Failed to upload to storage: ${error.message} (bucket: ${bucket}, file: ${fileName})`
+		);
 	}
 
 	if (!data) {
@@ -54,4 +56,3 @@ export const MediaStorage = {
 	uploadToStorage,
 	getPublicUrl
 };
-

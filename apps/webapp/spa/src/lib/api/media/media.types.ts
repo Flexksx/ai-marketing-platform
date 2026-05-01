@@ -42,4 +42,3 @@ export type StorageUploadResult = {
 	path: string;
 	publicUrl: string;
 };
-

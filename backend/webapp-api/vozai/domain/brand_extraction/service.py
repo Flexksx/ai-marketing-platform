@@ -3,9 +3,10 @@ import logging
 import public
 from fastapi import Depends
 
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
 from vozai.domain.brand.model import Brand
 from vozai.domain.brand.schema import BrandCreateRequest
-from vozai.domain.brand.service import BrandService
 from vozai.domain.brand_extraction.model import (
     BrandGenerationJob,
 )
@@ -28,11 +29,11 @@ class BrandGenerationJobService:
     def __init__(
         self,
         repository: BrandGenerationJobRepository = Depends(),
-        brand_service: BrandService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         tasks_service: CloudTasksService = Depends(),
     ):
         self.repository = repository
-        self.brand_service = brand_service
+        self.session_factory = session_factory
         self.tasks_service = tasks_service
 
     async def create(
@@ -62,7 +63,11 @@ class BrandGenerationJobService:
     ) -> Brand:
         job = await self.get(job_id)
         brand_input = BrandCreateRequest(name=request.name, data=request.data)
-        return await self.brand_service.create(job.user_id, brand_input)
+        return await brand_service.create(
+            self.session_factory,
+            job.user_id,
+            brand_input,
+        )
 
     async def validate_access(self, job_id: str, user_id: str) -> bool:
         return await self.repository.exists_for_user(job_id, user_id)

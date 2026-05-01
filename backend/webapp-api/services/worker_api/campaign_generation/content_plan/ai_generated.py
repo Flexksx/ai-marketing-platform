@@ -6,13 +6,15 @@ from fastapi import Depends
 from pydantic import BaseModel
 from pydantic_ai import Agent, RunContext, format_as_xml
 
+import vozai.domain.brand.service as brand_service
+from db.session_factory import DbSessionFactory
 from services.worker_api.campaign_generation.content_plan.model import (
     AgentGeneratedPostingPlanResult,
 )
 from services.worker_api.campaign_generation.errors import (
     CampaignGenerationJobGenerationFailureException,
 )
-from vozai.domain.brand import Brand, BrandService
+from vozai.domain.brand import Brand
 from vozai.domain.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResultNotFoundException,
@@ -42,11 +44,11 @@ class AIGeneratedContentPlanGenerator:
         prompt_service: PromptService = Depends(),
         campaign_generation_job_service: CampaignGenerationJobService = Depends(),
         content_channel_service: ContentChannelService = Depends(),
-        brand_service: BrandService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         content_plan_item_service: ContentPlanItemService = Depends(),
     ):
         self.prompt_service = prompt_service
-        self.brand_service = brand_service
+        self.session_factory = session_factory
         self.campaign_generation_job_service = campaign_generation_job_service
         self.content_channel_service = content_channel_service
         self.content_plan_item_service = content_plan_item_service
@@ -71,7 +73,7 @@ class AIGeneratedContentPlanGenerator:
     ) -> CampaignGenerationJobResult:
         try:
             user_input = job.user_input
-            brand = await self.brand_service.get(job.brand_id)
+            brand = await brand_service.get(self.session_factory, job.brand_id)
             campaign_description_result = (
                 job.result.content_brief if job.result else None
             )

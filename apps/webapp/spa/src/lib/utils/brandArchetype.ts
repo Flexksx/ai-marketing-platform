@@ -20,8 +20,7 @@ export const ARCHETYPE_DESCRIPTIONS: Record<BrandArchetypeName, string> = {
 		'Your brand is a beacon of simplicity and trust — it promises peace of mind and a return to what feels pure, ethical, and uncomplicated.',
 	EVERYMAN:
 		'Your brand is a reliable neighbor — down-to-earth, inclusive, and built for real life, delivering honest value without pretense or elitism.',
-	HERO:
-		'Your brand is a force for achievement — it inspires people to push past limits, proving that courage, discipline, and excellence lead to extraordinary results.',
+	HERO: 'Your brand is a force for achievement — it inspires people to push past limits, proving that courage, discipline, and excellence lead to extraordinary results.',
 	OUTLAW:
 		'Your brand is a badge of rebellion — it challenges the status quo, celebrates non-conformity, and turns tension with the mainstream into a source of pride.',
 	EXPLORER:
@@ -38,8 +37,7 @@ export const ARCHETYPE_DESCRIPTIONS: Record<BrandArchetypeName, string> = {
 		'Your brand is a pillar of empathy — it centers service and protection, reducing anxiety and building community by genuinely putting people first.',
 	JESTER:
 		'Your brand is a spark of joy — it entertains, disarms, and creates memorable moments by using humor to humanize and build a community around shared laughter.',
-	SAGE:
-		'Your brand is a trusted guide to understanding — it synthesizes complex ideas into clear frameworks so people can make confident, well-informed decisions.'
+	SAGE: 'Your brand is a trusted guide to understanding — it synthesizes complex ideas into clear frameworks so people can make confident, well-informed decisions.'
 };
 
 export const BRAND_ARCHETYPE_NAMES: BrandArchetypeName[] = [

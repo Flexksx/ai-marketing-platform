@@ -49,8 +49,7 @@ const ENTHUSIASM_LEVELS: ToneDimensionLevel[] = [
 	{
 		scaleNumber: 2,
 		name: 'Calm',
-		description:
-			"Use 'Quiet Confidence'. Focus on stability and reliability. Avoid hype words."
+		description: "Use 'Quiet Confidence'. Focus on stability and reliability. Avoid hype words."
 	},
 	{
 		scaleNumber: 3,
@@ -60,8 +59,7 @@ const ENTHUSIASM_LEVELS: ToneDimensionLevel[] = [
 	{
 		scaleNumber: 4,
 		name: 'Hype / High Energy',
-		description:
-			"Use high-arousal language ('Incredible', 'Now'). Short, punchy sentences."
+		description: "Use high-arousal language ('Incredible', 'Now'). Short, punchy sentences."
 	}
 ];
 
@@ -88,7 +86,7 @@ const HUMOUR_LEVELS: ToneDimensionLevel[] = [
 		scaleNumber: 4,
 		name: 'Humorous',
 		description:
-			'Be entertaining first. Jokes, memes, and playful exaggeration are encouraged. Don\'t be boring.'
+			"Be entertaining first. Jokes, memes, and playful exaggeration are encouraged. Don't be boring."
 	}
 ];
 
@@ -102,8 +100,7 @@ const IRREVERENCE_LEVELS: ToneDimensionLevel[] = [
 	{
 		scaleNumber: 2,
 		name: 'Direct',
-		description:
-			'Be confident but polite. Call a spade a spade, but avoid confrontation.'
+		description: 'Be confident but polite. Call a spade a spade, but avoid confrontation.'
 	},
 	{
 		scaleNumber: 3,
