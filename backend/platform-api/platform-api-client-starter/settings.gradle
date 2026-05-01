@@ -1,2 +1,0 @@
-rootProject.name = 'platform-api-client-starter'
-includeBuild '../platform-api-client'

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-    echo "Usage: $0 [-c] <up|down> <platform|webapp|all>" >&2
+    echo "Usage: $0 [-c] <up|down> <webapp|all>" >&2
     echo "  -c  Clean build (--build --force-recreate)" >&2
     exit 1
 }
@@ -25,20 +25,18 @@ target="$2"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 
-compose_file="${repo_root}/backend/docker-compose.dev.yml"
+compose_file="${repo_root}/docker-compose.dev.yml"
 
-platform_services=(postgres backend)
 webapp_services=(spa)
 all_services=()  # empty = all services in the file
 
 target_services=()
 case "${target}" in
-    platform) target_services=("${platform_services[@]}") ;;
-    webapp)   target_services=("${webapp_services[@]}") ;;
-    all)      target_services=("${all_services[@]}") ;;
+    webapp) target_services=("${webapp_services[@]}") ;;
+    all)    target_services=("${all_services[@]}") ;;
     *)
         echo "Unknown target: ${target}" >&2
-        echo "Supported targets: platform, webapp, all" >&2
+        echo "Supported targets: webapp, all" >&2
         exit 1
         ;;
 esac

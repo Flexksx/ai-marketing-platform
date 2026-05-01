@@ -1,5 +1,0 @@
-format module="platform-api-service":
-    ../../bin/format.sh {{module}}
-
-lint module="platform-api-service":
-    ../../bin/lint.sh {{module}}

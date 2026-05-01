@@ -1,14 +1,5 @@
 {
-  "name": "ai-marketing-platform",
+  "name": "vozai",
   "private": true,
-  "packageManager": "pnpm@10.9.0",
-  "scripts": {
-    "generate": "pnpm --filter @ai-marketing-platform/platform-api-client generate",
-    "fetch-spec": "pnpm --filter @ai-marketing-platform/platform-api-client fetch-spec",
-    "openapi:generate": "./bin/regenerate-openapi-client.sh",
-    "openapi:watch": "./bin/watch-openapi-client.sh"
-  },
-  "devDependencies": {
-    "chokidar-cli": "^3.0.0"
-  }
+  "packageManager": "pnpm@10.9.0"
 }

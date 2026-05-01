@@ -1,14 +1,8 @@
-name: ai-marketing-platform
+name: vozai
 
 services:
-  backend-build:
-    build:
-      context: ./backend/platform-api
-      dockerfile: Dockerfile
-      target: build
-
   frontend-build:
     build:
-      context: ./apps/webapp/spa
-      dockerfile: ../Dockerfile
+      context: .
+      dockerfile: apps/webapp/Dockerfile
       target: build
