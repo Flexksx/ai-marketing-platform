@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Body, Depends, Path
 
+from db.session_factory import DbSessionFactory
 from services.client_api.auth.access_validation import validate_brand_access
+import vozai.domain.content_plan_item.service as content_plan_item_service
 from vozai.domain.content_plan_item import (
     ContentPlanItem,
-    ContentPlanItemService,
     ContentPlanItemUpdateRequest,
     RestContentPlanItemUpdateRequest,
 )

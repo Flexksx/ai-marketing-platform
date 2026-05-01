@@ -1,8 +1,8 @@
 import type { ContentPillarBusinessGoal, ContentType } from '../brand-data/schema/ContentPillar';
 import type { ContentDataResponse } from '../content/ContentData';
 import type { ContentChannelName } from '../content-channel/ContentChannelName';
-import { ContentFormat } from '../content/ContentFormat';
-import { JobStatus } from '../job/JobStatus';
+import type { ContentFormat } from '../content/ContentFormat';
+import type { JobStatus } from '../job/JobStatus';
 
 export interface ContentBriefCampaignGenerationJobResultResponse {
 	name: string;

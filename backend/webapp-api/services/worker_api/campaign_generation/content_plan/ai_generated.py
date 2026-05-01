@@ -22,8 +22,8 @@ from vozai.domain.campaign_generation import (
 )
 from vozai.domain.campaign_generation.model import CampaignGenerationJobResult
 from vozai.domain.content_channel import ContentChannel, ContentChannelService
+import vozai.domain.content_plan_item.service as content_plan_item_service
 from vozai.domain.content_plan_item.schema import ContentPlanItemCreateRequest
-from vozai.domain.content_plan_item.service import ContentPlanItemService
 from vozai.lib.ai_agents import PydanticAiModel
 from vozai.lib.prompts import PromptService, PromptTemplateName
 

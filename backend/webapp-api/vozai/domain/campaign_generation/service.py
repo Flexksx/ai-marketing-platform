@@ -31,8 +31,8 @@ from vozai.domain.content.model import (
     TextOnlyContentData,
     TextWithSingleImageContentData,
 )
+import vozai.domain.content_plan_item.service as content_plan_item_service
 from vozai.domain.content.schema import ContentCreateRequest
-from vozai.domain.content_plan_item.repository import ContentPlanItemRepository
 from vozai.domain.content_plan_item.schema import ContentPlanItemUpdateRequest
 from vozai.lib.cloudtasks.service import CloudTasksService
 

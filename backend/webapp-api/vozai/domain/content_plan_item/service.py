@@ -1,38 +1,47 @@
-import public
-from fastapi import Depends
-
-from vozai.domain.content_plan_item import ContentPlanItem
-from vozai.domain.content_plan_item.repository import ContentPlanItemRepository
+import vozai.domain.content_plan_item.repository as content_plan_item_repository
+from db.session_factory import DbSessionFactory
+from vozai.domain.content_plan_item.model import ContentPlanItem
 from vozai.domain.content_plan_item.schema import (
     ContentPlanItemCreateRequest,
     ContentPlanItemUpdateRequest,
 )
 
 
-@public.add
-class ContentPlanItemService:
-    def __init__(self, repository: ContentPlanItemRepository = Depends()):
-        self.repository = repository
+async def search(session_factory: DbSessionFactory, job_id: str) -> list[ContentPlanItem]:
+    return await content_plan_item_repository.search(session_factory, job_id)
 
-    async def search(self, job_id: str) -> list[ContentPlanItem]:
-        return await self.repository.search(job_id)
 
-    async def get(self, item_id: str) -> ContentPlanItem:
-        return await self.repository.get(item_id)
+async def get(session_factory: DbSessionFactory, item_id: str) -> ContentPlanItem:
+    return await content_plan_item_repository.get(session_factory, item_id)
 
-    async def create(self, request: ContentPlanItemCreateRequest) -> ContentPlanItem:
-        return await self.repository.create(request)
 
-    async def create_many(
-        self, job_id: str, items: list[ContentPlanItemCreateRequest]
-    ) -> list[ContentPlanItem]:
-        requests = [item.model_copy(update={"job_id": job_id}) for item in items]
-        return await self.repository.create_many(requests)
+async def create(
+    session_factory: DbSessionFactory,
+    request: ContentPlanItemCreateRequest,
+) -> ContentPlanItem:
+    return await content_plan_item_repository.create(session_factory, request)
 
-    async def update(
-        self, item_id: str, request: ContentPlanItemUpdateRequest
-    ) -> ContentPlanItem:
-        return await self.repository.update(item_id, request)
 
-    async def remove(self, item_id: str) -> None:
-        await self.repository.remove(item_id)
+async def create_many(
+    session_factory: DbSessionFactory,
+    job_id: str,
+    items: list[ContentPlanItemCreateRequest],
+) -> list[ContentPlanItem]:
+    requests = [item.model_copy(update={"job_id": job_id}) for item in items]
+    return await content_plan_item_repository.create_many(session_factory, requests)
+
+
+async def update(
+    session_factory: DbSessionFactory,
+    item_id: str,
+    request: ContentPlanItemUpdateRequest,
+) -> ContentPlanItem:
+    return await content_plan_item_repository.update(
+        session_factory,
+        item_id,
+        request,
+    )
+
+
+async def remove(session_factory: DbSessionFactory, item_id: str) -> None:
+    await content_plan_item_repository.remove(session_factory, item_id)

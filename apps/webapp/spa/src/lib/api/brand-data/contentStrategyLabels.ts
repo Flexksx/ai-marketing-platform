@@ -1,4 +1,4 @@
-import { ContentFormat } from '$lib/api/content/ContentFormat';
+import type { ContentFormat } from '$lib/api/content/ContentFormat';
 import type { ContentPillarType, ContentType } from './schema/ContentPillar';
 
 function enumValueToLabel(value?: string | null): string {

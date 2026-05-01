@@ -1,7 +1,7 @@
-import { BrandArchetypeName } from '$lib/api/brands/schema/BrandArchetypeName';
-import { BrandAudienceAgeRange } from '$lib/api/brands/schema/BrandAudienceAgeRange';
-import { BrandAudienceGender } from '$lib/api/brands/schema/BrandAudienceGender';
-import { BrandAudienceIncomeRange } from '$lib/api/brands/schema/BrandAudienceIncomeRange';
+import type { BrandArchetypeName } from '$lib/api/brands/schema/BrandArchetypeName';
+import type { BrandAudienceAgeRange } from '$lib/api/brands/schema/BrandAudienceAgeRange';
+import type { BrandAudienceGender } from '$lib/api/brands/schema/BrandAudienceGender';
+import type { BrandAudienceIncomeRange } from '$lib/api/brands/schema/BrandAudienceIncomeRange';
 import type { BrandColor } from '$lib/api/brands/schema/BrandColor';
 import { SentenceLengthPreference } from '$lib/api/brands/schema/BrandToneOfVoice';
 import type { BrandToneOfVoice } from '$lib/api/brands/schema/BrandToneOfVoice';

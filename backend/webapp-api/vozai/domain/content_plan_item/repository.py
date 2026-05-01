@@ -1,8 +1,5 @@
-import logging
 from datetime import UTC
 
-import public
-from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,16 +14,43 @@ from vozai.domain.content_plan_item.schema import (
 from vozai.utils import new_id
 
 
-logger = logging.getLogger(__name__)
+async def create(
+    session_factory: DbSessionFactory,
+    request: ContentPlanItemCreateRequest,
+) -> ContentPlanItem:
+    async with session_factory.session() as session:
+        record = ContentPlanItemRecord(
+            id=new_id(),
+            job_id=request.job_id,
+            description=request.description,
+            channel=request.channel,
+            content_type=request.content_type,
+            content_format=request.content_format,
+            image_urls=request.image_urls,
+            status=request.status,
+            scheduled_at=request.scheduled_at,
+            content_data=(
+                request.content_data.model_dump(mode="json")
+                if request.content_data
+                else None
+            ),
+        )
+        session.add(record)
+        await session.commit()
+        await session.refresh(record)
+        return ContentPlanItem.model_validate(record)
 
 
-@public.add
-class ContentPlanItemRepository:
-    def __init__(self, session_factory: DbSessionFactory = Depends()):
-        self._session_factory = session_factory
+async def create_many(
+    session_factory: DbSessionFactory,
+    requests: list[ContentPlanItemCreateRequest],
+) -> list[ContentPlanItem]:
+    if not requests:
+        return []
 
-    async def create(self, request: ContentPlanItemCreateRequest) -> ContentPlanItem:
-        async with self._session_factory.session() as session:
+    async with session_factory.session() as session:
+        records: list[ContentPlanItemRecord] = []
+        for request in requests:
             record = ContentPlanItemRecord(
                 id=new_id(),
                 job_id=request.job_id,
@@ -44,106 +68,79 @@ class ContentPlanItemRepository:
                 ),
             )
             session.add(record)
-            await session.commit()
+            records.append(record)
+
+        await session.commit()
+
+        for record in records:
             await session.refresh(record)
-            return ContentPlanItem.model_validate(record)
 
-    async def create_many(
-        self, requests: list[ContentPlanItemCreateRequest]
-    ) -> list[ContentPlanItem]:
-        if not requests:
-            return []
+        return [ContentPlanItem.model_validate(record) for record in records]
 
-        async with self._session_factory.session() as session:
-            records: list[ContentPlanItemRecord] = []
-            for request in requests:
-                record = ContentPlanItemRecord(
-                    id=new_id(),
-                    job_id=request.job_id,
-                    description=request.description,
-                    channel=request.channel,
-                    content_type=request.content_type,
-                    content_format=request.content_format,
-                    image_urls=request.image_urls,
-                    status=request.status,
-                    scheduled_at=request.scheduled_at,
-                    content_data=(
-                        request.content_data.model_dump(mode="json")
-                        if request.content_data
-                        else None
-                    ),
-                )
-                session.add(record)
-                records.append(record)
 
-            await session.commit()
+async def get(session_factory: DbSessionFactory, item_id: str) -> ContentPlanItem:
+    async with session_factory.session() as session:
+        record = await _record_by_id(session, item_id)
+        return ContentPlanItem.model_validate(record)
 
-            for record in records:
-                await session.refresh(record)
 
-            return [ContentPlanItem.model_validate(record) for record in records]
-
-    async def get(self, item_id: str) -> ContentPlanItem:
-        async with self._session_factory.session() as session:
-            record = await self._get_by_id(session, item_id)
-            return ContentPlanItem.model_validate(record)
-
-    async def search(self, job_id: str) -> list[ContentPlanItem]:
-        async with self._session_factory.session() as session:
-            stmt = (
-                select(ContentPlanItemRecord)
-                .where(ContentPlanItemRecord.job_id == job_id)
-                .order_by(ContentPlanItemRecord.scheduled_at)
-            )
-            result = await session.execute(stmt)
-            records = result.scalars().all()
-            return [ContentPlanItem.model_validate(record) for record in records]
-
-    async def update(
-        self, item_id: str, request: ContentPlanItemUpdateRequest
-    ) -> ContentPlanItem:
-        async with self._session_factory.session() as session:
-            record = await self._get_by_id(session, item_id)
-
-            update_data = request.model_dump(
-                exclude_unset=True, exclude={"content_data"}
-            )
-
-            for key, value in update_data.items():
-                if key != "scheduled_at":
-                    setattr(record, key, value)
-                    continue
-                if value is None:
-                    record.scheduled_at = None
-                    continue
-                if value.tzinfo is None:
-                    record.scheduled_at = value.replace(tzinfo=UTC)
-                    continue
-                record.scheduled_at = value.astimezone(UTC)
-
-            if "content_data" in request.model_fields_set:
-                record.content_data = (
-                    request.content_data.model_dump(mode="json")
-                    if request.content_data
-                    else None
-                )
-
-            await session.commit()
-            await session.refresh(record)
-            return ContentPlanItem.model_validate(record)
-
-    async def remove(self, item_id: str) -> None:
-        async with self._session_factory.session() as session:
-            record = await self._get_by_id(session, item_id)
-            await session.delete(record)
-            await session.commit()
-
-    async def _get_by_id(
-        self, session: AsyncSession, item_id: str
-    ) -> ContentPlanItemRecord:
-        stmt = select(ContentPlanItemRecord).where(ContentPlanItemRecord.id == item_id)
+async def search(session_factory: DbSessionFactory, job_id: str) -> list[ContentPlanItem]:
+    async with session_factory.session() as session:
+        stmt = (
+            select(ContentPlanItemRecord)
+            .where(ContentPlanItemRecord.job_id == job_id)
+            .order_by(ContentPlanItemRecord.scheduled_at)
+        )
         result = await session.execute(stmt)
-        record = result.scalar_one_or_none()
-        if not record:
-            raise ContentPlanItemNotFoundException(item_id)
-        return record
+        records = result.scalars().all()
+        return [ContentPlanItem.model_validate(record) for record in records]
+
+
+async def update(
+    session_factory: DbSessionFactory,
+    item_id: str,
+    request: ContentPlanItemUpdateRequest,
+) -> ContentPlanItem:
+    async with session_factory.session() as session:
+        record = await _record_by_id(session, item_id)
+
+        update_data = request.model_dump(exclude_unset=True, exclude={"content_data"})
+
+        for key, value in update_data.items():
+            if key != "scheduled_at":
+                setattr(record, key, value)
+                continue
+            if value is None:
+                record.scheduled_at = None
+                continue
+            if value.tzinfo is None:
+                record.scheduled_at = value.replace(tzinfo=UTC)
+                continue
+            record.scheduled_at = value.astimezone(UTC)
+
+        if "content_data" in request.model_fields_set:
+            record.content_data = (
+                request.content_data.model_dump(mode="json")
+                if request.content_data
+                else None
+            )
+
+        await session.commit()
+        await session.refresh(record)
+        return ContentPlanItem.model_validate(record)
+
+
+async def remove(session_factory: DbSessionFactory, item_id: str) -> None:
+    async with session_factory.session() as session:
+        record = await _record_by_id(session, item_id)
+        await session.delete(record)
+        await session.commit()
+
+
+async def _record_by_id(session: AsyncSession, item_id: str) -> ContentPlanItemRecord:
+    stmt = select(ContentPlanItemRecord).where(ContentPlanItemRecord.id == item_id)
+    result = await session.execute(stmt)
+    record = result.scalar_one_or_none()
+    if not record:
+        raise ContentPlanItemNotFoundException(item_id)
+    return record

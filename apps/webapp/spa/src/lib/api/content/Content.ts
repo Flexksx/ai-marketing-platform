@@ -5,7 +5,7 @@ import {
 	TextWithSingleImageContentData,
 	type ContentDataResponse
 } from './ContentData';
-import { ContentFormat } from './ContentFormat';
+import type { ContentFormat } from './ContentFormat';
 
 export interface ContentResponse {
 	id: string;
