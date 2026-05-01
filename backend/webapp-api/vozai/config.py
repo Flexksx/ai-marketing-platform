@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     worker_service_account_email: str = Field(
         default="", alias="WORKER_SERVICE_ACCOUNT_EMAIL"
     )
+    scraper_service_url: str = Field(
+        default="http://localhost:8081", alias="SCRAPER_SERVICE_URL"
+    )
     environment: str = "development"
     log_level: str = "INFO"
 

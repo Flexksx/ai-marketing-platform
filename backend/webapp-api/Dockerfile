@@ -43,35 +43,4 @@ CMD ["/app/.venv/bin/uvicorn", "services.client_api.main:app", "--host", "0.0.0.
 
 FROM base as worker
 
-USER root
-
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libasound2 \
-    libpango-1.0-0 \
-    libcairo2 \
-    fonts-liberation \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Playwright browsers into the environment
-# FIX: Added chown here because 'uv run' as root dirties the .venv permissions
-RUN uv run playwright install chromium && \
-    uv run playwright install-deps chromium && \
-    chown -R appuser:appuser /app /ms-playwright
-
-USER appuser
-
 CMD ["/app/.venv/bin/uvicorn", "services.worker_api.main:app", "--host", "0.0.0.0", "--port", "8080", "--timeout-keep-alive", "3600"]

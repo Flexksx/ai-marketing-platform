@@ -10,7 +10,7 @@ from vozai.domain.brand_extraction.model import (
     BrandGenerationJob,
     BrandGenerationResult,
 )
-from vozai.lib.scraper import PlaywrightScraper
+from vozai.lib.scraper.http_client import HttpScraperClient
 from vozai.lib.scraper.model import ScrapeResult
 
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class BrandScrapingStep(BrandGenerationBaseStep):
-    def __init__(self, scraper: PlaywrightScraper = Depends()):
+    def __init__(self, scraper: HttpScraperClient = Depends()):
         self.scraper = scraper
 
     async def _validate_url_accessible(
