@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from pydantic_ai import Agent, RunContext, format_as_xml
 
 import vozai.domain.brand.service as brand_service
+import vozai.domain.content_channel.service as content_channel_service
+import vozai.domain.content_plan_item.service as content_plan_item_service
 from db.session_factory import DbSessionFactory
 from services.worker_api.campaign_generation.content_plan.model import (
     AgentGeneratedPostingPlanResult,
@@ -21,8 +23,7 @@ from vozai.domain.campaign_generation import (
     CampaignGenerationJobService,
 )
 from vozai.domain.campaign_generation.model import CampaignGenerationJobResult
-from vozai.domain.content_channel import ContentChannel, ContentChannelService
-import vozai.domain.content_plan_item.service as content_plan_item_service
+from vozai.domain.content_channel import ContentChannel
 from vozai.domain.content_plan_item.schema import ContentPlanItemCreateRequest
 from vozai.lib.ai_agents import PydanticAiModel
 from vozai.lib.prompts import PromptService, PromptTemplateName
@@ -43,15 +44,11 @@ class AIGeneratedContentPlanGenerator:
         self,
         prompt_service: PromptService = Depends(),
         campaign_generation_job_service: CampaignGenerationJobService = Depends(),
-        content_channel_service: ContentChannelService = Depends(),
         session_factory: DbSessionFactory = Depends(),
-        content_plan_item_service: ContentPlanItemService = Depends(),
     ):
         self.prompt_service = prompt_service
         self.session_factory = session_factory
         self.campaign_generation_job_service = campaign_generation_job_service
-        self.content_channel_service = content_channel_service
-        self.content_plan_item_service = content_plan_item_service
 
         self.__agent = Agent(
             model=PydanticAiModel.GEMINI_FLASH_LATEST,
@@ -80,7 +77,7 @@ class AIGeneratedContentPlanGenerator:
             if campaign_description_result is None:
                 raise ValueError("Campaign description result is missing")
 
-            available_channels = self.content_channel_service.search()
+            available_channels = content_channel_service.search()
 
             dependencies = ContentPlanAgentDependencies(
                 brand=brand,
@@ -94,9 +91,7 @@ class AIGeneratedContentPlanGenerator:
                 deps=dependencies,
             )
             content_plan: AgentGeneratedPostingPlanResult = result.output  # ty:ignore[invalid-assignment]
-            return await self.merge_to_campaign_generation_job_result(
-                job, content_plan
-            )
+            return await self.merge_to_campaign_generation_job_result(job, content_plan)
 
         except Exception as e:
             logger.error(
@@ -116,7 +111,10 @@ class AIGeneratedContentPlanGenerator:
         current_result = job.get_result()
         if not current_result:
             raise CampaignGenerationJobResultNotFoundException(job.id)
-        existing_items = await self.content_plan_item_service.search(job.id)
+        existing_items = await content_plan_item_service.search(
+            self.session_factory,
+            job.id,
+        )
         if len(existing_items) == 0:
             create_requests = [
                 ContentPlanItemCreateRequest(
@@ -132,8 +130,10 @@ class AIGeneratedContentPlanGenerator:
                 )
                 for agent_posting_plan_item in agent_posting_plan_result.plan_items
             ]
-            existing_items = await self.content_plan_item_service.create_many(
-                job.id, create_requests
+            existing_items = await content_plan_item_service.create_many(
+                self.session_factory,
+                job.id,
+                create_requests,
             )
 
         current_result.content_plan_items = existing_items

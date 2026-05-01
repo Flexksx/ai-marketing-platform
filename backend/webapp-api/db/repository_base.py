@@ -13,4 +13,3 @@ class TransactionAwareMixin:
     async def _refresh_if_needed(self, instance) -> None:
         if self.auto_commit:
             await self.db.refresh(instance)
-

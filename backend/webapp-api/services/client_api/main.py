@@ -1,6 +1,9 @@
+import re
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.routing import APIRoute
 
 import db.schema_registry  # noqa: F401 - Ensures all SQLAlchemy models are registered
 from services.client_api.routes.brand_generation import (
@@ -22,6 +25,12 @@ configure_logging(
 )
 
 
+def _operation_id(route: APIRoute) -> str:
+    tag = route.tags[0] if route.tags else "default"
+    tag_slug = re.sub(r"[\s\-]+", "_", tag).lower()
+    return f"{tag_slug}_{route.name}"
+
+
 app = FastAPI(
     title="Voisso API",
     description="Voisso marketing automation platform API",
@@ -29,6 +38,7 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
     redirect_slashes=False,
+    generate_unique_id_function=_operation_id,
 )
 
 app.middleware("http")(http_logging_middleware)

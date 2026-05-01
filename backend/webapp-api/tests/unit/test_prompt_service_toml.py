@@ -30,19 +30,19 @@ def test_prompt_service_raises_for_invalid_tone_config(tmp_path: Path) -> None:
 
     tone_file = brand_dir / "tone_of_voice.toml"
     tone_file.write_text(
-        "[UNKNOWN_DIMENSION]\n" "1 = \"Test description\"\n",
+        '[UNKNOWN_DIMENSION]\n1 = "Test description"\n',
         encoding="utf-8",
     )
 
     archetypes_file = brand_dir / "archetypes.toml"
     archetypes_file.write_text(
         "[INNOCENT]\n"
-        "base_human_need = \"x\"\n"
-        "description = \"x\"\n"
-        "core_values = \"x\"\n"
-        "target_audience = \"x\"\n"
-        "writing_style = \"x\"\n"
-        "examples = \"x\"\n",
+        'base_human_need = "x"\n'
+        'description = "x"\n'
+        'core_values = "x"\n'
+        'target_audience = "x"\n'
+        'writing_style = "x"\n'
+        'examples = "x"\n',
         encoding="utf-8",
     )
 
@@ -50,10 +50,9 @@ def test_prompt_service_raises_for_invalid_tone_config(tmp_path: Path) -> None:
     content_dir.mkdir(parents=True)
     content_types_file = content_dir / "content_types.toml"
     content_types_file.write_text(
-        "[TESTIMONIAL]\n" "description = \"x\"\n",
+        '[TESTIMONIAL]\ndescription = "x"\n',
         encoding="utf-8",
     )
 
     with pytest.raises(PromptConfigError):
         PromptService(prompts_dir=prompts_dir)
-

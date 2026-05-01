@@ -1,7 +1,3 @@
-from typing import ClassVar
-
-import public
-
 from vozai.domain.content_channel.model import (
     ContentChannel,
     ContentChannelImageSpecification,
@@ -11,35 +7,35 @@ from vozai.domain.content_channel.model import (
 from vozai.domain.image_generation import ImageAspectRatio, ImageResolution
 
 
-@public.add
-class ContentChannelService:
-    __INSTAGRAM_CONTENT_CHANNEL = ContentChannel(
-        name=ContentChannelName.INSTAGRAM,
-        allowed_content_formats=[ContentFormat.TEXT_WITH_SINGLE_IMAGE],
-        image_specification=ContentChannelImageSpecification(
-            aspect_ratio=ImageAspectRatio.SQUARE,
-            resolution=ImageResolution.STANDARD,
-        ),
-    )
-    __LINKEDIN_CONTENT_CHANNEL = ContentChannel(
-        name=ContentChannelName.LINKEDIN,
-        allowed_content_formats=[
-            ContentFormat.TEXT_WITH_SINGLE_IMAGE,
-            ContentFormat.TEXT,
-        ],
-        image_specification=ContentChannelImageSpecification(
-            aspect_ratio=ImageAspectRatio.LANDSCAPE_4_3,
-            resolution=ImageResolution.STANDARD,
-        ),
-    )
+_INSTAGRAM_CONTENT_CHANNEL = ContentChannel(
+    name=ContentChannelName.INSTAGRAM,
+    allowed_content_formats=[ContentFormat.TEXT_WITH_SINGLE_IMAGE],
+    image_specification=ContentChannelImageSpecification(
+        aspect_ratio=ImageAspectRatio.SQUARE,
+        resolution=ImageResolution.STANDARD,
+    ),
+)
+_LINKEDIN_CONTENT_CHANNEL = ContentChannel(
+    name=ContentChannelName.LINKEDIN,
+    allowed_content_formats=[
+        ContentFormat.TEXT_WITH_SINGLE_IMAGE,
+        ContentFormat.TEXT,
+    ],
+    image_specification=ContentChannelImageSpecification(
+        aspect_ratio=ImageAspectRatio.LANDSCAPE_4_3,
+        resolution=ImageResolution.STANDARD,
+    ),
+)
 
-    __CHANNELS_DATA: ClassVar[dict[ContentChannelName, ContentChannel]] = {
-        ContentChannelName.INSTAGRAM: __INSTAGRAM_CONTENT_CHANNEL,
-        ContentChannelName.LINKEDIN: __LINKEDIN_CONTENT_CHANNEL,
-    }
+_CHANNELS_DATA: dict[ContentChannelName, ContentChannel] = {
+    ContentChannelName.INSTAGRAM: _INSTAGRAM_CONTENT_CHANNEL,
+    ContentChannelName.LINKEDIN: _LINKEDIN_CONTENT_CHANNEL,
+}
 
-    def get(self, name: ContentChannelName) -> ContentChannel:
-        return self.__CHANNELS_DATA[name]
 
-    def search(self) -> list[ContentChannel]:
-        return list(self.__CHANNELS_DATA.values())
+def get(name: ContentChannelName) -> ContentChannel:
+    return _CHANNELS_DATA[name]
+
+
+def search() -> list[ContentChannel]:
+    return list(_CHANNELS_DATA.values())

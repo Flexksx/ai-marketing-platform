@@ -2,6 +2,8 @@ import logging
 
 from fastapi import Depends
 
+import vozai.domain.brand_extraction.service as brand_generation_job_service
+from db.session_factory import DbSessionFactory
 from services.worker_api.brand_generation.steps.data_extraction import (
     BrandDataExtractionStep,
 )
@@ -10,10 +12,7 @@ from vozai.domain.brand_extraction.model import (
     BrandGenerationJob,
     BrandGenerationResult,
 )
-from vozai.domain.brand_extraction.schema import (
-    BrandGenerationJobUpdateRequest,
-)
-from vozai.domain.brand_extraction.service import BrandGenerationJobService
+from vozai.domain.brand_extraction.schema import BrandGenerationJobUpdateRequest
 from vozai.lib.job.model import JobStatus
 
 
@@ -23,11 +22,11 @@ logger = logging.getLogger(__name__)
 class BrandGenerationJobRunner:
     def __init__(
         self,
-        service: BrandGenerationJobService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         scraping_step: BrandScrapingStep = Depends(),
         data_extraction_step: BrandDataExtractionStep = Depends(),
     ):
-        self.service = service
+        self.session_factory = session_factory
         self.scraping_step = scraping_step
         self.data_extraction_step = data_extraction_step
 
@@ -37,14 +36,15 @@ class BrandGenerationJobRunner:
         status: JobStatus,
         result: BrandGenerationResult,
     ) -> BrandGenerationJob:
-        return await self.service.update(
-            job_id=job_id,
-            request=BrandGenerationJobUpdateRequest(status=status, result=result),
+        return await brand_generation_job_service.update(
+            self.session_factory,
+            job_id,
+            BrandGenerationJobUpdateRequest(status=status, result=result),
         )
 
     async def process(self, job_id: str) -> BrandGenerationJob:
         try:
-            job = await self.service.get(job_id)
+            job = await brand_generation_job_service.get(self.session_factory, job_id)
 
             if job.result:
                 await self._update_job(job_id, JobStatus.IN_PROGRESS, job.result)
@@ -94,11 +94,12 @@ class BrandGenerationJobRunner:
             raise
 
     async def _mark_job_failed(self, job_id: str) -> None:
-        job = await self.service.get(job_id)
+        job = await brand_generation_job_service.get(self.session_factory, job_id)
         scrape_result = job.result.scraper_result if job.result else None
-        await self.service.update(
-            job_id=job_id,
-            request=BrandGenerationJobUpdateRequest(
+        await brand_generation_job_service.update(
+            self.session_factory,
+            job_id,
+            BrandGenerationJobUpdateRequest(
                 status=JobStatus.FAILED,
                 result=BrandGenerationResult(
                     scraper_result=scrape_result,

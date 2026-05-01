@@ -1,5 +1,5 @@
 format module:
-    ./bin/format.sh {{module}}
+    ../bin/format.sh {{module}}
 
 lint module:
-    ./bin/lint.sh {{module}}
+    ../bin/lint.sh {{module}}

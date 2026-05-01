@@ -84,7 +84,9 @@ async def get(session_factory: DbSessionFactory, item_id: str) -> ContentPlanIte
         return ContentPlanItem.model_validate(record)
 
 
-async def search(session_factory: DbSessionFactory, job_id: str) -> list[ContentPlanItem]:
+async def search(
+    session_factory: DbSessionFactory, job_id: str
+) -> list[ContentPlanItem]:
     async with session_factory.session() as session:
         stmt = (
             select(ContentPlanItemRecord)

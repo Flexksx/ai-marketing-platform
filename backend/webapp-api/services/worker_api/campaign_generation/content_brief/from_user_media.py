@@ -18,7 +18,7 @@ from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
-from vozai.domain.content_channel import ContentChannel, ContentChannelService
+from vozai.domain.content_channel import ContentChannel
 from vozai.lib.prompts import PromptService, PromptTemplateName
 
 
@@ -37,12 +37,10 @@ class UserMediaContentBriefGenerator:
         self,
         session_factory: DbSessionFactory = Depends(),
         prompt_service: PromptService = Depends(),
-        content_channel_service: ContentChannelService = Depends(),
         content_brief_generator: CampaignContentBriefGenerator = Depends(),
     ):
         self.session_factory = session_factory
         self.prompt_service = prompt_service
-        self.content_channel_service = content_channel_service
         self.content_brief_generator = content_brief_generator
 
     async def generate(self, job: CampaignGenerationJob) -> CampaignGenerationJobResult:

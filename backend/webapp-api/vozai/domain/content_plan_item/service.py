@@ -7,7 +7,9 @@ from vozai.domain.content_plan_item.schema import (
 )
 
 
-async def search(session_factory: DbSessionFactory, job_id: str) -> list[ContentPlanItem]:
+async def search(
+    session_factory: DbSessionFactory, job_id: str
+) -> list[ContentPlanItem]:
     return await content_plan_item_repository.search(session_factory, job_id)
 
 

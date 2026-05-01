@@ -16,16 +16,13 @@ from pydantic_ai import (
 )
 
 import vozai.domain.brand.service as brand_service
+import vozai.domain.content_channel.service as content_channel_service
 from db.session_factory import DbSessionFactory
 from services.worker_api.shared.text_with_single_image.model import (
     TextWithSingleImageContent,
 )
 from vozai.domain.brand import Brand
-from vozai.domain.content_channel import (
-    ContentChannelName,
-    ContentChannelService,
-    ContentFormat,
-)
+from vozai.domain.content_channel import ContentChannelName, ContentFormat
 from vozai.lib.ai_agents import PydanticAiModel
 from vozai.lib.nano_banana import (
     NanoBananaRequest,
@@ -66,13 +63,11 @@ class TextWithSingleImageContentGenerator:
     def __init__(
         self,
         session_factory: DbSessionFactory = Depends(),
-        content_channel_service: ContentChannelService = Depends(),
         supabase_storage_service: SupabaseStorageService = Depends(),
         prompt_service: PromptService = Depends(),
         nano_banana_service: NanoBananaService = Depends(),
     ):
         self.session_factory = session_factory
-        self.content_channel_service = content_channel_service
         self.supabase_storage_service = supabase_storage_service
         self.prompt_service = prompt_service
         self.nano_banana_service = nano_banana_service
@@ -157,7 +152,7 @@ class TextWithSingleImageContentGenerator:
             caption_prompt_template_name=caption_prompt_template_name,
         )
 
-        content_channel = self.content_channel_service.get(channel)
+        content_channel = content_channel_service.get(channel)
         image_urls_to_send: list[str] = []
         if image_url is not None:
             image_urls_to_send.append(image_url)

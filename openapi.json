@@ -1,0 +1,3312 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Voisso API",
+    "description": "Voisso marketing automation platform API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/brands/{brand_id}/campaigns": {
+      "get": {
+        "tags": [
+          "Brand Campaigns"
+        ],
+        "summary": "List",
+        "operationId": "brand_campaigns_list",
+        "parameters": [
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CampaignState"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "State"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 5,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CampaignResponse"
+                  },
+                  "title": "Response Brand Campaigns List"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/campaigns/{campaign_id}": {
+      "delete": {
+        "tags": [
+          "Brand Campaigns"
+        ],
+        "summary": "Delete Campaign",
+        "operationId": "brand_campaigns_delete_campaign",
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Campaign Id"
+            }
+          },
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/campaigns/create": {
+      "post": {
+        "tags": [
+          "Brand Campaign Creation"
+        ],
+        "summary": "Start",
+        "operationId": "brand_campaign_creation_start",
+        "parameters": [
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_brand_campaign_creation_start"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignGenerationJobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/campaigns/create/{job_id}": {
+      "get": {
+        "tags": [
+          "Brand Campaign Creation"
+        ],
+        "summary": "Get",
+        "operationId": "brand_campaign_creation_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignGenerationJobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/campaigns/create/{job_id}/accept": {
+      "post": {
+        "tags": [
+          "Brand Campaign Creation"
+        ],
+        "summary": "Accept",
+        "operationId": "brand_campaign_creation_accept",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampaignCreationAcceptRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/content-generation": {
+      "post": {
+        "tags": [
+          "Brand Content Generation Jobs"
+        ],
+        "summary": "Start",
+        "operationId": "brand_content_generation_jobs_start",
+        "parameters": [
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_brand_content_generation_jobs_start"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentGenerationJobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/content-generation/{job_id}": {
+      "get": {
+        "tags": [
+          "Brand Content Generation Jobs"
+        ],
+        "summary": "Get",
+        "operationId": "brand_content_generation_jobs_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentGenerationJobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/content-generation/{job_id}/accept": {
+      "post": {
+        "tags": [
+          "Brand Content Generation Jobs"
+        ],
+        "summary": "Accept",
+        "operationId": "brand_content_generation_jobs_accept",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/content": {
+      "get": {
+        "tags": [
+          "Brand Content"
+        ],
+        "summary": "Search",
+        "operationId": "brand_content_search",
+        "parameters": [
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "scheduled_after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scheduled After"
+            }
+          },
+          {
+            "name": "scheduled_before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scheduled Before"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ContentChannelName"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Channel"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContentResponse"
+                  },
+                  "title": "Response Brand Content Search"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}/campaigns/create/{job_id}/content_plan_items/{content_plan_item_id}": {
+      "put": {
+        "tags": [
+          "Brand Campaign Creation Content Plan Items"
+        ],
+        "summary": "Update Content Plan Item",
+        "operationId": "brand_campaign_creation_content_plan_items_update_content_plan_item",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "content_plan_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Content Plan Item Id"
+            }
+          },
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestContentPlanItemUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentPlanItem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Brand Campaign Creation Content Plan Items"
+        ],
+        "summary": "Remove Content Plan Item",
+        "operationId": "brand_campaign_creation_content_plan_items_remove_content_plan_item",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "content_plan_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Content Plan Item Id"
+            }
+          },
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands": {
+      "get": {
+        "tags": [
+          "Brands"
+        ],
+        "summary": "Search",
+        "operationId": "brands_search",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Name"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 5,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BrandResponse"
+                  },
+                  "title": "Response Brands Search"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Brands"
+        ],
+        "summary": "Create",
+        "operationId": "brands_create",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrandCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{brand_id}": {
+      "get": {
+        "tags": [
+          "Brands"
+        ],
+        "summary": "Get",
+        "operationId": "brands_get",
+        "parameters": [
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Brands"
+        ],
+        "summary": "Update",
+        "operationId": "brands_update",
+        "parameters": [
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_brands_update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Brands"
+        ],
+        "summary": "Delete",
+        "operationId": "brands_delete",
+        "parameters": [
+          {
+            "name": "brand_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Brand Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brand-generation": {
+      "post": {
+        "tags": [
+          "brand-generation"
+        ],
+        "summary": "Start",
+        "operationId": "brand_generation_start",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrandGenerationJobCreateRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandGenerationJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brand-generation/{job_id}": {
+      "get": {
+        "tags": [
+          "brand-generation"
+        ],
+        "summary": "Get",
+        "operationId": "brand_generation_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandGenerationJobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brand-generation/{job_id}/accept": {
+      "post": {
+        "tags": [
+          "brand-generation"
+        ],
+        "summary": "Accept",
+        "operationId": "brand_generation_accept",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrandGenerationJobAcceptRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "default_health_check",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "operationId": "default_root",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AiGeneratedCampaignGenerationJobUserInput": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "description": "User's input about what they want the campaign to be about"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Date",
+            "description": "Campaign start date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End Date",
+            "description": "Campaign end date"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContentChannelName"
+            },
+            "type": "array",
+            "title": "Channels",
+            "description": "List of channels the campaign is going to be posted to"
+          },
+          "workflow_type": {
+            "type": "string",
+            "const": "AI_GENERATED",
+            "title": "Workflow Type",
+            "default": "AI_GENERATED"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt",
+          "start_date",
+          "end_date",
+          "channels"
+        ],
+        "title": "AiGeneratedCampaignGenerationJobUserInput"
+      },
+      "AiGeneratedTextWithSingleImageContentGenerationJobUserInput": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/ContentChannelName"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scheduled At"
+          },
+          "workflow_type": {
+            "type": "string",
+            "const": "TEXT_WITH_SINGLE_IMAGE_AI_GENERATED",
+            "title": "Workflow Type",
+            "default": "TEXT_WITH_SINGLE_IMAGE_AI_GENERATED"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt",
+          "channel",
+          "scheduled_at"
+        ],
+        "title": "AiGeneratedTextWithSingleImageContentGenerationJobUserInput"
+      },
+      "Body_brand_campaign_creation_start": {
+        "properties": {
+          "request_data": {
+            "type": "string",
+            "title": "Request Data"
+          },
+          "request_files": {
+            "items": {
+              "type": "string",
+              "contentMediaType": "application/octet-stream"
+            },
+            "type": "array",
+            "title": "Request Files",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_data"
+        ],
+        "title": "Body_brand_campaign_creation_start"
+      },
+      "Body_brand_content_generation_jobs_start": {
+        "properties": {
+          "request_data": {
+            "type": "string",
+            "title": "Request Data"
+          },
+          "request_file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "contentMediaType": "application/octet-stream"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_data"
+        ],
+        "title": "Body_brand_content_generation_jobs_start"
+      },
+      "Body_brands_update": {
+        "properties": {
+          "request_data": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Data"
+          },
+          "logo_file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "contentMediaType": "application/octet-stream"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo File"
+          }
+        },
+        "type": "object",
+        "title": "Body_brands_update"
+      },
+      "BrandArchetypeName": {
+        "type": "string",
+        "enum": [
+          "INNOCENT",
+          "EVERYMAN",
+          "HERO",
+          "OUTLAW",
+          "EXPLORER",
+          "CREATOR",
+          "RULER",
+          "MAGICIAN",
+          "LOVER",
+          "CAREGIVER",
+          "JESTER",
+          "SAGE"
+        ],
+        "title": "BrandArchetypeName"
+      },
+      "BrandAudience": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "age_range": {
+            "$ref": "#/components/schemas/BrandAudienceAgeRange",
+            "default": "ANY"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/BrandAudienceGender",
+            "default": "ANY"
+          },
+          "income_range": {
+            "$ref": "#/components/schemas/BrandAudienceIncomeRange",
+            "default": "ANY"
+          },
+          "pain_points": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Pain Points"
+          },
+          "objections": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Objections"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContentChannelName"
+            },
+            "type": "array",
+            "title": "Channels"
+          }
+        },
+        "type": "object",
+        "title": "BrandAudience"
+      },
+      "BrandAudienceAgeRange": {
+        "type": "string",
+        "enum": [
+          "TEENS",
+          "YOUNG_ADULTS",
+          "ADULTS",
+          "MIDDLE_AGED",
+          "SENIORS",
+          "ANY"
+        ],
+        "title": "BrandAudienceAgeRange"
+      },
+      "BrandAudienceGender": {
+        "type": "string",
+        "enum": [
+          "MALE",
+          "FEMALE",
+          "ANY"
+        ],
+        "title": "BrandAudienceGender"
+      },
+      "BrandAudienceIncomeRange": {
+        "type": "string",
+        "enum": [
+          "LOW_INCOME",
+          "MIDDLE_INCOME",
+          "UPPER_MIDDLE_INCOME",
+          "HIGH_INCOME",
+          "ANY"
+        ],
+        "title": "BrandAudienceIncomeRange"
+      },
+      "BrandColor": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "hex_value": {
+            "type": "string",
+            "title": "Hex Value"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "hex_value"
+        ],
+        "title": "BrandColor"
+      },
+      "BrandCreateRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BrandData"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "data"
+        ],
+        "title": "BrandCreateRequest"
+      },
+      "BrandCreateRequestResponse": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BrandData"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "data"
+        ],
+        "title": "BrandCreateRequestResponse"
+      },
+      "BrandData": {
+        "properties": {
+          "logo_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo Url"
+          },
+          "media_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Media Urls"
+          },
+          "colors": {
+            "items": {
+              "$ref": "#/components/schemas/BrandColor"
+            },
+            "type": "array",
+            "title": "Colors"
+          },
+          "brand_mission": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brand Mission"
+          },
+          "archetype": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrandArchetypeName"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^\\w{2}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "audiences": {
+            "items": {
+              "$ref": "#/components/schemas/BrandAudience"
+            },
+            "type": "array",
+            "title": "Audiences"
+          },
+          "content_pillars": {
+            "items": {
+              "$ref": "#/components/schemas/ContentPillar"
+            },
+            "type": "array",
+            "title": "Content Pillars"
+          },
+          "tone_of_voice": {
+            "$ref": "#/components/schemas/BrandToneOfVoice"
+          },
+          "positioning": {
+            "$ref": "#/components/schemas/PositioningBrandData"
+          }
+        },
+        "type": "object",
+        "title": "BrandData"
+      },
+      "BrandGenerationJob": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "website_url": {
+            "type": "string",
+            "title": "Website Url"
+          },
+          "extra_routes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Extra Routes",
+            "default": [
+              "/about",
+              "/help"
+            ]
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrandGenerationResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "status",
+          "website_url",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BrandGenerationJob"
+      },
+      "BrandGenerationJobAcceptRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "The name of the brand"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BrandData"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "data"
+        ],
+        "title": "BrandGenerationJobAcceptRequest"
+      },
+      "BrandGenerationJobCreateRequestBody": {
+        "properties": {
+          "website_url": {
+            "type": "string",
+            "title": "Website Url",
+            "description": "The URL of the website to extract the brand from"
+          }
+        },
+        "type": "object",
+        "required": [
+          "website_url"
+        ],
+        "title": "BrandGenerationJobCreateRequestBody"
+      },
+      "BrandGenerationJobResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrandGenerationJobResultResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BrandGenerationJobResponse"
+      },
+      "BrandGenerationJobResultResponse": {
+        "properties": {
+          "brand_data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrandCreateRequestResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scraper_result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScrapeResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "BrandGenerationJobResultResponse"
+      },
+      "BrandGenerationResult": {
+        "properties": {
+          "brand_data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrandCreateRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scraper_result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScrapeResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "BrandGenerationResult"
+      },
+      "BrandResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrandData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BrandResponse"
+      },
+      "BrandToneOfVoice": {
+        "properties": {
+          "formality_level": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Formality Level",
+            "default": 1
+          },
+          "humour_level": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Humour Level",
+            "default": 1
+          },
+          "irreverence_level": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Irreverence Level",
+            "default": 1
+          },
+          "enthusiasm_level": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Enthusiasm Level",
+            "default": 1
+          },
+          "industry_jargon_usage_level": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Industry Jargon Usage Level",
+            "default": 1
+          },
+          "sensory_keywords": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sensory Keywords"
+          },
+          "excluded_words": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Excluded Words"
+          },
+          "signature_words": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Signature Words"
+          },
+          "sentence_length_preference": {
+            "$ref": "#/components/schemas/SentenceLengthPreference",
+            "default": "MEDIUM"
+          }
+        },
+        "type": "object",
+        "title": "BrandToneOfVoice"
+      },
+      "CampaignCreationAcceptRequest": {
+        "properties": {
+          "posting_plan_modifications": {
+            "items": {
+              "$ref": "#/components/schemas/ContentPlanItemModification"
+            },
+            "type": "array",
+            "title": "Posting Plan Modifications",
+            "description": "List of modifications to apply to posting plan items",
+            "default": []
+          }
+        },
+        "type": "object",
+        "title": "CampaignCreationAcceptRequest"
+      },
+      "CampaignData": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "goal": {
+            "$ref": "#/components/schemas/ContentPillarBusinessGoal",
+            "default": "INCREASE_CONVERSION"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "target_audience_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Target Audience Ids"
+          },
+          "content_pillar_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Content Pillar Ids"
+          },
+          "content_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Content Ids"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContentChannelName"
+            },
+            "type": "array",
+            "title": "Channels"
+          },
+          "media_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Media Urls"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End Date"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_date",
+          "end_date"
+        ],
+        "title": "CampaignData"
+      },
+      "CampaignGenerationJobResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "brand_id": {
+            "type": "string",
+            "title": "Brand Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "user_input": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserMediaOnlyCampaignGenerationJobUserInput"
+              },
+              {
+                "$ref": "#/components/schemas/AiGeneratedCampaignGenerationJobUserInput"
+              },
+              {
+                "$ref": "#/components/schemas/ProductLifestyleCampaignGenerationJobUserInput"
+              }
+            ],
+            "title": "User Input",
+            "discriminator": {
+              "propertyName": "workflow_type",
+              "mapping": {
+                "AI_GENERATED": "#/components/schemas/AiGeneratedCampaignGenerationJobUserInput",
+                "PRODUCT_LIFESTYLE": "#/components/schemas/ProductLifestyleCampaignGenerationJobUserInput",
+                "USER_MEDIA_ONLY": "#/components/schemas/UserMediaOnlyCampaignGenerationJobUserInput"
+              }
+            }
+          },
+          "result": {
+            "$ref": "#/components/schemas/CampaignGenerationJobResult"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "brand_id",
+          "status",
+          "user_input",
+          "result",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "CampaignGenerationJobResponse"
+      },
+      "CampaignGenerationJobResult": {
+        "properties": {
+          "content_brief": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContentBriefCampaignGenerationJobResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "content_plan_items": {
+            "items": {
+              "$ref": "#/components/schemas/ContentPlanItem"
+            },
+            "type": "array",
+            "title": "Content Plan Items"
+          }
+        },
+        "type": "object",
+        "title": "CampaignGenerationJobResult"
+      },
+      "CampaignResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "brand_id": {
+            "type": "string",
+            "title": "Brand Id"
+          },
+          "state": {
+            "$ref": "#/components/schemas/CampaignState"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CampaignData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "brand_id",
+          "state",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "CampaignResponse"
+      },
+      "CampaignState": {
+        "type": "string",
+        "enum": [
+          "DRAFT",
+          "LIVE",
+          "PAUSED",
+          "ENDED"
+        ],
+        "title": "CampaignState"
+      },
+      "ContentBriefCampaignGenerationJobResult": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "goal": {
+            "$ref": "#/components/schemas/ContentPillarBusinessGoal"
+          },
+          "target_audience_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Target Audience Ids"
+          },
+          "content_pillar_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Content Pillar Ids"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End Date"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContentChannelName"
+            },
+            "type": "array",
+            "title": "Channels"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "goal",
+          "start_date",
+          "end_date",
+          "channels"
+        ],
+        "title": "ContentBriefCampaignGenerationJobResult"
+      },
+      "ContentChannelName": {
+        "type": "string",
+        "enum": [
+          "INSTAGRAM",
+          "LINKEDIN"
+        ],
+        "title": "ContentChannelName"
+      },
+      "ContentFormat": {
+        "type": "string",
+        "enum": [
+          "TEXT",
+          "TEXT_WITH_SINGLE_IMAGE"
+        ],
+        "title": "ContentFormat"
+      },
+      "ContentGenerationJobResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "brand_id": {
+            "type": "string",
+            "title": "Brand Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "content_format": {
+            "$ref": "#/components/schemas/ContentFormat"
+          },
+          "user_input": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TextOnlyContentGenerationJobUserInput"
+              },
+              {
+                "$ref": "#/components/schemas/FromUserMediaTextWithSingleImageContentGenerationJobUserInput"
+              },
+              {
+                "$ref": "#/components/schemas/AiGeneratedTextWithSingleImageContentGenerationJobUserInput"
+              },
+              {
+                "$ref": "#/components/schemas/ProductLifestyleTextWithSingleImageContentGenerationJobUserInput"
+              }
+            ],
+            "title": "User Input",
+            "discriminator": {
+              "propertyName": "workflow_type",
+              "mapping": {
+                "TEXT_ONLY": "#/components/schemas/TextOnlyContentGenerationJobUserInput",
+                "TEXT_WITH_SINGLE_IMAGE_AI_GENERATED": "#/components/schemas/AiGeneratedTextWithSingleImageContentGenerationJobUserInput",
+                "TEXT_WITH_SINGLE_IMAGE_FROM_USER_MEDIA": "#/components/schemas/FromUserMediaTextWithSingleImageContentGenerationJobUserInput",
+                "TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE": "#/components/schemas/ProductLifestyleTextWithSingleImageContentGenerationJobUserInput"
+              }
+            }
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TextOnlyContentGenerationJobResult"
+              },
+              {
+                "$ref": "#/components/schemas/TextWithSingleImageContentGenerationJobResult"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "brand_id",
+          "status",
+          "content_format",
+          "user_input",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ContentGenerationJobResponse"
+      },
+      "ContentPillar": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "business_goal": {
+            "$ref": "#/components/schemas/ContentPillarBusinessGoal",
+            "default": "BUILD_TRUST"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ContentPillarType",
+            "default": "THOUGHT_LEADERSHIP"
+          },
+          "funnel_stage": {
+            "$ref": "#/components/schemas/ContentPillarFunnelStage",
+            "default": "LOYALTY"
+          },
+          "content_types": {
+            "items": {
+              "$ref": "#/components/schemas/ContentTypeName"
+            },
+            "type": "array",
+            "title": "Content Types"
+          },
+          "audience_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Audience Ids"
+          },
+          "hooks": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Hooks"
+          },
+          "calls_to_action": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Calls To Action"
+          }
+        },
+        "type": "object",
+        "title": "ContentPillar"
+      },
+      "ContentPillarBusinessGoal": {
+        "type": "string",
+        "enum": [
+          "DRIVE_ENGAGEMENT",
+          "INCREASE_CONVERSION",
+          "BUILD_TRUST",
+          "GENERATE_LEADS",
+          "RETENTION"
+        ],
+        "title": "ContentPillarBusinessGoal"
+      },
+      "ContentPillarFunnelStage": {
+        "type": "string",
+        "enum": [
+          "AWARENESS",
+          "CONSIDERATION",
+          "CONVERSION",
+          "LOYALTY"
+        ],
+        "title": "ContentPillarFunnelStage"
+      },
+      "ContentPillarType": {
+        "type": "string",
+        "enum": [
+          "EDUCATION",
+          "PRODUCT_SERVICE",
+          "SOCIAL_PROOF",
+          "BEHIND_THE_SCENES",
+          "ENTERTAINMENT",
+          "COMMUNITY",
+          "THOUGHT_LEADERSHIP"
+        ],
+        "title": "ContentPillarType"
+      },
+      "ContentPlanItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/ContentChannelName"
+          },
+          "content_type": {
+            "$ref": "#/components/schemas/ContentTypeName"
+          },
+          "content_format": {
+            "$ref": "#/components/schemas/ContentFormat"
+          },
+          "image_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Image Urls",
+            "default": []
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scheduled At"
+          },
+          "content_data": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TextWithSingleImageContentData"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TextOnlyContentData"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "content_format",
+                  "mapping": {
+                    "TEXT": "#/components/schemas/TextOnlyContentData",
+                    "TEXT_WITH_SINGLE_IMAGE": "#/components/schemas/TextWithSingleImageContentData"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Data"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus",
+            "default": "pending"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "job_id",
+          "description",
+          "channel",
+          "content_type",
+          "content_format",
+          "scheduled_at"
+        ],
+        "title": "ContentPlanItem"
+      },
+      "ContentPlanItemModification": {
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "title": "Item Id",
+            "description": "ID of the posting plan item to modify"
+          },
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Caption",
+            "description": "Modified caption for the post"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url",
+            "description": "Modified image URL for the post"
+          },
+          "scheduled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduled At",
+            "description": "Modified scheduled date and time for the post"
+          }
+        },
+        "type": "object",
+        "required": [
+          "item_id"
+        ],
+        "title": "ContentPlanItemModification"
+      },
+      "ContentResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "brand_id": {
+            "type": "string",
+            "title": "Brand Id"
+          },
+          "campaign_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Campaign Id"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/ContentChannelName"
+          },
+          "content_format": {
+            "$ref": "#/components/schemas/ContentFormat"
+          },
+          "data": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TextWithSingleImageContentData"
+              },
+              {
+                "$ref": "#/components/schemas/TextOnlyContentData"
+              }
+            ],
+            "title": "Data",
+            "discriminator": {
+              "propertyName": "content_format",
+              "mapping": {
+                "TEXT": "#/components/schemas/TextOnlyContentData",
+                "TEXT_WITH_SINGLE_IMAGE": "#/components/schemas/TextWithSingleImageContentData"
+              }
+            }
+          },
+          "scheduled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduled At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "brand_id",
+          "channel",
+          "content_format",
+          "data",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ContentResponse"
+      },
+      "ContentTypeName": {
+        "type": "string",
+        "enum": [
+          "TUTORIAL",
+          "TIP",
+          "GUIDE",
+          "FRAMEWORK",
+          "MYTH",
+          "MISTAKE",
+          "INDUSTRY_INSIGHT",
+          "DEMO",
+          "FEATURE_HIGHLIGHT",
+          "PRODUCT_USE",
+          "BEFORE_AFTER",
+          "BENEFIT",
+          "COMPARISON",
+          "TESTIMONIAL",
+          "REVIEW",
+          "CASE_STUDY",
+          "CLIENT_STORY",
+          "RESULT",
+          "SCREENSHOT",
+          "FOUNDER_STORY",
+          "TEAM_HIGHLIGHT",
+          "PROCESS",
+          "PRODUCT_BUILDING",
+          "DAILY_WORK",
+          "MEME",
+          "TREND",
+          "RELATABLE_POST",
+          "HUMOR",
+          "CULTURAL_COMMENTARY",
+          "OPINION",
+          "PREDICTION",
+          "HOT_TAKE",
+          "POLL",
+          "QUESTION",
+          "DISCUSSION",
+          "CHALLENGE"
+        ],
+        "title": "ContentTypeName"
+      },
+      "FromUserMediaTextWithSingleImageContentGenerationJobUserInput": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/ContentChannelName"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scheduled At"
+          },
+          "image_url": {
+            "type": "string",
+            "title": "Image Url"
+          },
+          "workflow_type": {
+            "type": "string",
+            "const": "TEXT_WITH_SINGLE_IMAGE_FROM_USER_MEDIA",
+            "title": "Workflow Type",
+            "default": "TEXT_WITH_SINGLE_IMAGE_FROM_USER_MEDIA"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt",
+          "channel",
+          "scheduled_at",
+          "image_url"
+        ],
+        "title": "FromUserMediaTextWithSingleImageContentGenerationJobUserInput"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "in_progress",
+          "completed",
+          "cancelled",
+          "failed",
+          "accepted"
+        ],
+        "title": "JobStatus"
+      },
+      "PositioningBrandData": {
+        "properties": {
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "points_of_difference": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Points Of Difference"
+          },
+          "points_of_parity": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Points Of Parity"
+          },
+          "product_description": {
+            "type": "string",
+            "title": "Product Description",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "title": "PositioningBrandData"
+      },
+      "ProductLifestyleCampaignGenerationJobUserInput": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "description": "User's input about what they want the campaign to be about"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Date",
+            "description": "Campaign start date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End Date",
+            "description": "Campaign end date"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContentChannelName"
+            },
+            "type": "array",
+            "title": "Channels",
+            "description": "List of channels the campaign is going to be posted to"
+          },
+          "workflow_type": {
+            "type": "string",
+            "const": "PRODUCT_LIFESTYLE",
+            "title": "Workflow Type",
+            "default": "PRODUCT_LIFESTYLE"
+          },
+          "image_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Image Urls",
+            "description": "List of product image URLs to be preserved in generated lifestyle images"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt",
+          "start_date",
+          "end_date",
+          "channels",
+          "image_urls"
+        ],
+        "title": "ProductLifestyleCampaignGenerationJobUserInput"
+      },
+      "ProductLifestyleTextWithSingleImageContentGenerationJobUserInput": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/ContentChannelName"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scheduled At"
+          },
+          "image_url": {
+            "type": "string",
+            "title": "Image Url"
+          },
+          "workflow_type": {
+            "type": "string",
+            "const": "TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE",
+            "title": "Workflow Type",
+            "default": "TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt",
+          "channel",
+          "scheduled_at",
+          "image_url"
+        ],
+        "title": "ProductLifestyleTextWithSingleImageContentGenerationJobUserInput"
+      },
+      "RestContentPlanItemUpdateRequest": {
+        "properties": {
+          "scheduled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduled At"
+          },
+          "content_data": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TextWithSingleImageContentData"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TextOnlyContentData"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "content_format",
+                  "mapping": {
+                    "TEXT": "#/components/schemas/TextOnlyContentData",
+                    "TEXT_WITH_SINGLE_IMAGE": "#/components/schemas/TextWithSingleImageContentData"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Data"
+          }
+        },
+        "type": "object",
+        "title": "RestContentPlanItemUpdateRequest"
+      },
+      "ScrapeResult": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "image_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Image Urls"
+          },
+          "video_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Video Urls"
+          },
+          "logo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo"
+          },
+          "screenshot": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Screenshot"
+          },
+          "page_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Page Urls"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text",
+          "image_urls",
+          "video_urls",
+          "page_urls"
+        ],
+        "title": "ScrapeResult"
+      },
+      "SentenceLengthPreference": {
+        "type": "string",
+        "enum": [
+          "SHORT",
+          "MEDIUM",
+          "LONG"
+        ],
+        "title": "SentenceLengthPreference"
+      },
+      "TextOnlyContentData": {
+        "properties": {
+          "caption": {
+            "type": "string",
+            "title": "Caption"
+          },
+          "content_format": {
+            "type": "string",
+            "const": "TEXT",
+            "title": "Content Format",
+            "default": "TEXT"
+          }
+        },
+        "type": "object",
+        "required": [
+          "caption"
+        ],
+        "title": "TextOnlyContentData"
+      },
+      "TextOnlyContentGenerationJobResult": {
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/ContentChannelName"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scheduled At"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TextOnlyContentData"
+          }
+        },
+        "type": "object",
+        "required": [
+          "channel",
+          "scheduled_at",
+          "data"
+        ],
+        "title": "TextOnlyContentGenerationJobResult"
+      },
+      "TextOnlyContentGenerationJobUserInput": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/ContentChannelName"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scheduled At"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContentChannelName"
+            },
+            "type": "array",
+            "title": "Channels"
+          },
+          "workflow_type": {
+            "type": "string",
+            "const": "TEXT_ONLY",
+            "title": "Workflow Type",
+            "default": "TEXT_ONLY"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt",
+          "channel",
+          "scheduled_at",
+          "channels"
+        ],
+        "title": "TextOnlyContentGenerationJobUserInput"
+      },
+      "TextWithSingleImageContentData": {
+        "properties": {
+          "caption": {
+            "type": "string",
+            "title": "Caption"
+          },
+          "image_url": {
+            "type": "string",
+            "title": "Image Url"
+          },
+          "content_format": {
+            "type": "string",
+            "const": "TEXT_WITH_SINGLE_IMAGE",
+            "title": "Content Format",
+            "default": "TEXT_WITH_SINGLE_IMAGE"
+          }
+        },
+        "type": "object",
+        "required": [
+          "caption",
+          "image_url"
+        ],
+        "title": "TextWithSingleImageContentData"
+      },
+      "TextWithSingleImageContentGenerationJobResult": {
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/ContentChannelName"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scheduled At"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TextWithSingleImageContentData"
+          }
+        },
+        "type": "object",
+        "required": [
+          "channel",
+          "scheduled_at",
+          "data"
+        ],
+        "title": "TextWithSingleImageContentGenerationJobResult"
+      },
+      "UserMediaOnlyCampaignGenerationJobUserInput": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "description": "User's input about what they want the campaign to be about"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Date",
+            "description": "Campaign start date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End Date",
+            "description": "Campaign end date"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContentChannelName"
+            },
+            "type": "array",
+            "title": "Channels",
+            "description": "List of channels the campaign is going to be posted to"
+          },
+          "workflow_type": {
+            "type": "string",
+            "const": "USER_MEDIA_ONLY",
+            "title": "Workflow Type",
+            "default": "USER_MEDIA_ONLY"
+          },
+          "image_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Image Urls"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt",
+          "start_date",
+          "end_date",
+          "channels",
+          "image_urls"
+        ],
+        "title": "UserMediaOnlyCampaignGenerationJobUserInput"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Body, Depends, Path
 
+import vozai.domain.content_plan_item.service as content_plan_item_service
 from db.session_factory import DbSessionFactory
 from services.client_api.auth.access_validation import validate_brand_access
-import vozai.domain.content_plan_item.service as content_plan_item_service
 from vozai.domain.content_plan_item import (
     ContentPlanItem,
     ContentPlanItemUpdateRequest,
@@ -19,12 +19,16 @@ async def update_content_plan_item(
     content_plan_item_id: str = Path(...),
     request: RestContentPlanItemUpdateRequest = Body(...),  # noqa: B008
     brand_id: str = Depends(validate_brand_access),  # noqa: ARG001
-    service: ContentPlanItemService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
     domain_request = ContentPlanItemUpdateRequest.model_validate(
         request.model_dump(exclude_unset=True)
     )
-    item = await service.update(content_plan_item_id, domain_request)
+    item = await content_plan_item_service.update(
+        session_factory,
+        content_plan_item_id,
+        domain_request,
+    )
     if item.job_id != job_id:
         return item
     return item
@@ -38,9 +42,9 @@ async def remove_content_plan_item(
     job_id: str = Path(...),
     content_plan_item_id: str = Path(...),
     brand_id: str = Depends(validate_brand_access),  # noqa: ARG001
-    service: ContentPlanItemService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
-    item = await service.get(content_plan_item_id)
+    item = await content_plan_item_service.get(session_factory, content_plan_item_id)
     if item.job_id != job_id:
         return
-    await service.remove(content_plan_item_id)
+    await content_plan_item_service.remove(session_factory, content_plan_item_id)

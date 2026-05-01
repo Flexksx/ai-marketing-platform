@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Path, Query
 
+import vozai.domain.campaign.service as campaign_service
 from db.session_factory import DbSessionFactory
 from services.client_api.auth.access_validation import validate_brand_access
-import vozai.domain.campaign.service as campaign_service
 from vozai.domain.campaign.entity import CampaignState
 from vozai.domain.campaign.schema import CampaignListRequest, CampaignResponse
 

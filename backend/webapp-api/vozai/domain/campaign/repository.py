@@ -45,7 +45,9 @@ async def search(
     request: CampaignListRequest,
 ) -> list[Campaign]:
     async with session_factory.session() as session:
-        stmt = select(CampaignRecord).filter(CampaignRecord.brand_id == request.brand_id)
+        stmt = select(CampaignRecord).filter(
+            CampaignRecord.brand_id == request.brand_id
+        )
         if request.state:
             stmt = stmt.filter(CampaignRecord.state == request.state)
         stmt = (

@@ -93,4 +93,3 @@ class _ContextFilter(logging.Filter):
         if not hasattr(record, "environment"):
             record.environment = self.environment
         return True
-

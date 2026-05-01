@@ -1,3 +1,5 @@
+mod openapi
+
 format module="all":
     ./bin/format.sh {{module}}
 
