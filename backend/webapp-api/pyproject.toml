@@ -1,0 +1,178 @@
+[project]
+name = "aimarketing"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+  "openai>=2.8.0",
+  "google-genai>=1.52.0",
+  "google-cloud-tasks>=2.16.0",
+  "beautifulsoup4>=4.12.3",
+  "lxml>=5.3.0",
+  "playwright>=1.56.0",
+  "html2text>=2025.4.15",
+  "pillow>=11.0.0",
+  "colorgram-py>=1.2.0",
+  "nanoid>=2.0.0",
+  "pydantic>=2.12.5",
+  "pydantic-ai>=1.80.0",
+  "pydantic-extra-types>=2.11.0",
+  "public>=2020.12.3",
+  "pycountry>=26.2.16",
+  "fastapi>=0.131.0",
+  "sqlalchemy>=2.0.44",
+  "httpx>=0.28.1",
+  "tenacity>=8.0.0",
+  "jinja2>=3.1.0",
+  "psycopg2-binary>=2.9.10",
+  "asyncpg>=0.31.0",
+  "alembic>=1.14.0",
+  "pydantic-settings>=2.6.0",
+  "supabase>=2.24.0",
+  "python-dotenv>=1.0.1",
+  "uvicorn[standard]>=0.32.0",
+  "python-multipart>=0.0.20",
+  "scalar-fastapi>=1.6.1",
+  "fastapi-utils>=0.8.0",
+  "python-ulid>=3.1.0",
+  "faker>=40.5.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "aimarketing",
+  "db",
+  "services",
+  "scripts",
+]
+
+[project.scripts]
+migrate-generate = "scripts.migrate_generate:main"
+migrate-push = "scripts.migrate_push:main"
+serve-api = "services.client_api.main:main"
+serve-worker = "services.worker_api.main:main"
+db-migrate = "db.scripts.db_migrate:main"
+db-push = "db.scripts.db_push:main"
+db-generate = "db.scripts.db_generate:main"
+db-reset = "db.scripts.db_reset:main"
+
+[dependency-groups]
+dev = [
+  "ruff>=0.15.10",
+  "pytest>=9.0.1",
+  "pytest-asyncio>=0.24.0",
+  "ty>=0.0.29",
+  "httpx>=0.28.1",
+  "pytest-docker>=3.2.5",
+  "testcontainers[postgres]>=4.0.0",
+  "pytest-xdist>=3.8.0",
+]
+
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py314"
+extend-exclude = [
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".tox",
+  ".venv",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "__pycache__",
+  "alembic/versions",
+]
+
+[tool.ruff.lint]
+select = [
+  "E",
+  "F",
+  "W",
+  "I",
+  "UP",
+  "B",
+  "SIM",
+  "C4",
+  "PIE",
+  "T20",
+  "RET",
+  "ARG",
+  "PTH",
+  "ERA",
+  "PL",
+  "RUF",
+  "TID",
+]
+extend-select = ["I", "F"]
+ignore = ["PLR0913", "PLR2004", "PLR0911", "PLR0912", "PLR0915", "ERA001"]
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F403"]
+"alembic/versions/*.py" = ["E501", "F401", "F403", "F841"]
+"alembic/env.py" = ["E402"]
+"db/scripts/*.py" = ["T20"]
+"tests/*.py" = ["ARG001", "ARG002", "PLR2004"]
+
+
+[tool.ruff.lint.isort]
+known-first-party = ["aimarketing", "db", "services", "test"]
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+split-on-trailing-comma = true
+force-single-line = false
+lines-after-imports = 2
+
+[tool.ty.environment]
+root = ["."]
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = false
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.params.Depends"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -v -s --tb=short -n auto --dist loadscope"
+testpaths = ["tests"]
+
+python_files = ["test_*.py", "*_test.py"]
+python_functions = ["test_*"]
+
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+
+markers = [
+  "slow: marks tests as slow",
+  "e2e: End-to-End tests requiring Docker",
+  "integration: Integration tests with database using TestContainers",
+]
+
+pythonpath = ["."]

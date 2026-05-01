@@ -1,5 +1,5 @@
 {
-  description = "Development environment for Grain";
+  description = "Development environment for AI Marketing Platform";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -22,8 +22,9 @@
         infra = import ./nix/infra.nix {inherit pkgs;};
         java = import ./backend/platform-api/nix/java.nix {inherit pkgs;};
         typescript = import ./apps/webapp/nix/typescript.nix {inherit pkgs;};
+        python = import ./backend/webapp-api/nix/python.nix {inherit pkgs;};
 
-        modules = [devtools infra java typescript];
+        modules = [devtools infra java typescript python];
 
         allPackages = builtins.concatLists (map (m: m.packages) modules);
         allShellHooks = builtins.concatStringsSep "\n" (map (m: m.shellHook) modules);
@@ -31,11 +32,11 @@
         packages.brand-api-image = import ./backend/brand-api/nix/image.nix {inherit pkgs;};
 
         devShells.default = pkgs.mkShell {
-          name = "grain-dev-env";
+          name = "ai-marketing-platform-dev-env";
           packages = allPackages;
           shellHook =
             ''
-              echo "Entering Grain development environment..."
+              echo "Entering AI Marketing Platform development environment..."
               REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 
               ln -sfn "${pkgs.jdk25}" "$REPO_ROOT/.nix-java-home"

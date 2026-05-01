@@ -1,0 +1,37 @@
+{
+  "load_direnv": "direct",
+  "file_types": {
+    "Jinja2": ["j2", "jinja", "jinja2"],
+  },
+  "languages": {
+    "Java": {
+      "language_servers": ["jdtls"],
+    },
+    "Python": {
+      "language_servers": ["ty", "!basedpyright", "ruff"],
+      "format_on_save": "on",
+      "code_actions_on_format": {
+        "source.organizeImports.ruff": true,
+        "source.fixAll.ruff": true,
+      },
+    },
+    "Jinja2": {
+      "language_servers": ["jinja-lsp"],
+      "format_on_save": "on",
+    },
+  },
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/.mypy_cache",
+    "**/.ruff_cache",
+  ],
+}

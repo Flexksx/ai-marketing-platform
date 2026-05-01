@@ -1,5 +1,7 @@
-{pkgs}: {
+{ pkgs }:
+{
   packages = with pkgs; [
+    java-language-server
     jdk25
     gradle
   ];

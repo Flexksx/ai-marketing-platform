@@ -1,0 +1,78 @@
+import logging
+from abc import ABC, abstractmethod
+
+import public
+from fastapi import Depends
+
+from aimarketing.domain.content_generation_job import (
+    ContentGenerationJobResult,
+    ContentGenerationJobRuntimeException,
+    ContentGenerationJobUpdateRequest,
+)
+from aimarketing.domain.content_generation_job.model import (
+    ContentGenerationJob,
+)
+from aimarketing.domain.content_generation_job.service import ContentGenerationJobService
+from aimarketing.lib.job.model import JobStatus
+
+
+logger = logging.getLogger(__name__)
+
+
+@public.add
+class BaseContentGenerationJobRunner(ABC):
+    def __init__(
+        self, content_generation_job_service: ContentGenerationJobService = Depends()
+    ):
+        self.content_generation_job_service = content_generation_job_service
+
+    async def process(self, job_id: str) -> ContentGenerationJob:
+        try:
+            logger.info(
+                f"Starting content generation job {job_id}",
+                extra={"job_id": job_id},
+            )
+            job = await self.content_generation_job_service.get(job_id)
+            result = await self.generate_result(job)
+            logger.info(
+                f"Content generation result produced for job {job_id}",
+                extra={"job_id": job_id},
+            )
+            completed_job = await self.__complete_job(job_id, result)
+            logger.info(
+                f"Content generation job {job_id} marked as completed "
+                f"with status {completed_job.status}",
+                extra={"job_id": job_id},
+            )
+            return completed_job
+        except Exception as e:
+            await self._mark_job_failed(job_id)
+            raise ContentGenerationJobRuntimeException(job_id, e) from e
+
+    @abstractmethod
+    async def generate_result(
+        self, job: ContentGenerationJob
+    ) -> ContentGenerationJobResult:
+        raise NotImplementedError(
+            "generate_result method must be implemented by subclasses"
+        )
+
+    async def __complete_job(
+        self, job_id: str, result: ContentGenerationJobResult
+    ) -> ContentGenerationJob:
+        return await self.content_generation_job_service.update(
+            job_id=job_id,
+            request=ContentGenerationJobUpdateRequest(
+                status=JobStatus.COMPLETED,
+                result=result,
+            ),
+        )
+
+    async def _mark_job_failed(self, job_id: str) -> ContentGenerationJob:
+        return await self.content_generation_job_service.update(
+            job_id=job_id,
+            request=ContentGenerationJobUpdateRequest(
+                status=JobStatus.FAILED,
+                result=None,
+            ),
+        )
