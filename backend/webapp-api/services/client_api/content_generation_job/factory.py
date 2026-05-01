@@ -3,12 +3,12 @@ import asyncio
 import public
 from fastapi import UploadFile
 
-from aimarketing.domain.content_generation_job import (
+from vozai.domain.content_generation_job import (
     ContentGenerationJobCreateRequest,
     FromUserMediaTextWithSingleImageContentGenerationJobUserInput,
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
 )
-from aimarketing.lib.supabase_client import (
+from vozai.lib.supabase_client import (
     StorageBucket,
     StorageUploadRequest,
     StorageUploadResult,

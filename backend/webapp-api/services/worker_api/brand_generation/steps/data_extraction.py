@@ -13,20 +13,20 @@ from services.worker_api.brand_generation.brand_data_generation import (
     PositioningBrandDataResult,
 )
 from services.worker_api.brand_generation.steps.base import BrandGenerationBaseStep
-from aimarketing.domain.brand import BrandCreateRequest, BrandData
-from aimarketing.domain.brand_extraction import (
+from vozai.domain.brand import BrandCreateRequest, BrandData
+from vozai.domain.brand_extraction import (
     BrandGenerationJob,
     BrandGenerationJobResultElementNotFoundError,
     BrandGenerationJobResultNotFoundError,
     BrandGenerationResult,
 )
-from aimarketing.domain.brand_settings import (
+from vozai.domain.brand_settings import (
     BrandToneOfVoice,
     PositioningBrandData,
 )
-from aimarketing.lib.ai_agents.schema import PydanticAiModel
-from aimarketing.lib.prompts import PromptService, PromptTemplateName
-from aimarketing.lib.scraper.model import ScrapeResult
+from vozai.lib.ai_agents.schema import PydanticAiModel
+from vozai.lib.prompts import PromptService, PromptTemplateName
+from vozai.lib.scraper.model import ScrapeResult
 
 
 logger = logging.getLogger(__name__)

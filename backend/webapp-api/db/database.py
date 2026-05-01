@@ -6,7 +6,7 @@ import public
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
-from aimarketing.config import get_settings
+from vozai.config import get_settings
 
 
 logger = logging.getLogger(__name__)

@@ -3,20 +3,20 @@ from fastapi import Depends
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, ImageUrl, RunContext
 
-from aimarketing.domain.brand import Brand, BrandService
-from aimarketing.domain.brand_settings import ContentPillarBusinessGoal
-from aimarketing.domain.campaign_generation import CampaignGenerationJobService
-from aimarketing.domain.campaign_generation.model import (
+from vozai.domain.brand import Brand, BrandService
+from vozai.domain.brand_settings import ContentPillarBusinessGoal
+from vozai.domain.campaign_generation import CampaignGenerationJobService
+from vozai.domain.campaign_generation.model import (
     CampaignGenerationJobResult,
     ContentBriefCampaignGenerationJobResult,
 )
-from aimarketing.domain.content_channel import (
+from vozai.domain.content_channel import (
     ContentChannel,
     ContentChannelName,
     ContentChannelService,
 )
-from aimarketing.lib.ai_agents import PydanticAiModel
-from aimarketing.lib.prompts import PromptService, PromptTemplateName
+from vozai.lib.ai_agents import PydanticAiModel
+from vozai.lib.prompts import PromptService, PromptTemplateName
 
 
 @public.add

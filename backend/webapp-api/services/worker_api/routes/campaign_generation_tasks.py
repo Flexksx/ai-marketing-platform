@@ -12,11 +12,11 @@ from services.worker_api.campaign_generation.factory import (
 from services.worker_api.campaign_generation.shared.service import (
     BaseCampaignGenerationJobRunner,
 )
-from aimarketing.config import Settings, get_settings
-from aimarketing.domain.campaign_generation import (
+from vozai.config import Settings, get_settings
+from vozai.domain.campaign_generation import (
     CampaignGenerationJobService,
 )
-from aimarketing.lib.cloudtasks.schema import (
+from vozai.lib.cloudtasks.schema import (
     CampaignGenerationTaskPayload,
 )
 

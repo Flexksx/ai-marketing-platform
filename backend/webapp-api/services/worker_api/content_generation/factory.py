@@ -7,7 +7,7 @@ from services.worker_api.content_generation.shared.service import (
 from services.worker_api.content_generation.text_with_single_image.service import (
     TextWithSingleImageContentGenerationJobRunner,
 )
-from aimarketing.domain.content_generation_job import (
+from vozai.domain.content_generation_job import (
     ContentGenerationJob,
     ContentGenerationJobInvalidUserInputException,
     ContentGenerationJobWorkflowType,

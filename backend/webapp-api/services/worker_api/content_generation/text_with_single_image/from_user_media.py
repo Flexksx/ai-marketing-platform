@@ -5,17 +5,17 @@ from pydantic_ai import Agent, ImageUrl, RunContext
 from services.worker_api.content_generation.text_with_single_image.base_strategy import (
     BaseTextWithSingleImageContentGenerationJobStrategy,
 )
-from aimarketing.domain.brand import Brand, BrandService
-from aimarketing.domain.content import TextWithSingleImageContentData
-from aimarketing.domain.content_channel import ContentChannelName
-from aimarketing.domain.content_generation_job import (
+from vozai.domain.brand import Brand, BrandService
+from vozai.domain.content import TextWithSingleImageContentData
+from vozai.domain.content_channel import ContentChannelName
+from vozai.domain.content_generation_job import (
     ContentGenerationJob,
     ContentGenerationJobInvalidUserInputException,
     FromUserMediaTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
-from aimarketing.lib.ai_agents.schema import PydanticAiModel
-from aimarketing.lib.prompts import PromptService, PromptTemplateName
+from vozai.lib.ai_agents.schema import PydanticAiModel
+from vozai.lib.prompts import PromptService, PromptTemplateName
 
 
 class _AgentDependencies(BaseModel):

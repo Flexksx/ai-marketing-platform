@@ -4,18 +4,18 @@ from fastapi import Depends
 from services.worker_api.campaign_generation.content_brief.service import (
     CampaignContentBriefGenerator,
 )
-from aimarketing.domain.campaign_generation import AiGeneratedCampaignGenerationJobUserInput
-from aimarketing.domain.campaign_generation.base.model import (
+from vozai.domain.campaign_generation import AiGeneratedCampaignGenerationJobUserInput
+from vozai.domain.campaign_generation.base.model import (
     BaseCampaignGenerationJobUserInput,
 )
-from aimarketing.domain.campaign_generation.model import (
+from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
-from aimarketing.domain.campaign_generation.product_lifestyle.model import (
+from vozai.domain.campaign_generation.product_lifestyle.model import (
     ProductLifestyleCampaignGenerationJobUserInput,
 )
-from aimarketing.lib.prompts import PromptTemplateName
+from vozai.lib.prompts import PromptTemplateName
 
 
 @public.add

@@ -1,5 +1,5 @@
 [project]
-name = "aimarketing"
+name = "vozai"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
@@ -43,7 +43,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = [
-  "aimarketing",
+  "vozai",
   "db",
   "services",
   "scripts",
@@ -126,7 +126,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 
 [tool.ruff.lint.isort]
-known-first-party = ["aimarketing", "db", "services", "test"]
+known-first-party = ["vozai", "db", "services", "test"]
 section-order = [
   "future",
   "standard-library",

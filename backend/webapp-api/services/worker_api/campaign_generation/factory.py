@@ -12,7 +12,7 @@ from services.worker_api.campaign_generation.shared.service import (
 from services.worker_api.campaign_generation.user_images_only.service import (
     UserImagesOnlyCampaignGenerationJobRunner,
 )
-from aimarketing.domain.campaign_generation import CampaignGenerationJobWorkflowType
+from vozai.domain.campaign_generation import CampaignGenerationJobWorkflowType
 
 
 class CampaignGenerationJobRunnerFactory:

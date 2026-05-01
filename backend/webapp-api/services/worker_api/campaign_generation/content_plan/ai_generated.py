@@ -12,18 +12,18 @@ from services.worker_api.campaign_generation.content_plan.model import (
 from services.worker_api.campaign_generation.errors import (
     CampaignGenerationJobGenerationFailureException,
 )
-from aimarketing.domain.brand import Brand, BrandService
-from aimarketing.domain.campaign_generation import (
+from vozai.domain.brand import Brand, BrandService
+from vozai.domain.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResultNotFoundException,
     CampaignGenerationJobService,
 )
-from aimarketing.domain.campaign_generation.model import CampaignGenerationJobResult
-from aimarketing.domain.content_channel import ContentChannel, ContentChannelService
-from aimarketing.domain.content_plan_item.schema import ContentPlanItemCreateRequest
-from aimarketing.domain.content_plan_item.service import ContentPlanItemService
-from aimarketing.lib.ai_agents import PydanticAiModel
-from aimarketing.lib.prompts import PromptService, PromptTemplateName
+from vozai.domain.campaign_generation.model import CampaignGenerationJobResult
+from vozai.domain.content_channel import ContentChannel, ContentChannelService
+from vozai.domain.content_plan_item.schema import ContentPlanItemCreateRequest
+from vozai.domain.content_plan_item.service import ContentPlanItemService
+from vozai.lib.ai_agents import PydanticAiModel
+from vozai.lib.prompts import PromptService, PromptTemplateName
 
 
 logger = logging.getLogger(__name__)

@@ -6,12 +6,12 @@ import httpx
 from fastapi import Depends
 
 from services.worker_api.brand_generation.steps.base import BrandGenerationBaseStep
-from aimarketing.domain.brand_extraction.model import (
+from vozai.domain.brand_extraction.model import (
     BrandGenerationJob,
     BrandGenerationResult,
 )
-from aimarketing.lib.scraper import PlaywrightScraper
-from aimarketing.lib.scraper.model import ScrapeResult
+from vozai.lib.scraper import PlaywrightScraper
+from vozai.lib.scraper.model import ScrapeResult
 
 
 logger = logging.getLogger(__name__)

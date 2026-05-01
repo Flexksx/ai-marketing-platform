@@ -16,8 +16,8 @@ from services.client_api.routes.brands_routes.content_generation_jobs import (
 from services.client_api.routes.brands_routes.content_plan_items import (
     router as content_plan_items_router,
 )
-from aimarketing.auth import get_current_user_id
-from aimarketing.domain.brand import (
+from vozai.auth import get_current_user_id
+from vozai.domain.brand import (
     BrandCreateRequest,
     BrandData,
     BrandResponse,
@@ -25,10 +25,10 @@ from aimarketing.domain.brand import (
     BrandService,
     BrandUpdateRequest,
 )
-from aimarketing.lib.supabase_client import (
+from vozai.lib.supabase_client import (
     SupabaseStorageService,
 )
-from aimarketing.lib.supabase_client.storage.schema import (
+from vozai.lib.supabase_client.storage.schema import (
     StorageBucket,
     StorageUploadRequest,
 )

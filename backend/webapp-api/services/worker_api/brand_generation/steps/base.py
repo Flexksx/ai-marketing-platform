@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from aimarketing.domain.brand_extraction.model import (
+from vozai.domain.brand_extraction.model import (
     BrandGenerationJob,
     BrandGenerationResult,
 )

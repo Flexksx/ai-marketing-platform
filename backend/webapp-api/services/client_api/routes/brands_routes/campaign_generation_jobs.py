@@ -4,14 +4,14 @@ from fastapi import APIRouter, Body, Depends, File, Form, Path, UploadFile
 
 from services.client_api.auth.access_validation import validate_brand_access
 from services.client_api.campaign_generation_job import get_from_request_form
-from aimarketing.auth import get_current_user_id
-from aimarketing.domain.campaign.schema import CampaignResponse
-from aimarketing.domain.campaign_generation import (
+from vozai.auth import get_current_user_id
+from vozai.domain.campaign.schema import CampaignResponse
+from vozai.domain.campaign_generation import (
     CampaignCreationAcceptRequest,
     CampaignGenerationJobResponse,
     CampaignGenerationJobService,
 )
-from aimarketing.lib.supabase_client import (
+from vozai.lib.supabase_client import (
     SupabaseStorageService,
 )
 

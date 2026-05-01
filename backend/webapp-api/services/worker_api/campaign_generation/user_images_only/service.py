@@ -15,11 +15,11 @@ from services.worker_api.campaign_generation.content_plan import (
 from services.worker_api.campaign_generation.shared.service import (
     BaseCampaignGenerationJobRunner,
 )
-from aimarketing.domain.campaign_generation.model import (
+from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
-from aimarketing.domain.campaign_generation.service import CampaignGenerationJobService
+from vozai.domain.campaign_generation.service import CampaignGenerationJobService
 
 
 logger = logging.getLogger(__name__)

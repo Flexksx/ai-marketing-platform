@@ -5,8 +5,8 @@ from fastapi import APIRouter, BackgroundTasks, Body, Depends
 from services.worker_api.brand_generation.service import (
     BrandGenerationJobRunner,
 )
-from aimarketing.config import get_settings
-from aimarketing.lib.cloudtasks.schema import (
+from vozai.config import get_settings
+from vozai.lib.cloudtasks.schema import (
     BrandGenerationTaskPayload,
 )
 

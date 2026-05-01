@@ -1,0 +1,6 @@
+export enum ToneOfVoiceDimensionName {
+	FORMALITY = 'FORMALITY',
+	HUMOUR = 'HUMOUR',
+	IRREVERENCE = 'IRREVERENCE',
+	ENTHUSIASM = 'ENTHUSIASM'
+}

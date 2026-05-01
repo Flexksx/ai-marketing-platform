@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from aimarketing.domain.content_generation_job import (
+from vozai.domain.content_generation_job import (
     ContentGenerationJob,
     TextWithSingleImageContentGenerationJobResult,
 )

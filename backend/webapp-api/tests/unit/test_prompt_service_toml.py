@@ -2,13 +2,13 @@ from pathlib import Path
 
 import pytest
 
-from aimarketing.domain.brand_archetype.model import BrandArchetypeName
-from aimarketing.domain.brand_settings.content_pillar.model import (
+from vozai.domain.brand_archetype.model import BrandArchetypeName
+from vozai.domain.brand_settings.content_pillar.model import (
     ContentTypeName,
     ToneOfVoiceDimensionName,
 )
-from aimarketing.lib.prompts.model import PromptConfigError
-from aimarketing.lib.prompts.service import PromptService
+from vozai.lib.prompts.model import PromptConfigError
+from vozai.lib.prompts.service import PromptService
 
 
 def test_prompt_service_loads_libraries_from_repo_prompts() -> None:

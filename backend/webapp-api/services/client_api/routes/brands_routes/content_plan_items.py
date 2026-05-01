@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Depends, Path
 
 from services.client_api.auth.access_validation import validate_brand_access
-from aimarketing.domain.content_plan_item import (
+from vozai.domain.content_plan_item import (
     ContentPlanItem,
     ContentPlanItemService,
     ContentPlanItemUpdateRequest,

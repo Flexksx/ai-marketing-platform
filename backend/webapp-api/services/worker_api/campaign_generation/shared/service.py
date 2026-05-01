@@ -3,13 +3,13 @@ from abc import ABC, abstractmethod
 
 from fastapi import Depends
 
-from aimarketing.domain.campaign_generation.model import (
+from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
-from aimarketing.domain.campaign_generation.schema import CampaignCreationJobUpdateInput
-from aimarketing.domain.campaign_generation.service import CampaignGenerationJobService
-from aimarketing.lib.job.model import JobStatus
+from vozai.domain.campaign_generation.schema import CampaignCreationJobUpdateInput
+from vozai.domain.campaign_generation.service import CampaignGenerationJobService
+from vozai.lib.job.model import JobStatus
 
 
 logger = logging.getLogger(__name__)

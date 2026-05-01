@@ -8,17 +8,17 @@ from pydantic_ai import ImageUrl
 from services.worker_api.campaign_generation.content_brief.service import (
     CampaignContentBriefGenerator,
 )
-from aimarketing.domain.brand import Brand
-from aimarketing.domain.brand.service import BrandService
-from aimarketing.domain.campaign_generation import (
+from vozai.domain.brand import Brand
+from vozai.domain.brand.service import BrandService
+from vozai.domain.campaign_generation import (
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
-from aimarketing.domain.campaign_generation.model import (
+from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
-from aimarketing.domain.content_channel import ContentChannel, ContentChannelService
-from aimarketing.lib.prompts import PromptService, PromptTemplateName
+from vozai.domain.content_channel import ContentChannel, ContentChannelService
+from vozai.lib.prompts import PromptService, PromptTemplateName
 
 
 logger = logging.getLogger(__name__)

@@ -5,9 +5,9 @@ from fastapi import APIRouter, Body, Depends
 from services.client_api.auth.access_validation import (
     validate_brand_generation_job_access,
 )
-from aimarketing.auth import get_current_user_id
-from aimarketing.domain.brand.schema import BrandResponse
-from aimarketing.domain.brand_extraction import (
+from vozai.auth import get_current_user_id
+from vozai.domain.brand.schema import BrandResponse
+from vozai.domain.brand_extraction import (
     BrandGenerationJob,
     BrandGenerationJobAcceptRequest,
     BrandGenerationJobCreateRequest,

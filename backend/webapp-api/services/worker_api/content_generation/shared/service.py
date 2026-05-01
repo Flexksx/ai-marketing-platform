@@ -4,16 +4,16 @@ from abc import ABC, abstractmethod
 import public
 from fastapi import Depends
 
-from aimarketing.domain.content_generation_job import (
+from vozai.domain.content_generation_job import (
     ContentGenerationJobResult,
     ContentGenerationJobRuntimeException,
     ContentGenerationJobUpdateRequest,
 )
-from aimarketing.domain.content_generation_job.model import (
+from vozai.domain.content_generation_job.model import (
     ContentGenerationJob,
 )
-from aimarketing.domain.content_generation_job.service import ContentGenerationJobService
-from aimarketing.lib.job.model import JobStatus
+from vozai.domain.content_generation_job.service import ContentGenerationJobService
+from vozai.lib.job.model import JobStatus
 
 
 logger = logging.getLogger(__name__)

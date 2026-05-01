@@ -3,9 +3,9 @@ from datetime import datetime
 import public
 from pydantic import BaseModel, ConfigDict, Field
 
-from aimarketing.domain.brand_settings import ContentPillarType, ContentTypeName
-from aimarketing.domain.content.model import ContentFormat
-from aimarketing.domain.content_channel.model import ContentChannelName
+from vozai.domain.brand_settings import ContentPillarType, ContentTypeName
+from vozai.domain.content.model import ContentFormat
+from vozai.domain.content_channel.model import ContentChannelName
 
 
 @public.add

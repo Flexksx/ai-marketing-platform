@@ -9,11 +9,11 @@ from services.worker_api.content_generation.factory import (
 from services.worker_api.content_generation.shared.service import (
     BaseContentGenerationJobRunner,
 )
-from aimarketing.config import Settings, get_settings
-from aimarketing.domain.content_generation_job import (
+from vozai.config import Settings, get_settings
+from vozai.domain.content_generation_job import (
     ContentGenerationJobService,
 )
-from aimarketing.lib.cloudtasks.schema import (
+from vozai.lib.cloudtasks.schema import (
     ContentGenerationTaskPayload,
 )
 

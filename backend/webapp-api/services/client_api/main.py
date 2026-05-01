@@ -8,9 +8,9 @@ from services.client_api.routes.brand_generation import (
 )
 from services.client_api.routes.brands import router as brand_router
 from services.client_api.routes.docs import router as docs_router
-from aimarketing.config import get_settings
-from aimarketing.http_logging import http_logging_middleware
-from aimarketing.logging_config import configure_logging
+from vozai.config import get_settings
+from vozai.http_logging import http_logging_middleware
+from vozai.logging_config import configure_logging
 
 
 settings = get_settings()
@@ -34,7 +34,7 @@ app = FastAPI(
 app.middleware("http")(http_logging_middleware)
 
 allowed_origins = [
-    "https://aimarketing.pages.dev",
+    "https://vozai.pages.dev",
 ]
 
 if settings.environment == "development":

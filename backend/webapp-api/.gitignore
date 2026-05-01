@@ -1,0 +1,13 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual env
+.venv/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+
+# Build / packaging
+*.egg-info/

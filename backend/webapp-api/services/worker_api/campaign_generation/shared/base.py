@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from aimarketing.domain.campaign_generation.model import (
+from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )

@@ -1,0 +1,8 @@
+# Cloudflare Pages/Workers Environment Variables
+# Copy this file to .dev.vars for local development with Wrangler
+# For production, set these in Cloudflare dashboard
+
+PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-anon-key
+
+PUBLIC_BACKEND_URL=http://localhost:8000

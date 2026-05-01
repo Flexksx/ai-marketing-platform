@@ -2,9 +2,9 @@ import public
 from faker import Faker
 from pydantic_extra_types.language_code import LanguageAlpha2
 
-from aimarketing.domain.brand import BrandColor, BrandData
-from aimarketing.domain.brand_archetype.model import BrandArchetypeName
-from aimarketing.domain.brand_settings import (
+from vozai.domain.brand import BrandColor, BrandData
+from vozai.domain.brand_archetype.model import BrandArchetypeName
+from vozai.domain.brand_settings import (
     BrandAudience,
     BrandAudienceAgeRange,
     BrandAudienceGender,

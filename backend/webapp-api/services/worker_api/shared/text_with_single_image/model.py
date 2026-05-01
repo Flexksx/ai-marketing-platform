@@ -1,7 +1,7 @@
 import public
 from pydantic import BaseModel
 
-from aimarketing.domain.content_channel import ContentChannelName, ContentFormat
+from vozai.domain.content_channel import ContentChannelName, ContentFormat
 
 
 @public.add

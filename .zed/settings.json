@@ -4,9 +4,6 @@
     "Jinja2": ["j2", "jinja", "jinja2"],
   },
   "languages": {
-    "Java": {
-      "language_servers": ["jdtls"],
-    },
     "Python": {
       "language_servers": ["ty", "!basedpyright", "ruff"],
       "format_on_save": "on",

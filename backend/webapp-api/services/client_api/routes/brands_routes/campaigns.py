@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Path, Query
 
 from services.client_api.auth.access_validation import validate_brand_access
-from aimarketing.domain.campaign.entity import CampaignState
-from aimarketing.domain.campaign.schema import CampaignListRequest, CampaignResponse
-from aimarketing.domain.campaign.service import CampaignService
+from vozai.domain.campaign.entity import CampaignState
+from vozai.domain.campaign.schema import CampaignListRequest, CampaignResponse
+from vozai.domain.campaign.service import CampaignService
 
 
 router = APIRouter(tags=["Brand Campaigns"])

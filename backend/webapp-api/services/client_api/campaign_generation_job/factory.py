@@ -2,12 +2,12 @@ import asyncio
 
 from fastapi import UploadFile
 
-from aimarketing.domain.campaign_generation import (
+from vozai.domain.campaign_generation import (
     CampaignGenerationJobCreateRequest,
     ProductLifestyleCampaignGenerationJobUserInput,
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
-from aimarketing.lib.supabase_client import (
+from vozai.lib.supabase_client import (
     StorageBucket,
     StorageUploadRequest,
     StorageUploadResult,

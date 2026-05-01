@@ -17,9 +17,9 @@ from services.worker_api.content_generation.text_with_single_image.from_user_med
 from services.worker_api.content_generation.text_with_single_image.product_lifestyle import (
     ProductLifestyleTextWithSingleImageContentGenerationJobStrategy,
 )
-from aimarketing.domain.brand import Brand
-from aimarketing.domain.content_channel import ContentChannelName
-from aimarketing.domain.content_generation_job import (
+from vozai.domain.brand import Brand
+from vozai.domain.content_channel import ContentChannelName
+from vozai.domain.content_generation_job import (
     AiGeneratedTextWithSingleImageContentGenerationJobUserInput,
     ContentGenerationJob,
     ContentGenerationJobInvalidUserInputException,
@@ -29,7 +29,7 @@ from aimarketing.domain.content_generation_job import (
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
-from aimarketing.domain.content_generation_job.service import ContentGenerationJobService
+from vozai.domain.content_generation_job.service import ContentGenerationJobService
 
 
 class _AgentOutputFromUserMedia(BaseModel):

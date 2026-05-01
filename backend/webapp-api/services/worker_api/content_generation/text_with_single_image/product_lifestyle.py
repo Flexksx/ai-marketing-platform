@@ -8,18 +8,18 @@ from services.worker_api.shared import (
     TextWithSingleImageContent,
     TextWithSingleImageContentGenerator,
 )
-from aimarketing.domain.brand import Brand
-from aimarketing.domain.content import TextWithSingleImageContentData
-from aimarketing.domain.content_channel import (
+from vozai.domain.brand import Brand
+from vozai.domain.content import TextWithSingleImageContentData
+from vozai.domain.content_channel import (
     ContentChannelName,
 )
-from aimarketing.domain.content_generation_job import (
+from vozai.domain.content_generation_job import (
     ContentGenerationJob,
     ContentGenerationJobInvalidUserInputException,
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
-from aimarketing.lib.prompts import PromptTemplateName
+from vozai.lib.prompts import PromptTemplateName
 
 
 class _AgentDependencies(BaseModel):

@@ -8,16 +8,16 @@ from pydantic_ai import format_as_xml
 from services.worker_api.shared.text_with_single_image import (
     TextWithSingleImageContentGenerator,
 )
-from aimarketing.domain.campaign_generation.model import (
+from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
     ContentPlanItem,
 )
-from aimarketing.domain.campaign_generation.service import CampaignGenerationJobService
-from aimarketing.domain.content.model import TextWithSingleImageContentData
-from aimarketing.domain.content_plan_item import ContentPlanItemUpdateRequest
-from aimarketing.lib.job.model import JobStatus
-from aimarketing.lib.prompts import PromptTemplateName
+from vozai.domain.campaign_generation.service import CampaignGenerationJobService
+from vozai.domain.content.model import TextWithSingleImageContentData
+from vozai.domain.content_plan_item import ContentPlanItemUpdateRequest
+from vozai.lib.job.model import JobStatus
+from vozai.lib.prompts import PromptTemplateName
 
 
 logger = logging.getLogger(__name__)

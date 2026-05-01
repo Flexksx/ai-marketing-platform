@@ -18,20 +18,20 @@ from pydantic_ai import (
 from services.worker_api.shared.text_with_single_image.model import (
     TextWithSingleImageContent,
 )
-from aimarketing.domain.brand import Brand, BrandService
-from aimarketing.domain.content_channel import (
+from vozai.domain.brand import Brand, BrandService
+from vozai.domain.content_channel import (
     ContentChannelName,
     ContentChannelService,
     ContentFormat,
 )
-from aimarketing.lib.ai_agents import PydanticAiModel
-from aimarketing.lib.nano_banana import (
+from vozai.lib.ai_agents import PydanticAiModel
+from vozai.lib.nano_banana import (
     NanoBananaRequest,
     NanoBananaResponse,
     NanoBananaService,
 )
-from aimarketing.lib.prompts import PromptService, PromptTemplateName
-from aimarketing.lib.supabase_client import (
+from vozai.lib.prompts import PromptService, PromptTemplateName
+from vozai.lib.supabase_client import (
     StorageBucket,
     StorageUploadRequest,
     SupabaseStorageService,

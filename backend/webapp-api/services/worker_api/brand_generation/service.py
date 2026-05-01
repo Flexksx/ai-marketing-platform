@@ -6,15 +6,15 @@ from services.worker_api.brand_generation.steps.data_extraction import (
     BrandDataExtractionStep,
 )
 from services.worker_api.brand_generation.steps.scraping import BrandScrapingStep
-from aimarketing.domain.brand_extraction.model import (
+from vozai.domain.brand_extraction.model import (
     BrandGenerationJob,
     BrandGenerationResult,
 )
-from aimarketing.domain.brand_extraction.schema import (
+from vozai.domain.brand_extraction.schema import (
     BrandGenerationJobUpdateRequest,
 )
-from aimarketing.domain.brand_extraction.service import BrandGenerationJobService
-from aimarketing.lib.job.model import JobStatus
+from vozai.domain.brand_extraction.service import BrandGenerationJobService
+from vozai.lib.job.model import JobStatus
 
 
 logger = logging.getLogger(__name__)

@@ -4,12 +4,12 @@ from fastapi import APIRouter, Depends, File, Form, Path, UploadFile
 
 from services.client_api.auth.access_validation import validate_brand_access
 from services.client_api.content_generation_job import get_from_request_form
-from aimarketing.domain.content.schema import ContentResponse
-from aimarketing.domain.content_generation_job import (
+from vozai.domain.content.schema import ContentResponse
+from vozai.domain.content_generation_job import (
     ContentGenerationJobResponse,
     ContentGenerationJobService,
 )
-from aimarketing.lib.supabase_client import (
+from vozai.lib.supabase_client import (
     SupabaseStorageService,
 )
 

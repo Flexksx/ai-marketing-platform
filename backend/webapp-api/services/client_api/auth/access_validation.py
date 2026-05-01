@@ -1,16 +1,16 @@
 import public
 from fastapi import Depends, Path
 
-from aimarketing.auth import get_current_user_id
-from aimarketing.domain.brand import BrandNotFoundError, BrandService
-from aimarketing.domain.brand_extraction import (
+from vozai.auth import get_current_user_id
+from vozai.domain.brand import BrandNotFoundError, BrandService
+from vozai.domain.brand_extraction import (
     BrandGenerationJobNotFoundError,
     BrandGenerationJobService,
 )
-from aimarketing.domain.campaign_generation import (
+from vozai.domain.campaign_generation import (
     CampaignGenerationJobService,
 )
-from aimarketing.domain.campaign_generation.errors import (
+from vozai.domain.campaign_generation.errors import (
     CampaignGenerationJobNotFoundException,
 )
 

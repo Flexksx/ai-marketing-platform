@@ -11,9 +11,9 @@ from services.worker_api.routes.campaign_generation_tasks import (
 from services.worker_api.routes.content_generation_tasks import (
     router as content_generation_tasks_router,
 )
-from aimarketing.config import get_settings
-from aimarketing.http_logging import http_logging_middleware
-from aimarketing.logging_config import configure_logging
+from vozai.config import get_settings
+from vozai.http_logging import http_logging_middleware
+from vozai.logging_config import configure_logging
 
 
 settings = get_settings()
