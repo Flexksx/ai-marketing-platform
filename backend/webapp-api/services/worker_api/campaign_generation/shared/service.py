@@ -3,12 +3,13 @@ from abc import ABC, abstractmethod
 
 from fastapi import Depends
 
+from db.session_factory import DbSessionFactory
+import vozai.domain.campaign_generation.service as campaign_generation_job_service
 from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
 from vozai.domain.campaign_generation.schema import CampaignCreationJobUpdateInput
-from vozai.domain.campaign_generation.service import CampaignGenerationJobService
 from vozai.lib.job.model import JobStatus
 
 
@@ -16,14 +17,15 @@ logger = logging.getLogger(__name__)
 
 
 class BaseCampaignGenerationJobRunner(ABC):
-    def __init__(
-        self, campaign_generation_job_service: CampaignGenerationJobService = Depends()
-    ):
-        self.campaign_generation_job_service = campaign_generation_job_service
+    def __init__(self, session_factory: DbSessionFactory = Depends()):
+        self.session_factory = session_factory
 
     async def process(self, job_id: str) -> CampaignGenerationJob:
         try:
-            job = await self.campaign_generation_job_service.get(job_id)
+            job = await campaign_generation_job_service.get(
+                self.session_factory,
+                job_id,
+            )
             job_workflow_type = job.user_input.workflow_type
             logger.info(
                 f"Starting campaign generation job {job_id} with workflow type {job_workflow_type}",
@@ -93,9 +95,10 @@ class BaseCampaignGenerationJobRunner(ABC):
         result: CampaignGenerationJobResult,
         status: JobStatus = JobStatus.IN_PROGRESS,
     ) -> CampaignGenerationJob:
-        return await self.campaign_generation_job_service.update(
-            job_id=job_id,
-            request=CampaignCreationJobUpdateInput(
+        return await campaign_generation_job_service.update(
+            self.session_factory,
+            job_id,
+            CampaignCreationJobUpdateInput(
                 status=status,
                 result=result,
             ),
@@ -103,9 +106,10 @@ class BaseCampaignGenerationJobRunner(ABC):
 
     async def _mark_job_failed(self, job_id: str) -> None:
         try:
-            await self.campaign_generation_job_service.update(
-                job_id=job_id,
-                request=CampaignCreationJobUpdateInput(
+            await campaign_generation_job_service.update(
+                self.session_factory,
+                job_id,
+                CampaignCreationJobUpdateInput(
                     status=JobStatus.FAILED,
                     result=None,
                 ),

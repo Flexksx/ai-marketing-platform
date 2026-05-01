@@ -8,7 +8,7 @@ import vozai.domain.content_channel.service as content_channel_service
 from db.session_factory import DbSessionFactory
 from vozai.domain.brand import Brand
 from vozai.domain.brand_settings import ContentPillarBusinessGoal
-from vozai.domain.campaign_generation import CampaignGenerationJobService
+import vozai.domain.campaign_generation.service as campaign_generation_job_service
 from vozai.domain.campaign_generation.model import (
     CampaignGenerationJobResult,
     ContentBriefCampaignGenerationJobResult,
@@ -45,11 +45,9 @@ class CampaignContentBriefGenerator:
         self,
         prompt_service: PromptService = Depends(),
         session_factory: DbSessionFactory = Depends(),
-        campaign_generation_job_service: CampaignGenerationJobService = Depends(),
     ):
         self.prompt_service = prompt_service
         self.session_factory = session_factory
-        self.campaign_generation_job_service = campaign_generation_job_service
 
         self.__agent = Agent(
             model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
@@ -94,7 +92,7 @@ class CampaignContentBriefGenerator:
         job_id: str,
         agent_result: CampaignContentBriefAgentResult,
     ) -> CampaignGenerationJobResult:
-        job = await self.campaign_generation_job_service.get(job_id)
+        job = await campaign_generation_job_service.get(self.session_factory, job_id)
         current_result = job.get_result()
         if current_result is None:
             current_result = CampaignGenerationJobResult()

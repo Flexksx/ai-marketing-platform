@@ -3,6 +3,7 @@ import logging
 from fastapi import APIRouter, BackgroundTasks, Body, Depends
 from pydantic import BaseModel
 
+from db.session_factory import DbSessionFactory
 from services.worker_api.campaign_generation.errors import (
     CampaignGenerationJobProcessingFailureException,
 )
@@ -12,10 +13,8 @@ from services.worker_api.campaign_generation.factory import (
 from services.worker_api.campaign_generation.shared.service import (
     BaseCampaignGenerationJobRunner,
 )
+import vozai.domain.campaign_generation.service as campaign_generation_job_service
 from vozai.config import Settings, get_settings
-from vozai.domain.campaign_generation import (
-    CampaignGenerationJobService,
-)
 from vozai.lib.cloudtasks.schema import (
     CampaignGenerationTaskPayload,
 )
@@ -39,7 +38,7 @@ async def start(
     background_tasks: BackgroundTasks,
     payload: CampaignGenerationTaskPayload = Body(...),  # noqa: B008
     factory: CampaignGenerationJobRunnerFactory = Depends(),
-    campaign_service: CampaignGenerationJobService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
     settings: Settings = Depends(get_settings),
 ):
     job_id = payload.job_id
@@ -49,8 +48,7 @@ async def start(
         extra={"job_id": job_id},
     )
 
-    # Get the job to determine workflow type
-    job = await campaign_service.get(job_id)
+    job = await campaign_generation_job_service.get(session_factory, job_id)
     runner = factory.get_runner(job.workflow_type)
 
     runner_name = type(runner).__name__

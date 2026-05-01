@@ -5,15 +5,16 @@ import public
 from fastapi import Depends
 from pydantic_ai import format_as_xml
 
+from db.session_factory import DbSessionFactory
 from services.worker_api.shared.text_with_single_image import (
     TextWithSingleImageContentGenerator,
 )
+import vozai.domain.campaign_generation.service as campaign_generation_job_service
 from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
     ContentPlanItem,
 )
-from vozai.domain.campaign_generation.service import CampaignGenerationJobService
 from vozai.domain.content.model import TextWithSingleImageContentData
 from vozai.domain.content_plan_item import ContentPlanItemUpdateRequest
 from vozai.lib.job.model import JobStatus
@@ -27,10 +28,10 @@ logger = logging.getLogger(__name__)
 class AIGeneratedCampaignContentGenerator:
     def __init__(
         self,
-        campaign_generation_job_service: CampaignGenerationJobService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         text_with_single_image_service: TextWithSingleImageContentGenerator = Depends(),
     ):
-        self.campaign_generation_job_service = campaign_generation_job_service
+        self.session_factory = session_factory
         self.text_with_single_image_service = text_with_single_image_service
 
     async def generate(self, job: CampaignGenerationJob) -> CampaignGenerationJobResult:
@@ -45,7 +46,10 @@ class AIGeneratedCampaignContentGenerator:
         ]
         await asyncio.gather(*generation_tasks, return_exceptions=False)
 
-        final_job = await self.campaign_generation_job_service.get(job.id)
+        final_job = await campaign_generation_job_service.get(
+            self.session_factory,
+            job.id,
+        )
         if not final_job.result:
             raise ValueError("Final job result not found")
         return final_job.result
@@ -72,12 +76,21 @@ class AIGeneratedCampaignContentGenerator:
                 image_urls=[result.image_url],
                 status=JobStatus.COMPLETED,
             )
-            await self.campaign_generation_job_service.update_posting_plan_item(
-                job.id, item.id, update_request
+            await campaign_generation_job_service.update_posting_plan_item(
+                self.session_factory,
+                job.id,
+                item.id,
+                update_request,
             )
             logger.info(f"Item {item.id} completed")
         except Exception as e:
             logger.error(f"Failed to generate item {item.id}: {e}")
             update_request = ContentPlanItemUpdateRequest(
                 status=JobStatus.FAILED,
+            )
+            await campaign_generation_job_service.update_posting_plan_item(
+                self.session_factory,
+                job.id,
+                item.id,
+                update_request,
             )

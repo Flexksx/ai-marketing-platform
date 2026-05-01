@@ -1,6 +1,6 @@
 import logging
 
-import vozai.domain.campaign.repository as campaign_repository
+import vozai.domain.campaign.service as campaign_service
 import vozai.domain.campaign_generation.repository as campaign_generation_job_repository
 import vozai.domain.content.service as content_service
 import vozai.domain.content_plan_item.service as content_plan_item_service
@@ -134,7 +134,7 @@ async def accept(
         data=campaign_data,
     )
 
-    campaign = await campaign_repository.create(session_factory, campaign_request)
+    campaign = await campaign_service.create(session_factory, campaign_request)
 
     if job.result.content_plan_items is None:
         raise CampaignGenerationJobResultNotFoundException(job_id)

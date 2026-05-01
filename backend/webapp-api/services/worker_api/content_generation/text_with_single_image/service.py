@@ -2,6 +2,7 @@ import public
 from fastapi import Depends
 from pydantic import BaseModel, ConfigDict
 
+from db.session_factory import DbSessionFactory
 from services.worker_api.content_generation.shared import (
     BaseContentGenerationJobRunner,
 )
@@ -29,7 +30,6 @@ from vozai.domain.content_generation_job import (
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
-from vozai.domain.content_generation_job.service import ContentGenerationJobService
 
 
 class _AgentOutputFromUserMedia(BaseModel):
@@ -47,7 +47,7 @@ class _CopywritingAgentTemplateDependencies(BaseModel):
 class TextWithSingleImageContentGenerationJobRunner(BaseContentGenerationJobRunner):
     def __init__(
         self,
-        content_generation_job_service: ContentGenerationJobService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         from_user_media_strategy: (
             FromUserMediaTextWithSingleImageContentGenerationJobStrategy
         ) = Depends(),
@@ -58,7 +58,7 @@ class TextWithSingleImageContentGenerationJobRunner(BaseContentGenerationJobRunn
             ProductLifestyleTextWithSingleImageContentGenerationJobStrategy
         ) = Depends(),
     ):
-        super().__init__(content_generation_job_service)
+        super().__init__(session_factory)
         self.from_user_media_strategy = from_user_media_strategy
         self.ai_generated_image_strategy = ai_generated_image_strategy
         self.product_lifestyle_strategy = product_lifestyle_strategy

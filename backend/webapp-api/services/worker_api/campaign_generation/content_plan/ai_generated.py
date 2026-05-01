@@ -20,7 +20,6 @@ from vozai.domain.brand import Brand
 from vozai.domain.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResultNotFoundException,
-    CampaignGenerationJobService,
 )
 from vozai.domain.campaign_generation.model import CampaignGenerationJobResult
 from vozai.domain.content_channel import ContentChannel
@@ -43,12 +42,10 @@ class AIGeneratedContentPlanGenerator:
     def __init__(
         self,
         prompt_service: PromptService = Depends(),
-        campaign_generation_job_service: CampaignGenerationJobService = Depends(),
         session_factory: DbSessionFactory = Depends(),
     ):
         self.prompt_service = prompt_service
         self.session_factory = session_factory
-        self.campaign_generation_job_service = campaign_generation_job_service
 
         self.__agent = Agent(
             model=PydanticAiModel.GEMINI_FLASH_LATEST,

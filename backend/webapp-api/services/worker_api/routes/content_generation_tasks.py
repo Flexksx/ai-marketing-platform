@@ -3,16 +3,15 @@ import logging
 from fastapi import APIRouter, BackgroundTasks, Body, Depends
 from pydantic import BaseModel
 
+from db.session_factory import DbSessionFactory
 from services.worker_api.content_generation.factory import (
     ContentGenerationJobRunnerFactory,
 )
 from services.worker_api.content_generation.shared.service import (
     BaseContentGenerationJobRunner,
 )
+import vozai.domain.content_generation_job.service as content_generation_job_service
 from vozai.config import Settings, get_settings
-from vozai.domain.content_generation_job import (
-    ContentGenerationJobService,
-)
 from vozai.lib.cloudtasks.schema import (
     ContentGenerationTaskPayload,
 )
@@ -36,7 +35,7 @@ async def start(
     background_tasks: BackgroundTasks,
     payload: ContentGenerationTaskPayload = Body(...),  # noqa: B008
     factory: ContentGenerationJobRunnerFactory = Depends(),
-    content_service: ContentGenerationJobService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
     settings: Settings = Depends(get_settings),
 ) -> ContentGenerationTaskResponse:
     job_id = payload.job_id
@@ -46,7 +45,7 @@ async def start(
         extra={"job_id": job_id},
     )
 
-    job = await content_service.get(job_id)
+    job = await content_generation_job_service.get(session_factory, job_id)
     runner = factory.get_runner(job)
 
     runner_name = type(runner).__name__

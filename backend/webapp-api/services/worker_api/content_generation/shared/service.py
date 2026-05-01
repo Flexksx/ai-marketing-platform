@@ -4,15 +4,14 @@ from abc import ABC, abstractmethod
 import public
 from fastapi import Depends
 
+from db.session_factory import DbSessionFactory
+import vozai.domain.content_generation_job.service as content_generation_job_service
 from vozai.domain.content_generation_job import (
     ContentGenerationJobResult,
     ContentGenerationJobRuntimeException,
     ContentGenerationJobUpdateRequest,
 )
-from vozai.domain.content_generation_job.model import (
-    ContentGenerationJob,
-)
-from vozai.domain.content_generation_job.service import ContentGenerationJobService
+from vozai.domain.content_generation_job.model import ContentGenerationJob
 from vozai.lib.job.model import JobStatus
 
 
@@ -21,10 +20,8 @@ logger = logging.getLogger(__name__)
 
 @public.add
 class BaseContentGenerationJobRunner(ABC):
-    def __init__(
-        self, content_generation_job_service: ContentGenerationJobService = Depends()
-    ):
-        self.content_generation_job_service = content_generation_job_service
+    def __init__(self, session_factory: DbSessionFactory = Depends()):
+        self.session_factory = session_factory
 
     async def process(self, job_id: str) -> ContentGenerationJob:
         try:
@@ -32,7 +29,10 @@ class BaseContentGenerationJobRunner(ABC):
                 f"Starting content generation job {job_id}",
                 extra={"job_id": job_id},
             )
-            job = await self.content_generation_job_service.get(job_id)
+            job = await content_generation_job_service.get(
+                self.session_factory,
+                job_id,
+            )
             result = await self.generate_result(job)
             logger.info(
                 f"Content generation result produced for job {job_id}",
@@ -60,18 +60,20 @@ class BaseContentGenerationJobRunner(ABC):
     async def __complete_job(
         self, job_id: str, result: ContentGenerationJobResult
     ) -> ContentGenerationJob:
-        return await self.content_generation_job_service.update(
-            job_id=job_id,
-            request=ContentGenerationJobUpdateRequest(
+        return await content_generation_job_service.update(
+            self.session_factory,
+            job_id,
+            ContentGenerationJobUpdateRequest(
                 status=JobStatus.COMPLETED,
                 result=result,
             ),
         )
 
     async def _mark_job_failed(self, job_id: str) -> ContentGenerationJob:
-        return await self.content_generation_job_service.update(
-            job_id=job_id,
-            request=ContentGenerationJobUpdateRequest(
+        return await content_generation_job_service.update(
+            self.session_factory,
+            job_id,
+            ContentGenerationJobUpdateRequest(
                 status=JobStatus.FAILED,
                 result=None,
             ),

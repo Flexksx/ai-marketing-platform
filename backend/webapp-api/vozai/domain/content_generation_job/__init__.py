@@ -7,4 +7,3 @@ from vozai.domain.content_generation_job.model import (
     ContentGenerationJobResult,  # noqa: F401
 )
 from vozai.domain.content_generation_job.schema import *
-from vozai.domain.content_generation_job.service import *

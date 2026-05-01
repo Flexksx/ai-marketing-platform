@@ -3,6 +3,7 @@ import logging
 import public
 from fastapi import Depends
 
+from db.session_factory import DbSessionFactory
 from services.worker_api.campaign_generation.content_brief.from_user_media import (
     UserMediaContentBriefGenerator,
 )
@@ -19,7 +20,6 @@ from vozai.domain.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
-from vozai.domain.campaign_generation.service import CampaignGenerationJobService
 
 
 logger = logging.getLogger(__name__)
@@ -29,12 +29,12 @@ logger = logging.getLogger(__name__)
 class UserImagesOnlyCampaignGenerationJobRunner(BaseCampaignGenerationJobRunner):
     def __init__(
         self,
-        job_service: CampaignGenerationJobService = Depends(),
+        session_factory: DbSessionFactory = Depends(),
         content_brief: UserMediaContentBriefGenerator = Depends(),
         content_plan: UserMediaContentPlanGenerator = Depends(),
         post_generation_step: UserImagesOnlyPostGenerationCampaignGenerationStep = Depends(),
     ):
-        super().__init__(job_service)
+        super().__init__(session_factory)
         self.content_brief = content_brief
         self.content_plan = content_plan
         self.post_generation_step = post_generation_step

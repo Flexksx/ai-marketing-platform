@@ -2,6 +2,7 @@ import logging
 
 from fastapi import APIRouter, Body, Depends, File, Form, Path, UploadFile
 
+from db.session_factory import DbSessionFactory
 from services.client_api.auth.access_validation import validate_brand_access
 from services.client_api.campaign_generation_job import get_from_request_form
 from vozai.auth import get_current_user_id
@@ -9,8 +10,9 @@ from vozai.domain.campaign.schema import CampaignResponse
 from vozai.domain.campaign_generation import (
     CampaignCreationAcceptRequest,
     CampaignGenerationJobResponse,
-    CampaignGenerationJobService,
 )
+import vozai.domain.campaign_generation.service as campaign_generation_job_service
+from vozai.lib.cloudtasks.service import CloudTasksService
 from vozai.lib.supabase_client import (
     SupabaseStorageService,
 )
@@ -32,14 +34,20 @@ async def start(
     brand_id: str = Depends(validate_brand_access),
     request_data: str = Form(...),
     request_files: list[UploadFile] = File(default=[]),  # noqa: B008
-    campaign_generation_job_service: CampaignGenerationJobService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
+    tasks_service: CloudTasksService = Depends(),
     supabase_storage_service: SupabaseStorageService = Depends(),
 ):
     request = await get_from_request_form(
         brand_id, request_data, request_files, supabase_storage_service
     )
 
-    job = await campaign_generation_job_service.start(user_id, request)
+    job = await campaign_generation_job_service.start(
+        session_factory,
+        tasks_service,
+        user_id,
+        request,
+    )
 
     return CampaignGenerationJobResponse.model_validate(job)
 
@@ -48,9 +56,9 @@ async def start(
 async def get(
     job_id: str = Path(...),
     brand_id: str = Depends(validate_brand_access),  # noqa: ARG001
-    service: CampaignGenerationJobService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
-    job = await service.get(job_id)
+    job = await campaign_generation_job_service.get(session_factory, job_id)
     return CampaignGenerationJobResponse.model_validate(job)
 
 
@@ -59,7 +67,11 @@ async def accept(
     job_id: str = Path(...),
     request: CampaignCreationAcceptRequest = Body(...),  # noqa: B008
     brand_id: str = Depends(validate_brand_access),  # noqa: ARG001
-    service: CampaignGenerationJobService = Depends(),
+    session_factory: DbSessionFactory = Depends(),
 ):
-    campaign = await service.accept(job_id, request)
+    campaign = await campaign_generation_job_service.accept(
+        session_factory,
+        job_id,
+        request,
+    )
     return CampaignResponse.model_validate(campaign)
