@@ -11,10 +11,10 @@ from src.shared import (
 )
 from webapp_api_contract.brands import Brand
 from webapp_api_contract.content import TextWithSingleImageContentData
+from src.content_generation_job.errors import ContentGenerationJobInvalidUserInputException
 from webapp_api_contract.content_generation import (
     AiGeneratedTextWithSingleImageContentGenerationJobUserInput,
     ContentGenerationJob,
-    ContentGenerationJobInvalidUserInputException,
     TextWithSingleImageContentGenerationJobResult,
 )
 from webapp_api_contract.shared import ContentChannelName

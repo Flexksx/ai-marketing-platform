@@ -19,11 +19,13 @@ from src.content_generation_job.generation.text_with_single_image.product_lifest
     ProductLifestyleTextWithSingleImageContentGenerationJobStrategy,
 )
 from webapp_api_contract.brands import Brand
+from src.content_generation_job.errors import (
+    ContentGenerationJobInvalidUserInputException,
+    ContentGenerationJobUnsupportedWorkflowTypeException,
+)
 from webapp_api_contract.content_generation import (
     AiGeneratedTextWithSingleImageContentGenerationJobUserInput,
     ContentGenerationJob,
-    ContentGenerationJobInvalidUserInputException,
-    ContentGenerationJobUnsupportedWorkflowTypeException,
     ContentGenerationJobWorkflowType,
     FromUserMediaTextWithSingleImageContentGenerationJobUserInput,
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,

@@ -19,10 +19,12 @@ from src.campaign_generation.generation.errors import (
     CampaignGenerationJobGenerationFailureException,
 )
 from webapp_api_contract.brands import Brand
+from src.campaign_generation.errors import (
+    CampaignGenerationJobResultNotFoundException,
+)
 from webapp_api_contract.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
-    CampaignGenerationJobResultNotFoundException,
 )
 from webapp_api_contract.content_plan_items import ContentPlanItemCreateRequest
 from webapp_api_contract.shared import ContentChannel

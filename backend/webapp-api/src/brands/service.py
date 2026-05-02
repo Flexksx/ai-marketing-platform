@@ -7,7 +7,7 @@ from webapp_api_contract.brands import (
     BrandSearchRequest,
     BrandUpdateRequest,
 )
-from webapp_api_contract.brands import repository as brand_repository
+import src.brands.repository as brand_repository
 
 
 async def get(session_factory: DbSessionFactory, brand_id: str) -> Brand:

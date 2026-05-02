@@ -19,11 +19,13 @@ from src.campaign_generation.generation.errors import (
     CampaignGenerationJobGenerationFailureException,
 )
 from webapp_api_contract.brands import Brand
+from src.campaign_generation.errors import (
+    CampaignGenerationJobResultElementNotFoundException,
+    CampaignGenerationJobResultNotFoundException,
+)
 from webapp_api_contract.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
-    CampaignGenerationJobResultElementNotFoundException,
-    CampaignGenerationJobResultNotFoundException,
     ContentBriefCampaignGenerationJobResult,
     UserMediaOnlyCampaignGenerationJobUserInput,
 )

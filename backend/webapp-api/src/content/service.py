@@ -5,7 +5,7 @@ from webapp_api_contract.content import (
     ContentListRequest,
     ContentUpdateRequest,
 )
-from webapp_api_contract.content import repository as content_repository
+import src.content.repository as content_repository
 
 
 async def search(

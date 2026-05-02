@@ -46,10 +46,21 @@
   "panels": [
 
     {
+      "type": "text",
+      "id": 100,
+      "title": "Common LogQL queries",
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 0 },
+      "options": {
+        "mode": "markdown",
+        "content": "### Quick reference — click any panel's ⋮ menu → **Explore** to open the query directly\n\n| Intent | LogQL |\n|---|---|\n| All backend logs | `{service=~\"webapp-api\\|scraper-api\"}` |\n| Errors only | `{service=~\"webapp-api\\|scraper-api\"} \\| json \\| level=\"error\"` |\n| By trace ID | `{service=\"webapp-api\"} \\| json \\| trace_id=\"<id>\"` |\n| Route filter | `{service=\"webapp-api\"} \\| json \\|~ \"/brands\"` |\n| Slow requests (>1s) | `{service=\"webapp-api\"} \\| json \\| duration > 1s` |\n| Count errors / 5m | `sum by (service) (count_over_time({service=~\"webapp-api\\|scraper-api\"} \\| json \\| level=\"error\" [5m]))` |\n| Rate of all logs | `sum by (service) (rate({service=~\"webapp-api\\|scraper-api\"}[1m]))` |\n| Postgres errors | `{service=\"postgres\"} \\|~ \"(?i)error\\|fatal\"` |"
+      }
+    },
+
+    {
       "type": "row",
       "id": 1,
       "title": "webapp-api",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 7 },
       "collapsed": false
     },
 
@@ -57,7 +68,7 @@
       "type": "logs",
       "id": 2,
       "title": "webapp-api logs",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 1 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 8 },
       "datasource": { "type": "loki", "uid": "loki" },
       "options": {
         "dedupStrategy": "none",
@@ -82,7 +93,7 @@
       "type": "row",
       "id": 10,
       "title": "scraper-api",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 11 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
       "collapsed": false
     },
 
@@ -90,7 +101,7 @@
       "type": "logs",
       "id": 11,
       "title": "scraper-api logs",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 12 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 19 },
       "datasource": { "type": "loki", "uid": "loki" },
       "options": {
         "dedupStrategy": "none",
@@ -115,14 +126,14 @@
       "type": "row",
       "id": 20,
       "title": "postgres",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 },
       "collapsed": true,
       "panels": [
         {
           "type": "logs",
           "id": 21,
           "title": "postgres logs",
-          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 23 },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 30 },
           "datasource": { "type": "loki", "uid": "loki" },
           "options": {
             "dedupStrategy": "none",

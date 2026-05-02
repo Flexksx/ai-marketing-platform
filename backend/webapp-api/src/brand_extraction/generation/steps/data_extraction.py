@@ -16,10 +16,12 @@ from src.brand_extraction.generation.brand_data_generation import (
     PositioningBrandDataResult,
 )
 from src.brand_extraction.generation.steps.base import BrandGenerationBaseStep
-from webapp_api_contract.brand_extraction import (
-    BrandGenerationJob,
+from src.brand_extraction.errors import (
     BrandGenerationJobResultElementNotFoundError,
     BrandGenerationJobResultNotFoundError,
+)
+from webapp_api_contract.brand_extraction import (
+    BrandGenerationJob,
     BrandGenerationResult,
 )
 from webapp_api_contract.brand_settings import (
