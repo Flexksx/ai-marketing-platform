@@ -5,12 +5,12 @@ import public
 from fastapi import Depends
 from pydantic_ai import format_as_xml
 
-import src.brands.service as brand_service
+import src.brand.service as brand_service
 import src.campaign_generation.service as campaign_generation_job_service
 from lib.db.session_factory import DbSessionFactory
 from lib.prompts import PromptTemplateName
 from src.shared import TextWithSingleImageContentGenerator
-from webapp_api_contract.brands import Brand
+from webapp_api_contract.brand import Brand
 from webapp_api_contract.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,

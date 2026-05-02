@@ -9,7 +9,7 @@ from src.shared import (
     TextWithSingleImageContent,
     TextWithSingleImageContentGenerator,
 )
-from webapp_api_contract.brands import Brand
+from webapp_api_contract.brand import Brand
 from webapp_api_contract.content import TextWithSingleImageContentData
 from src.content_generation_job.errors import ContentGenerationJobInvalidUserInputException
 from webapp_api_contract.content_generation import (

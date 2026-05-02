@@ -18,7 +18,7 @@ from src.content_generation_job.generation.text_with_single_image.from_user_medi
 from src.content_generation_job.generation.text_with_single_image.product_lifestyle import (
     ProductLifestyleTextWithSingleImageContentGenerationJobStrategy,
 )
-from webapp_api_contract.brands import Brand
+from webapp_api_contract.brand import Brand
 from src.content_generation_job.errors import (
     ContentGenerationJobInvalidUserInputException,
     ContentGenerationJobUnsupportedWorkflowTypeException,

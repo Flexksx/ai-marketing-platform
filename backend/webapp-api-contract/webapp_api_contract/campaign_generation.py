@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from webapp_api_contract.brand_settings import ContentPillarBusinessGoal
+from webapp_api_contract.brand.settings import ContentPillarBusinessGoal
 from webapp_api_contract.content_plan_items import ContentPlanItem
 from webapp_api_contract.shared import (
     CampaignGenerationJobWorkflowType,

@@ -1,13 +1,13 @@
 import public
 from fastapi import Depends, Path
 
-import src.brand_extraction.service as brand_generation_job_service
-import src.brands.service as brand_service
+import src.brand.service as brand_service
+import src.brand_generation_job.service as brand_generation_job_service
 import src.campaign_generation.service as campaign_generation_job_service
 from lib.db.session_factory import DbSessionFactory
 from src.auth import get_current_user_id
-from src.brand_extraction.errors import BrandGenerationJobNotFoundError
-from src.brands.errors import BrandNotFoundError
+from src.brand.errors import BrandNotFoundError
+from src.brand_generation_job.errors import BrandGenerationJobNotFoundError
 from src.campaign_generation.errors import (
     CampaignGenerationJobNotFoundException,
 )

@@ -15,7 +15,7 @@ from pydantic_ai import (
     RunContext,
 )
 
-import src.brands.service as brand_service
+import src.brand.service as brand_service
 import src.content_channel.service as content_channel_service
 from lib.ai_agents import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
@@ -33,7 +33,7 @@ from lib.supabase_client import (
 from src.shared.text_with_single_image.model import (
     TextWithSingleImageContent,
 )
-from webapp_api_contract.brands import Brand
+from webapp_api_contract.brand import Brand
 from webapp_api_contract.shared import ContentChannelName, ContentFormat
 
 

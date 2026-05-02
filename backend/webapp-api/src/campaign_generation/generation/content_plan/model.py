@@ -3,7 +3,7 @@ from datetime import datetime
 import public
 from pydantic import BaseModel, ConfigDict, Field
 
-from webapp_api_contract.brand_settings import ContentPillarType, ContentTypeName
+from webapp_api_contract.brand.settings import ContentPillarType, ContentTypeName
 from webapp_api_contract.content import ContentFormat
 from webapp_api_contract.shared import ContentChannelName
 

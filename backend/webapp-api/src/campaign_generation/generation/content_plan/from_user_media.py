@@ -5,7 +5,7 @@ from fastapi import Depends
 from pydantic import BaseModel, ConfigDict
 from pydantic_ai import Agent, ImageUrl, RunContext, format_as_xml
 
-import src.brands.service as brand_service
+import src.brand.service as brand_service
 import src.content_channel.service as content_channel_service
 import src.content_plan_item.service as content_plan_item_service
 from lib.ai_agents.schema import PydanticAiModel
@@ -18,7 +18,7 @@ from src.campaign_generation.generation.content_plan.model import (
 from src.campaign_generation.generation.errors import (
     CampaignGenerationJobGenerationFailureException,
 )
-from webapp_api_contract.brands import Brand
+from webapp_api_contract.brand import Brand
 from src.campaign_generation.errors import (
     CampaignGenerationJobResultElementNotFoundException,
     CampaignGenerationJobResultNotFoundException,

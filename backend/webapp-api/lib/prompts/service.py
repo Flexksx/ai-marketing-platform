@@ -11,14 +11,14 @@ from lib.prompts.model import (
     PromptLibraries,
     PromptTemplateName,
 )
-from webapp_api_contract.brand_settings import (
+from webapp_api_contract.brand.settings import (
     ContentType,
     ContentTypeName,
     ToneOfVoiceDimension,
     ToneOfVoiceDimensionLevel,
     ToneOfVoiceDimensionName,
 )
-from webapp_api_contract.brands import (
+from webapp_api_contract.brand import (
     BrandArchetype,
     BrandArchetypeData,
     BrandArchetypeName,
