@@ -30,9 +30,9 @@ scrape_configs:
           stages:
             - json:
                 expressions:
-                  level: level
+                  severity: severity
                   message: message
                   trace_id: trace_id
             - labels:
-                level:
+                severity:
                 trace_id:

@@ -52,7 +52,7 @@
       "gridPos": { "h": 7, "w": 24, "x": 0, "y": 0 },
       "options": {
         "mode": "markdown",
-        "content": "### Quick reference — click any panel's ⋮ menu → **Explore** to open the query directly\n\n| Intent | LogQL |\n|---|---|\n| All backend logs | `{service=~\"webapp-api\\|scraper-api\"}` |\n| Errors only | `{service=~\"webapp-api\\|scraper-api\"} \\| json \\| level=\"error\"` |\n| By trace ID | `{service=\"webapp-api\"} \\| json \\| trace_id=\"<id>\"` |\n| Route filter | `{service=\"webapp-api\"} \\| json \\|~ \"/brands\"` |\n| Slow requests (>1s) | `{service=\"webapp-api\"} \\| json \\| duration > 1s` |\n| Count errors / 5m | `sum by (service) (count_over_time({service=~\"webapp-api\\|scraper-api\"} \\| json \\| level=\"error\" [5m]))` |\n| Rate of all logs | `sum by (service) (rate({service=~\"webapp-api\\|scraper-api\"}[1m]))` |\n| Postgres errors | `{service=\"postgres\"} \\|~ \"(?i)error\\|fatal\"` |"
+        "content": "### Quick reference — click any panel's ⋮ menu → **Explore** to open the query directly\n\nAll logs are JSON. Level field is **`severity`** (values: `DEBUG`, `INFO`, `WARNING`, `ERROR`).\n\n| Intent | LogQL |\n|---|---|\n| All backend logs | `{service=~\"webapp-api\\|scraper-api\"}` |\n| Errors only | `{service=~\"webapp-api\\|scraper-api\"} \\| json \\| severity=\"ERROR\"` |\n| By trace ID | `{service=\"webapp-api\"} \\| json \\| trace_id=\"<id>\"` |\n| Route filter | `{service=\"webapp-api\"} \\|~ \"/brands\"` |\n| Count errors / 5m | `sum by (service) (count_over_time({service=~\"webapp-api\\|scraper-api\"} \\| json \\| severity=\"ERROR\" [5m]))` |\n| Rate of all logs | `sum by (service) (rate({service=~\"webapp-api\\|scraper-api\"}[1m]))` |\n| Postgres errors | `{service=\"postgres\"} \\|~ \"(?i)error\\|fatal\"` |"
       }
     },
 
@@ -84,7 +84,7 @@
         {
           "refId": "A",
           "datasource": { "type": "loki", "uid": "loki" },
-          "expr": "{service=\"webapp-api\"} | json | level=~\"$level\" |~ \"$search\""
+          "expr": "{service=\"webapp-api\"} !~ \"/health\" | json | severity=~\"$level\" |~ \"$search\""
         }
       ]
     },
@@ -117,7 +117,7 @@
         {
           "refId": "A",
           "datasource": { "type": "loki", "uid": "loki" },
-          "expr": "{service=\"scraper-api\"} | json | level=~\"$level\" |~ \"$search\""
+          "expr": "{service=\"scraper-api\"} !~ \"/health\" | json | severity=~\"$level\" |~ \"$search\""
         }
       ]
     },

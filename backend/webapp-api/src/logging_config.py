@@ -62,6 +62,25 @@ def configure_logging(level: str, service_name: str, environment: str) -> None:
                     "class": "logging.StreamHandler",
                     "formatter": "json",
                 },
+                "null": {
+                    "class": "logging.NullHandler",
+                },
+            },
+            "loggers": {
+                # uvicorn.access is redundant — http_logging_middleware covers it in JSON
+                "uvicorn.access": {
+                    "handlers": ["null"],
+                    "propagate": False,
+                },
+                # uvicorn.error carries startup/shutdown/reload messages — keep but format as JSON
+                "uvicorn.error": {
+                    "handlers": ["default"],
+                    "propagate": False,
+                },
+                "uvicorn": {
+                    "handlers": ["default"],
+                    "propagate": False,
+                },
             },
             "root": {
                 "level": _get_log_level(level),
