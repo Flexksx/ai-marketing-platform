@@ -12,7 +12,7 @@ from webapp_api_contract.shared import (
 
 INSTAGRAM_CONTENT_CHANNEL: Final[ContentChannel] = ContentChannel(
     name=ContentChannelName.INSTAGRAM,
-    allowed_content_types=[ContentFormat.TEXT_WITH_SINGLE_IMAGE],
+    allowed_content_formats=[ContentFormat.TEXT_WITH_SINGLE_IMAGE],
     image_specification=ContentChannelImageSpecification(
         aspect_ratio=ImageAspectRatio.SQUARE,
         resolution=ImageResolution.STANDARD,
@@ -22,7 +22,7 @@ INSTAGRAM_CONTENT_CHANNEL: Final[ContentChannel] = ContentChannel(
 
 LINKEDIN_CONTENT_CHANNEL: Final[ContentChannel] = ContentChannel(
     name=ContentChannelName.LINKEDIN,
-    allowed_content_types=[ContentFormat.TEXT, ContentFormat.TEXT_WITH_SINGLE_IMAGE],
+    allowed_content_formats=[ContentFormat.TEXT, ContentFormat.TEXT_WITH_SINGLE_IMAGE],
     image_specification=ContentChannelImageSpecification(
         aspect_ratio=ImageAspectRatio.LANDSCAPE_4_3,
         resolution=ImageResolution.STANDARD,
