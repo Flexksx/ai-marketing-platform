@@ -38,8 +38,8 @@ WORKDIR /app
 # Build context must be set to backend/ directory
 # docker build -t scraper-api -f scraper-api/Dockerfile .
 COPY scraper-api/pyproject.toml scraper-api/uv.lock ./
-COPY scraper-api-contract/ /app/scraper-api-contract/
-COPY webapp-api-contract/ /app/webapp-api-contract/
+COPY scraper-api-contract/ /scraper-api-contract/
+COPY webapp-api-contract/ /webapp-api-contract/
 COPY scraper-api/src/ src/
 
 RUN uv sync --frozen --no-dev

@@ -21,7 +21,8 @@ WORKDIR /app
 # Build context must be set to backend/ directory
 # docker build -t webapp-api -f webapp-api/Dockerfile .
 COPY webapp-api/pyproject.toml webapp-api/uv.lock ./
-COPY webapp-api-contract/ /app/webapp-api-contract/
+COPY webapp-api-contract/ /webapp-api-contract/
+COPY scraper-api-contract/ /scraper-api-contract/
 COPY webapp-api/src/ src/
 COPY webapp-api/lib/ lib/
 

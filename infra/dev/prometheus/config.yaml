@@ -1,0 +1,28 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # OTLP-pushed metrics re-exported by the collector
+  - job_name: otel-collector
+    static_configs:
+      - targets: [otel-collector:8889]
+
+  # Container metrics (CPU, RAM, network per service)
+  - job_name: cadvisor
+    static_configs:
+      - targets: [cadvisor:8080]
+
+  # Host-level metrics (CPU, RAM, disk)
+  - job_name: node-exporter
+    static_configs:
+      - targets: [node-exporter:9100]
+
+  # Infra self-monitoring
+  - job_name: tempo
+    static_configs:
+      - targets: [tempo:3200]
+
+  - job_name: loki
+    static_configs:
+      - targets: [loki:3100]
