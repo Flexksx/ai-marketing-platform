@@ -61,7 +61,6 @@ models/ProductLifestyleTextWithSingleImageContentGenerationJobUserInput.ts
 models/RestContentPlanItemUpdateRequest.ts
 models/Result.ts
 models/ScrapeResult.ts
-models/SentenceLengthPreference.ts
 models/TextOnlyContentData.ts
 models/TextOnlyContentGenerationJobResult.ts
 models/TextOnlyContentGenerationJobUserInput.ts

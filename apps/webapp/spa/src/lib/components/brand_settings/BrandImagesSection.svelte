@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BrandSettingsFormData } from '$lib/api/brands/model/BrandData';
+	import type { BrandSettingsFormData } from './form-data';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Image as ImageIcon } from 'lucide-svelte';
 

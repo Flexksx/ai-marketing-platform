@@ -1833,6 +1833,17 @@
             ],
             "title": "Logo Url"
           },
+          "website_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website Url"
+          },
           "media_urls": {
             "items": {
               "type": "string"
@@ -1857,16 +1868,6 @@
               }
             ],
             "title": "Brand Mission"
-          },
-          "archetype": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/BrandArchetypeName"
-              },
-              {
-                "type": "null"
-              }
-            ]
           },
           "locale": {
             "anyOf": [
@@ -2129,65 +2130,43 @@
       },
       "BrandToneOfVoice": {
         "properties": {
-          "formality_level": {
+          "archetype": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrandArchetypeName"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "jargon_density": {
             "type": "integer",
             "maximum": 4.0,
             "minimum": 1.0,
-            "title": "Formality Level",
+            "title": "Jargon Density",
             "default": 1
           },
-          "humour_level": {
+          "visual_density": {
             "type": "integer",
             "maximum": 4.0,
             "minimum": 1.0,
-            "title": "Humour Level",
+            "title": "Visual Density",
             "default": 1
           },
-          "irreverence_level": {
-            "type": "integer",
-            "maximum": 4.0,
-            "minimum": 1.0,
-            "title": "Irreverence Level",
-            "default": 1
-          },
-          "enthusiasm_level": {
-            "type": "integer",
-            "maximum": 4.0,
-            "minimum": 1.0,
-            "title": "Enthusiasm Level",
-            "default": 1
-          },
-          "industry_jargon_usage_level": {
-            "type": "integer",
-            "maximum": 4.0,
-            "minimum": 1.0,
-            "title": "Industry Jargon Usage Level",
-            "default": 1
-          },
-          "sensory_keywords": {
+          "must_use_words": {
             "items": {
               "type": "string"
             },
             "type": "array",
-            "title": "Sensory Keywords"
+            "title": "Must Use Words"
           },
-          "excluded_words": {
+          "forbidden_words": {
             "items": {
               "type": "string"
             },
             "type": "array",
-            "title": "Excluded Words"
-          },
-          "signature_words": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Signature Words"
-          },
-          "sentence_length_preference": {
-            "$ref": "#/components/schemas/SentenceLengthPreference",
-            "default": "MEDIUM"
+            "title": "Forbidden Words"
           }
         },
         "type": "object",
@@ -3182,15 +3161,6 @@
           "page_urls"
         ],
         "title": "ScrapeResult"
-      },
-      "SentenceLengthPreference": {
-        "type": "string",
-        "enum": [
-          "SHORT",
-          "MEDIUM",
-          "LONG"
-        ],
-        "title": "SentenceLengthPreference"
       },
       "TextOnlyContentData": {
         "properties": {

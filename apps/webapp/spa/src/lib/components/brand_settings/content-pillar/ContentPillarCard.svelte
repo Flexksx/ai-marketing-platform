@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { BrandAudience } from '$lib/api/brand-data/model/BrandData';
-	import type { ContentPillarParsed } from '$lib/api/brand-data/schema/ContentPillar';
+	import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
+	import type { ContentPillar } from '$lib/api/generated/models/ContentPillar';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import {
@@ -21,7 +21,7 @@
 	} from 'lucide-svelte';
 
 	interface Props {
-		pillar: ContentPillarParsed;
+		pillar: ContentPillar;
 		audiences: BrandAudience[];
 		readonly?: boolean;
 		onEditRequested?: () => void;
@@ -30,7 +30,7 @@
 	let { pillar, audiences, readonly = false, onEditRequested }: Props = $props();
 
 	const linkedAudienceNames = $derived(
-		pillar.audienceIds
+		(pillar.audienceIds ?? [])
 			.map((id) => audiences.find((a) => a.id === id)?.name)
 			.filter((name): name is string => !!name)
 	);
@@ -89,7 +89,7 @@
 	</CardHeader>
 	<CardContent class="space-y-2 px-4 pb-4 pt-0">
 		<div class="flex flex-wrap gap-1.5">
-			{#if BUSINESS_GOAL_ICONS[pillar.businessGoal]}
+			{#if pillar.businessGoal && BUSINESS_GOAL_ICONS[pillar.businessGoal]}
 				{@const GoalIcon = BUSINESS_GOAL_ICONS[pillar.businessGoal]}
 				<span
 					class="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-300"
@@ -98,7 +98,7 @@
 					{formatEnumLabel(pillar.businessGoal)}
 				</span>
 			{/if}
-			{#if PILLAR_TYPE_ICONS[pillar.type]}
+			{#if pillar.type && PILLAR_TYPE_ICONS[pillar.type]}
 				{@const TypeIcon = PILLAR_TYPE_ICONS[pillar.type]}
 				<span
 					class="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
@@ -109,9 +109,9 @@
 			{/if}
 		</div>
 
-		{#if pillar.contentTypes.length > 0}
+		{#if (pillar.contentTypes ?? []).length > 0}
 			<div class="flex flex-wrap gap-1">
-				{#each pillar.contentTypes as contentType (contentType)}
+				{#each (pillar.contentTypes ?? []) as contentType (contentType)}
 					<span
 						class="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-foreground"
 					>

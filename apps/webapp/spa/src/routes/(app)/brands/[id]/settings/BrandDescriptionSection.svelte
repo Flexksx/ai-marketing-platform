@@ -1,6 +1,7 @@
 <script lang="ts">
 	import MarkdownRenderer from '$lib/components/markdown/MarkdownRenderer.svelte';
-	import type { BrandArchetypeName, BrandSettingsFormData } from '$lib/api/brands/model/BrandData';
+	import type { BrandSettingsFormData } from '$lib/components/brand_settings/form-data';
+	import type { BrandArchetypeName } from '$lib/api/generated/models/BrandArchetypeName';
 	import { getArchetypeDescription, getArchetypeLabel } from '$lib/utils/brandArchetype';
 	import { BrandColorsSection, BrandLogoUpload } from '$lib/components/brand_settings';
 	import { Card, CardContent } from '$lib/components/ui/card';
@@ -14,6 +15,8 @@
 	};
 
 	let { data, onEditClick, onFileSelected, readonly = false }: Props = $props();
+
+	const archetype = $derived(data.toneOfVoice?.archetype ?? null);
 </script>
 
 <Card
@@ -48,16 +51,16 @@
 			<MarkdownRenderer content={data.description || 'No description yet...'} />
 		</div>
 
-		{#if data.archetype}
+		{#if archetype}
 			<div class="flex flex-col gap-1">
 				<div class="flex items-center gap-2">
 					<Sparkles class="h-4 w-4 text-muted-foreground" />
 					<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-						{getArchetypeLabel(data.archetype as BrandArchetypeName)}
+						{getArchetypeLabel(archetype as BrandArchetypeName)}
 					</span>
 				</div>
 				<p class="text-sm text-muted-foreground italic pl-6">
-					{getArchetypeDescription(data.archetype as BrandArchetypeName)}
+					{getArchetypeDescription(archetype as BrandArchetypeName)}
 				</p>
 			</div>
 		{/if}

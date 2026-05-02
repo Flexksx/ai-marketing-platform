@@ -6,7 +6,7 @@
 	import { tick } from 'svelte';
 	import { X } from 'lucide-svelte';
 
-	export type WordItemToneOfVoiceVariant = 'sensory' | 'excluded' | 'signature';
+	export type WordItemToneOfVoiceVariant = 'must_use' | 'forbidden';
 
 	interface Props {
 		word: string;
@@ -57,11 +57,9 @@
 	}
 
 	const variantClass = $derived(
-		variant === 'sensory'
-			? 'border-blue-200 bg-blue-100/80 dark:border-blue-800 dark:bg-blue-900/25 text-foreground'
-			: variant === 'excluded'
-				? 'border-red-200 bg-red-100/80 dark:border-red-800 dark:bg-red-900/25 text-foreground'
-				: 'border-primary/40 bg-primary/10 text-foreground'
+		variant === 'must_use'
+			? 'border-green-200 bg-green-100/80 dark:border-green-800 dark:bg-green-900/25 text-foreground'
+			: 'border-red-200 bg-red-100/80 dark:border-red-800 dark:bg-red-900/25 text-foreground'
 	);
 </script>
 

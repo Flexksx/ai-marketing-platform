@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { BrandAudience } from '$lib/api/brand-data/model/BrandData';
-	import type { BrandSettingsFormData } from '$lib/api/brands/model/BrandData';
+	import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
+	import type { BrandSettingsFormData } from './form-data';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Users, Plus } from 'lucide-svelte';

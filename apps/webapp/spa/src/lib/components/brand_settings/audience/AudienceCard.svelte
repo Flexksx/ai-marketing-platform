@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BrandAudience } from '$lib/api/brand-data/model/BrandData';
+	import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import * as Select from '$lib/components/ui/select';
@@ -29,11 +29,11 @@
 		audience = { ...audience, ...patch };
 	}
 
-	const ageLabel = $derived(getAgeRangeLabels(audience.ageRange));
-	const genderLabel = $derived(getGenderLabels(audience.gender));
-	const incomeLabel = $derived(getIncomeRangeLabels(audience.incomeRange));
+	const ageLabel = $derived(getAgeRangeLabels(audience.ageRange ?? 'ANY'));
+	const genderLabel = $derived(getGenderLabels(audience.gender ?? 'ANY'));
+	const incomeLabel = $derived(getIncomeRangeLabels(audience.incomeRange ?? 'ANY'));
 
-	const channelBadges = $derived(audience.channels.map((item) => getChannelOption(item)));
+	const channelBadges = $derived((audience.channels ?? []).map((item) => getChannelOption(item)));
 </script>
 
 <Card
@@ -191,22 +191,22 @@
 		</div>
 
 		<div class="space-y-2">
-			{#if audience.painPoints.length > 0}
+			{#if (audience.painPoints ?? []).length > 0}
 				<div class="space-y-1">
 					<p class="text-[11px] uppercase tracking-wide text-muted-foreground">Pain points</p>
 					<div class="flex flex-wrap gap-1.5">
-						{#each audience.painPoints as painPoint, index (index)}
+						{#each (audience.painPoints ?? []) as painPoint, index (index)}
 							<AudienceCardListItem text={painPoint} />
 						{/each}
 					</div>
 				</div>
 			{/if}
 
-			{#if audience.objections.length > 0}
+			{#if (audience.objections ?? []).length > 0}
 				<div class="space-y-1">
 					<p class="text-[11px] uppercase tracking-wide text-muted-foreground">Objections</p>
 					<div class="flex flex-wrap gap-1.5">
-						{#each audience.objections as objection, index (index)}
+						{#each (audience.objections ?? []) as objection, index (index)}
 							<AudienceCardListItem text={objection} />
 						{/each}
 					</div>

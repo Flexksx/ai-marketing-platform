@@ -1,4 +1,4 @@
-import type { BrandArchetypeName } from '$lib/api/brands/model/BrandData';
+import type { BrandArchetypeName } from '$lib/api/generated/models/BrandArchetypeName';
 
 export const ARCHETYPE_LABELS: Record<BrandArchetypeName, string> = {
 	INNOCENT: 'Innocent',

@@ -20,13 +20,6 @@ import {
     BrandToneOfVoiceToJSON,
     BrandToneOfVoiceToJSONTyped,
 } from './BrandToneOfVoice';
-import type { BrandArchetypeName } from './BrandArchetypeName';
-import {
-    BrandArchetypeNameFromJSON,
-    BrandArchetypeNameFromJSONTyped,
-    BrandArchetypeNameToJSON,
-    BrandArchetypeNameToJSONTyped,
-} from './BrandArchetypeName';
 import type { PositioningBrandData } from './PositioningBrandData';
 import {
     PositioningBrandDataFromJSON,
@@ -70,6 +63,12 @@ export interface BrandData {
     logoUrl?: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof BrandData
+     */
+    websiteUrl?: string | null;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof BrandData
      */
@@ -86,12 +85,6 @@ export interface BrandData {
      * @memberof BrandData
      */
     brandMission?: string | null;
-    /**
-     * 
-     * @type {BrandArchetypeName}
-     * @memberof BrandData
-     */
-    archetype?: BrandArchetypeName | null;
     /**
      * 
      * @type {string}
@@ -124,8 +117,6 @@ export interface BrandData {
     positioning?: PositioningBrandData;
 }
 
-
-
 /**
  * Check if a given object implements the BrandData interface.
  */
@@ -144,10 +135,10 @@ export function BrandDataFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     return {
         
         'logoUrl': json['logo_url'] == null ? undefined : json['logo_url'],
+        'websiteUrl': json['website_url'] == null ? undefined : json['website_url'],
         'mediaUrls': json['media_urls'] == null ? undefined : json['media_urls'],
         'colors': json['colors'] == null ? undefined : ((json['colors'] as Array<any>).map(BrandColorFromJSON)),
         'brandMission': json['brand_mission'] == null ? undefined : json['brand_mission'],
-        'archetype': json['archetype'] == null ? undefined : BrandArchetypeNameFromJSON(json['archetype']),
         'locale': json['locale'] == null ? undefined : json['locale'],
         'audiences': json['audiences'] == null ? undefined : ((json['audiences'] as Array<any>).map(BrandAudienceFromJSON)),
         'contentPillars': json['content_pillars'] == null ? undefined : ((json['content_pillars'] as Array<any>).map(ContentPillarFromJSON)),
@@ -168,10 +159,10 @@ export function BrandDataToJSONTyped(value?: BrandData | null, ignoreDiscriminat
     return {
         
         'logo_url': value['logoUrl'],
+        'website_url': value['websiteUrl'],
         'media_urls': value['mediaUrls'],
         'colors': value['colors'] == null ? undefined : ((value['colors'] as Array<any>).map(BrandColorToJSON)),
         'brand_mission': value['brandMission'],
-        'archetype': BrandArchetypeNameToJSON(value['archetype']),
         'locale': value['locale'],
         'audiences': value['audiences'] == null ? undefined : ((value['audiences'] as Array<any>).map(BrandAudienceToJSON)),
         'content_pillars': value['contentPillars'] == null ? undefined : ((value['contentPillars'] as Array<any>).map(ContentPillarToJSON)),

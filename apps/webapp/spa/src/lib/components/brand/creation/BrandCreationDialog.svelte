@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { useBrandGenerationJob } from '$lib/api/brand-generation-jobs/queries';
+	import { useBrandGenerationJob } from '$lib/resources/brand-generation-jobs/queries';
 	import BrandCreationDialogInputs from './BrandCreationDialogInputs.svelte';
 	import BrandCreationDialogPolling from './BrandCreationDialogPolling.svelte';
 	import BrandCreationDialogResult from './BrandCreationDialogResult.svelte';

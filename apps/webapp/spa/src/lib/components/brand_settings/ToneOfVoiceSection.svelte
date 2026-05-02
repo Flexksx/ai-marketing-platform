@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { defaultToneOfVoice, type BrandSettingsFormData } from '$lib/api/brands/model/BrandData';
-	import JargonSlider from '$lib/components/brand_settings/JargonSlider.svelte';
-	import SentenceLengthSelect from '$lib/components/brand_settings/SentenceLengthSelect.svelte';
+	import { defaultToneOfVoice, type BrandSettingsFormData } from './form-data';
 	import ToneDimensionSlider from '$lib/components/brand_settings/ToneDimensionSlider.svelte';
 	import ToneWordList from '$lib/components/brand_settings/ToneWordList.svelte';
 	import { Card, CardContent } from '$lib/components/ui/card';
-	import { Package } from 'lucide-svelte';
+	import * as Select from '$lib/components/ui/select';
+	import { BRAND_ARCHETYPE_NAMES, getArchetypeDescription, getArchetypeLabel } from '$lib/utils/brandArchetype';
+	import type { BrandArchetypeName } from '$lib/api/generated/models/BrandArchetypeName';
+	import { Mic2 } from 'lucide-svelte';
 
 	interface Props {
 		data: BrandSettingsFormData;
@@ -13,6 +14,34 @@
 	}
 
 	let { data = $bindable(), readonly = false }: Props = $props();
+
+	const NONE_VALUE = '';
+
+	let selectedArchetype = $state('');
+
+	$effect(() => {
+		selectedArchetype = data.toneOfVoice?.archetype ?? NONE_VALUE;
+	});
+	$effect(() => {
+		if (!readonly && data.toneOfVoice) {
+			data.toneOfVoice = {
+				...data.toneOfVoice,
+				archetype: selectedArchetype === NONE_VALUE ? null : (selectedArchetype as BrandArchetypeName)
+			};
+		}
+	});
+
+	const archetypeTriggerLabel = $derived(
+		selectedArchetype === NONE_VALUE
+			? 'Select archetype'
+			: getArchetypeLabel(selectedArchetype as BrandArchetypeName)
+	);
+
+	const archetypeDescription = $derived(
+		selectedArchetype !== NONE_VALUE
+			? getArchetypeDescription(selectedArchetype as BrandArchetypeName)
+			: null
+	);
 
 	function ensureToneOfVoice() {
 		if (!data.toneOfVoice) {
@@ -29,65 +58,73 @@
 	<CardContent class="p-6">
 		<div class="mb-4 flex items-center justify-between">
 			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Package class="h-5 w-5 text-green-600" />
-				Tone of Voice
+				<Mic2 class="h-5 w-5 text-violet-600" />
+				Brand Voice
 			</h3>
 		</div>
-		<div>
-			{#if data.toneOfVoice}
+		{#if data.toneOfVoice}
+			<div class="space-y-6">
+				<div>
+					<p class="text-sm text-muted-foreground mb-2">Archetype</p>
+					{#if readonly}
+						{#if data.toneOfVoice.archetype}
+							<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+								{getArchetypeLabel(data.toneOfVoice.archetype as BrandArchetypeName)}
+							</span>
+							{#if archetypeDescription}
+								<p class="mt-2 text-sm text-muted-foreground italic">{archetypeDescription}</p>
+							{/if}
+						{:else}
+							<p class="text-muted-foreground italic text-sm">No archetype selected...</p>
+						{/if}
+					{:else}
+						<Select.Root type="single" bind:value={selectedArchetype}>
+							<Select.Trigger class="w-full h-10">
+								{archetypeTriggerLabel}
+							</Select.Trigger>
+							<Select.Content class="max-h-[300px]">
+								<Select.Item value={NONE_VALUE} label="None">None</Select.Item>
+								{#each BRAND_ARCHETYPE_NAMES as name (name)}
+									<Select.Item value={name} label={getArchetypeLabel(name)}>
+										{getArchetypeLabel(name)}
+									</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
+						{#if archetypeDescription}
+							<p class="mt-2 text-sm text-muted-foreground italic">{archetypeDescription}</p>
+						{/if}
+					{/if}
+				</div>
+
 				<div class="space-y-4">
-					<div class="space-y-4">
-						<ToneDimensionSlider
-							dimensionKey="formality"
-							bind:value={data.toneOfVoice.formality_level}
-							{readonly}
-						/>
-						<ToneDimensionSlider
-							dimensionKey="humour"
-							bind:value={data.toneOfVoice.humour_level}
-							{readonly}
-						/>
-						<ToneDimensionSlider
-							dimensionKey="irreverence"
-							bind:value={data.toneOfVoice.irreverence_level}
-							{readonly}
-						/>
-						<ToneDimensionSlider
-							dimensionKey="enthusiasm"
-							bind:value={data.toneOfVoice.enthusiasm_level}
-							{readonly}
-						/>
-						<JargonSlider
-							bind:value={data.toneOfVoice.industry_jargon_usage_level}
-							{readonly}
-						/>
-						<SentenceLengthSelect
-							bind:value={data.toneOfVoice.sentence_length_preference}
-							{readonly}
-						/>
-					</div>
-					<ToneWordList
-						title="Sensory Keywords"
-						bind:words={data.toneOfVoice.sensory_keywords}
-						variant="sensory"
+					<ToneDimensionSlider
+						dimensionKey="jargon_density"
+						bind:value={data.toneOfVoice.jargonDensity!}
 						{readonly}
 					/>
-					<ToneWordList
-						title="Excluded Words"
-						bind:words={data.toneOfVoice.excluded_words}
-						variant="excluded"
-						{readonly}
-					/>
-					<ToneWordList
-						title="Signature Words"
-						bind:words={data.toneOfVoice.signature_words}
-						variant="signature"
+					<ToneDimensionSlider
+						dimensionKey="visual_density"
+						bind:value={data.toneOfVoice.visualDensity!}
 						{readonly}
 					/>
 				</div>
-			{:else}
-				<p class="text-muted-foreground italic">No tone of voice data yet...</p>
-			{/if}
-		</div>
+
+				<ToneWordList
+					title="Must-Use Words"
+					bind:words={data.toneOfVoice.mustUseWords!}
+					variant="must_use"
+					{readonly}
+				/>
+				<ToneWordList
+					title="Forbidden Words"
+					bind:words={data.toneOfVoice.forbiddenWords!}
+					variant="forbidden"
+					{readonly}
+				/>
+			</div>
+		{:else}
+			<p class="text-muted-foreground italic">No brand voice data yet...</p>
+		{/if}
 	</CardContent>
 </Card>

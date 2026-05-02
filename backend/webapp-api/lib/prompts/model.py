@@ -2,13 +2,8 @@ import public
 from pydantic import BaseModel, ConfigDict
 from strenum import StrEnum
 
-from webapp_api_contract.brand.settings import (
-    ContentType,
-    ContentTypeName,
-    ToneOfVoiceDimension,
-    ToneOfVoiceDimensionName,
-)
-from webapp_api_contract.brand import BrandArchetype, BrandArchetypeName
+from webapp_api_contract.brand.archetype import BrandArchetype, BrandArchetypeName
+from webapp_api_contract.brand.content_type import ContentType, ContentTypeName
 
 
 @public.add
@@ -50,7 +45,6 @@ class PromptTemplateName(StrEnum):
 
 
 class PromptLibraries(BaseModel):
-    tone_library: dict[ToneOfVoiceDimensionName, ToneOfVoiceDimension]
     archetype_library: dict[BrandArchetypeName, BrandArchetype]
     content_type_library: dict[ContentTypeName, ContentType]
 

@@ -52,7 +52,6 @@ export * from './ProductLifestyleTextWithSingleImageContentGenerationJobUserInpu
 export * from './RestContentPlanItemUpdateRequest';
 export * from './Result';
 export * from './ScrapeResult';
-export * from './SentenceLengthPreference';
 export * from './TextOnlyContentData';
 export * from './TextOnlyContentGenerationJobResult';
 export * from './TextOnlyContentGenerationJobUserInput';

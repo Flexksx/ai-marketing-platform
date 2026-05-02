@@ -2,15 +2,18 @@ import public
 from faker import Faker
 from pydantic_extra_types.language_code import LanguageAlpha2
 
-from webapp_api_contract.brand.settings import (
+from webapp_api_contract.brand import BrandColor, BrandData
+from webapp_api_contract.brand.archetype import BrandArchetypeName
+from webapp_api_contract.brand.audience import (
     BrandAudience,
     BrandAudienceAgeRange,
     BrandAudienceGender,
     BrandAudienceIncomeRange,
+)
+from webapp_api_contract.brand.tone_of_voice import (
     BrandToneOfVoice,
     SentenceLengthPreference,
 )
-from webapp_api_contract.brand import BrandArchetypeName, BrandColor, BrandData
 
 
 fake = Faker()

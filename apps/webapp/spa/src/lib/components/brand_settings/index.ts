@@ -8,10 +8,10 @@ export { default as BrandImagesSection } from './BrandImagesSection.svelte';
 export { default as AudienceSettingsSection } from './AudienceSettingsSection.svelte';
 export { default as ToneOfVoiceSection } from './ToneOfVoiceSection.svelte';
 export { default as StrategySettingsSection } from './StrategySettingsSection.svelte';
-export type { BrandSettingsFormData } from '$lib/api/brand-data/model/BrandData';
+export type { BrandSettingsFormData } from './form-data';
 export {
 	createEmptyBrandSettingsFormData,
 	createDefaultContentPillar,
 	defaultToneOfVoice
-} from '$lib/api/brand-data/model/BrandData';
+} from './form-data';
 export { getColor, getToneOfVoiceColor, getChannelLevelColor } from './utils';

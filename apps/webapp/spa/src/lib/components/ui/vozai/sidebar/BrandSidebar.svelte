@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { useBrand, useBrands } from '$lib/api/brands/queries';
+	import { useBrand, useBrands } from '$lib/resources/brands/queries';
 	import { Avatar, AvatarFallback } from '$lib/components/ui/avatar';
 	import {
 		DropdownMenu,

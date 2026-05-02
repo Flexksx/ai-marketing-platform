@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BrandSettingsFormData } from '$lib/api/brand-data/model/BrandData';
+	import type { BrandSettingsFormData } from './form-data';
 	import StringItemSetting from '$lib/components/brand_settings/StringItemSetting.svelte';
 	import * as Item from '$lib/components/ui/item';
 	import { Button } from '$lib/components/ui/button';

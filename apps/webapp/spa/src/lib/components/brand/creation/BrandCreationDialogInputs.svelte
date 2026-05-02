@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { useStartBrandGenerationJob } from '$lib/api/brand-generation-jobs/mutations';
+	import { useStartBrandGenerationJob } from '$lib/resources/brand-generation-jobs/mutations';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { navigate } from '$lib/navigation';
@@ -48,7 +48,7 @@
 		websiteUrl = normalized;
 
 		createJobMutation.mutate(
-			{ website_url: normalized },
+			{ websiteUrl: normalized },
 			{
 				onSuccess: (job) => {
 					navigate(resolve(`/brands/create/${job.id}`));

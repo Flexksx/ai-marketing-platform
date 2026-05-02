@@ -1,11 +1,6 @@
 <script lang="ts">
-	import type { BrandArchetypeName, BrandSettingsFormData } from '$lib/api/brands/model/BrandData';
+	import type { BrandSettingsFormData } from './form-data';
 	import { getLanguageName, ISO_639_1_LANGUAGE_CODES } from '$lib/utils/language';
-	import {
-		BRAND_ARCHETYPE_NAMES,
-		getArchetypeDescription,
-		getArchetypeLabel
-	} from '$lib/utils/brandArchetype';
 	import MarkdownRenderer from '$lib/components/markdown/MarkdownRenderer.svelte';
 	import BrandColorsSection from './BrandColorsSection.svelte';
 	import BrandLogoUpload from './BrandLogoUpload.svelte';
@@ -14,7 +9,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Select from '$lib/components/ui/select';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import { Building2, Languages, Sparkles } from 'lucide-svelte';
+	import { Building2, Languages } from 'lucide-svelte';
 
 	interface Props {
 		data: BrandSettingsFormData;
@@ -35,20 +30,12 @@
 	let editDescription = $state('');
 
 	let selectedLocaleCode = $state('');
-	let selectedArchetype = $state('');
 
 	$effect(() => {
 		selectedLocaleCode = data.locale ?? NONE_VALUE;
 	});
 	$effect(() => {
 		data.locale = selectedLocaleCode === NONE_VALUE ? null : selectedLocaleCode;
-	});
-
-	$effect(() => {
-		selectedArchetype = data.archetype ?? NONE_VALUE;
-	});
-	$effect(() => {
-		data.archetype = selectedArchetype === NONE_VALUE ? '' : selectedArchetype;
 	});
 
 	const localeLabel = $derived(
@@ -63,18 +50,6 @@
 
 	const selectTriggerLabel = $derived(
 		selectedLocaleCode === NONE_VALUE ? 'Select language' : (localeLabel ?? selectedLocaleCode)
-	);
-
-	const archetypeTriggerLabel = $derived(
-		selectedArchetype === NONE_VALUE
-			? 'Select archetype'
-			: getArchetypeLabel(selectedArchetype as BrandArchetypeName)
-	);
-
-	const archetypeDescription = $derived(
-		selectedArchetype !== NONE_VALUE
-			? getArchetypeDescription(selectedArchetype as BrandArchetypeName)
-			: null
 	);
 
 	function startEditName() {
@@ -247,39 +222,6 @@
 							<p class="text-muted-foreground italic text-sm">No description yet...</p>
 						{/if}
 					</div>
-				{/if}
-			</div>
-			<div>
-				<div class="mb-2 flex items-center justify-between">
-					<p class="text-muted-foreground text-sm flex items-center gap-2">
-						<Sparkles class="h-4 w-4" />
-						Archetype
-					</p>
-				</div>
-				{#if readonly}
-					{#if data.archetype}
-						<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-							{getArchetypeLabel(data.archetype as BrandArchetypeName)}
-						</span>
-					{:else}
-						<p class="text-muted-foreground italic text-sm">No archetype selected...</p>
-					{/if}
-				{:else}
-					<Select.Root type="single" bind:value={selectedArchetype}>
-						<Select.Trigger class="w-full h-10">
-							{archetypeTriggerLabel}
-						</Select.Trigger>
-						<Select.Content class="max-h-[300px]">
-							{#each BRAND_ARCHETYPE_NAMES as name (name)}
-								<Select.Item value={name} label={getArchetypeLabel(name)}>
-									{getArchetypeLabel(name)}
-								</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
-					{#if archetypeDescription}
-						<p class="mt-2 text-sm text-muted-foreground italic">{archetypeDescription}</p>
-					{/if}
 				{/if}
 			</div>
 			<div>

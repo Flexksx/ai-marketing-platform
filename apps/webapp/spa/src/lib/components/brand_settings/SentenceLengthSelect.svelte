@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { SentenceLengthPreference } from '$lib/api/brands/model/BrandData';
 	import * as Select from '$lib/components/ui/select';
 	import { Label } from '$lib/components/ui/label';
+
+	type SentenceLengthPreference = 'SHORT' | 'MEDIUM' | 'LONG';
 
 	const SENTENCE_LENGTH_OPTIONS: { value: SentenceLengthPreference; label: string }[] = [
 		{ value: 'SHORT', label: 'Short' },

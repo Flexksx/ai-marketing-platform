@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { useAcceptBrandGenerationJob } from '$lib/api/brand-generation-jobs/mutations';
-	import { buildAcceptRequest } from '$lib/api/brand-generation-jobs/schema/BrandGenerationJobAcceptRequest';
+	import { useAcceptBrandGenerationJob } from '$lib/resources/brand-generation-jobs/mutations';
 	import { navigate } from '$lib/navigation';
-import type { BrandDataParsed } from '$lib/api/brand-data/model/BrandData';
+	import type { BrandResponse } from '$lib/api/generated/models/BrandResponse';
+	import type { BrandGenerationJobAcceptRequest } from '$lib/api/generated/models/BrandGenerationJobAcceptRequest';
 	import {
 		AudienceSettingsSection,
 		BrandColorsSection,
@@ -10,6 +10,7 @@ import type { BrandDataParsed } from '$lib/api/brand-data/model/BrandData';
 		GeneralSettingsSection,
 		MarketingSettingsSection,
 		ToneOfVoiceSection,
+		createEmptyBrandSettingsFormData,
 		type BrandSettingsFormData
 	} from '$lib/components/brand_settings';
 	import { Button } from '$lib/components/ui/button';
@@ -18,7 +19,7 @@ import type { BrandDataParsed } from '$lib/api/brand-data/model/BrandData';
 
 	type Props = {
 		jobId: string;
-		brandData: { name: string; data: BrandDataParsed } | null;
+		brandData: { name: string; data: BrandResponse['data'] } | null;
 		onClose: () => void;
 		onGenerateAnother: () => void;
 	};
@@ -27,49 +28,57 @@ import type { BrandDataParsed } from '$lib/api/brand-data/model/BrandData';
 
 	const acceptJobMutation = useAcceptBrandGenerationJob();
 
-	let formData = $state<BrandSettingsFormData>({
-		name: '',
-		logoUrl: '',
-		description: '',
-		brandMission: '',
-		archetype: '',
-		locale: null,
-		colors: [],
-		mediaUrls: [],
-		audiences: [],
-		contentPillars: [],
-		toneOfVoice: null,
-		positioningPointsOfParity: [],
-		positioningPointsOfDifference: [],
-		productDescription: '',
-		pendingLogoFile: null
-	});
+	let formData = $state<BrandSettingsFormData>(createEmptyBrandSettingsFormData());
 
 	$effect(() => {
 		if (!brandData) return;
 
 		formData = {
 			name: brandData.name ?? '',
-			logoUrl: brandData.data.logoUrl ?? '',
-			description: brandData.data.positioning.description ?? '',
-			brandMission: brandData.data.brandMission ?? '',
-			archetype: brandData.data.archetype ?? '',
-			locale: brandData.data.locale ?? null,
-			colors: brandData.data.colors ?? [],
-			mediaUrls: brandData.data.mediaUrls ?? [],
-			audiences: brandData.data.audiences ?? [],
-			contentPillars: brandData.data.contentPillars ? [...brandData.data.contentPillars] : [],
-			toneOfVoice: brandData.data.toneOfVoice ?? null,
-			positioningPointsOfParity: brandData.data.positioning.pointsOfParity ?? [],
-			positioningPointsOfDifference: brandData.data.positioning.pointsOfDifference ?? [],
-			productDescription: brandData.data.positioning.productDescription ?? '',
+			logoUrl: brandData.data?.logoUrl ?? '',
+			description: brandData.data?.positioning?.description ?? '',
+			brandMission: brandData.data?.brandMission ?? '',
+			locale: brandData.data?.locale ?? null,
+			colors: brandData.data?.colors ?? [],
+			mediaUrls: brandData.data?.mediaUrls ?? [],
+			audiences: brandData.data?.audiences ?? [],
+			contentPillars: brandData.data?.contentPillars ? [...brandData.data.contentPillars] : [],
+			toneOfVoice: brandData.data?.toneOfVoice ?? {
+				archetype: null,
+				jargonDensity: 1,
+				visualDensity: 1,
+				mustUseWords: [],
+				forbiddenWords: []
+			},
+			positioningPointsOfParity: brandData.data?.positioning?.pointsOfParity ?? [],
+			positioningPointsOfDifference: brandData.data?.positioning?.pointsOfDifference ?? [],
+			productDescription: brandData.data?.positioning?.productDescription ?? '',
 			pendingLogoFile: null
 		};
 	});
 
 	function handleSave() {
 		if (!jobId) return;
-		const body = buildAcceptRequest(formData.name, formData);
+
+		const body: BrandGenerationJobAcceptRequest = {
+			name: formData.name,
+			data: {
+				logoUrl: formData.logoUrl || null,
+				mediaUrls: formData.mediaUrls,
+				colors: formData.colors,
+				brandMission: formData.brandMission || null,
+				locale: formData.locale,
+				audiences: formData.audiences,
+				contentPillars: formData.contentPillars,
+				toneOfVoice: formData.toneOfVoice,
+				positioning: {
+					description: formData.description,
+					pointsOfParity: formData.positioningPointsOfParity,
+					pointsOfDifference: formData.positioningPointsOfDifference,
+					productDescription: formData.productDescription
+				}
+			}
+		};
 
 		acceptJobMutation.mutate(
 			{ jobId, body },

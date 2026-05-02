@@ -1,5 +1,11 @@
 <script lang="ts">
-	import type { ContentChannelBrandMarketingSetting } from '$lib/api/brands/schema/ContentChannelBrandMarketingSetting';
+	import type { ContentChannelName } from '$lib/api/generated/models/ContentChannelName';
+
+	interface ContentChannelBrandMarketingSetting {
+		channel_name: ContentChannelName;
+		hashtag_level: number;
+		emoji_level: number;
+	}
 	import ChannelLevelSlider from '$lib/components/brand_settings/ChannelLevelSlider.svelte';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Label } from '$lib/components/ui/label';

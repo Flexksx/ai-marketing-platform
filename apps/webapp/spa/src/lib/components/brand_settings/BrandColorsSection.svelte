@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { BrandColor, BrandSettingsFormData } from '$lib/api/brands/model/BrandData';
+	import type { BrandColor } from '$lib/api/generated/models/BrandColor';
+	import type { BrandSettingsFormData } from './form-data';
 	import { getColor } from '$lib/components/brand_settings/utils';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import {
@@ -125,12 +126,12 @@
 	function addColor() {
 		const defaultColor: BrandColor = {
 			name: '#3B82F6',
-			hex_value: '#3B82F6'
+			hexValue: '#3B82F6'
 		};
 		data.colors = [...data.colors, defaultColor];
 		const index = data.colors.length - 1;
 		lastEditSource[index] = 'hex';
-		activeHsv[index] = hexToHsv(defaultColor.hex_value);
+		activeHsv[index] = hexToHsv(defaultColor.hexValue);
 	}
 
 	function removeColor(index: number) {
@@ -139,7 +140,7 @@
 		delete activeHsv[index];
 		lastEditSource = lastEditSource.filter((_, i) => i !== index);
 	}
-	function updateColorAtIndex(index: number, updates: { hex_value?: string; name?: string }) {
+	function updateColorAtIndex(index: number, updates: { hexValue?: string; name?: string }) {
 		const color = data.colors[index];
 		if (!color) return;
 
@@ -174,7 +175,7 @@
 			name = hexValue;
 		}
 
-		updateColorAtIndex(index, { hex_value: hexValue, name });
+		updateColorAtIndex(index, { hexValue: hexValue, name });
 	}
 
 	function handleNameChange(index: number, value: string) {
@@ -196,7 +197,7 @@
 		const target = e.currentTarget as HTMLElement;
 		const rect = target.getBoundingClientRect();
 
-		syncInitialHsv(index, data.colors[index]?.hex_value || '#000000');
+		syncInitialHsv(index, data.colors[index]?.hexValue || '#000000');
 
 		function update(clientX: number, clientY: number) {
 			const x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
@@ -248,7 +249,7 @@
 							<div class="group flex flex-col items-center gap-1.5">
 								<div
 									class="relative h-14 w-14 rounded-full border-2 border-white shadow-md dark:border-slate-700"
-									style="background-color: {getColor(color.hex_value, '#3B82F6')};"
+									style="background-color: {getColor(color.hexValue, '#3B82F6')};"
 								></div>
 								<span
 									class="text-xs font-medium text-slate-600 dark:text-slate-400 text-center w-[72px] truncate"
@@ -264,19 +265,19 @@
 							<div class="group flex flex-col items-center gap-1.5">
 								<DropdownMenu
 									onOpenChange={(open) => {
-										if (open) syncInitialHsv(index, color.hex_value || '#000000');
+										if (open) syncInitialHsv(index, color.hexValue || '#000000');
 									}}
 								>
 									<DropdownMenuTrigger
 										class="relative mt-1 h-10 w-10 rounded-full border-2 border-white shadow-md dark:border-slate-700 cursor-pointer hover:scale-110 transition-transform"
-										style="background-color: {getColor(color.hex_value, '#3B82F6')};"
+										style="background-color: {getColor(color.hexValue, '#3B82F6')};"
 										aria-label={`Edit ${color.name} color`}
 									/>
 									<DropdownMenuContent align="center" class="w-72 space-y-4 p-4">
 										<div class="flex items-center gap-3">
 											<div
 												class="h-6 w-6 rounded-full border border-border shadow-inner"
-												style="background-color: {getColor(color.hex_value, '#3B82F6')};"
+												style="background-color: {getColor(color.hexValue, '#3B82F6')};"
 											></div>
 											<span class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
 												{color.name}
@@ -344,7 +345,7 @@
 												<Input
 													class="h-8 text-sm uppercase"
 													type="text"
-													value={color.hex_value || ''}
+													value={color.hexValue || ''}
 													placeholder="#000000"
 													oninput={(event) =>
 														handleHexChange(
@@ -397,7 +398,7 @@
 					<div class="flex w-16 flex-col items-center gap-1.5 px-1">
 						<div
 							class="h-10 w-10 rounded-full border-2 border-white shadow-md dark:border-slate-700"
-							style="background-color: {getColor(color.hex_value, '#3B82F6')};"
+							style="background-color: {getColor(color.hexValue, '#3B82F6')};"
 						></div>
 						<span
 							class="w-full truncate text-center text-[11px] font-medium text-slate-600 dark:text-slate-400"
@@ -411,19 +412,19 @@
 					<div class="group flex w-16 flex-col items-center gap-1.5 px-1">
 						<DropdownMenu
 							onOpenChange={(open) => {
-								if (open) syncInitialHsv(index, color.hex_value || '#000000');
+								if (open) syncInitialHsv(index, color.hexValue || '#000000');
 							}}
 						>
 							<DropdownMenuTrigger
 								class="relative h-10 w-10 rounded-full border-2 border-white shadow-md dark:border-slate-700 cursor-pointer hover:scale-110 transition-transform"
-								style="background-color: {getColor(color.hex_value, '#3B82F6')};"
+								style="background-color: {getColor(color.hexValue, '#3B82F6')};"
 								aria-label={`Edit ${color.name} color`}
 							/>
 							<DropdownMenuContent align="center" class="w-72 space-y-4 p-4">
 								<div class="flex items-center gap-">
 									<div
 										class="h-6 w-6 rounded-full border border-border shadow-inner"
-										style="background-color: {getColor(color.hex_value, '#3B82F6')};"
+										style="background-color: {getColor(color.hexValue, '#3B82F6')};"
 									></div>
 									<span class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
 										{color.name}
@@ -491,7 +492,7 @@
 										<Input
 											class="h-8 text-sm uppercase"
 											type="text"
-											value={color.hex_value || ''}
+											value={color.hexValue || ''}
 											placeholder="#000000"
 											oninput={(event) =>
 												handleHexChange(

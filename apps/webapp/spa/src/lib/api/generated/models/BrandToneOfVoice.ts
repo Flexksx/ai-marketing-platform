@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SentenceLengthPreference } from './SentenceLengthPreference';
+import type { BrandArchetypeName } from './BrandArchetypeName';
 import {
-    SentenceLengthPreferenceFromJSON,
-    SentenceLengthPreferenceFromJSONTyped,
-    SentenceLengthPreferenceToJSON,
-    SentenceLengthPreferenceToJSONTyped,
-} from './SentenceLengthPreference';
+    BrandArchetypeNameFromJSON,
+    BrandArchetypeNameFromJSONTyped,
+    BrandArchetypeNameToJSON,
+    BrandArchetypeNameToJSONTyped,
+} from './BrandArchetypeName';
 
 /**
  * 
@@ -29,58 +29,34 @@ import {
 export interface BrandToneOfVoice {
     /**
      * 
-     * @type {number}
+     * @type {BrandArchetypeName}
      * @memberof BrandToneOfVoice
      */
-    formalityLevel?: number;
+    archetype?: BrandArchetypeName | null;
     /**
      * 
      * @type {number}
      * @memberof BrandToneOfVoice
      */
-    humourLevel?: number;
+    jargonDensity?: number;
     /**
      * 
      * @type {number}
      * @memberof BrandToneOfVoice
      */
-    irreverenceLevel?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof BrandToneOfVoice
-     */
-    enthusiasmLevel?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof BrandToneOfVoice
-     */
-    industryJargonUsageLevel?: number;
+    visualDensity?: number;
     /**
      * 
      * @type {Array<string>}
      * @memberof BrandToneOfVoice
      */
-    sensoryKeywords?: Array<string>;
+    mustUseWords?: Array<string>;
     /**
      * 
      * @type {Array<string>}
      * @memberof BrandToneOfVoice
      */
-    excludedWords?: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof BrandToneOfVoice
-     */
-    signatureWords?: Array<string>;
-    /**
-     * 
-     * @type {SentenceLengthPreference}
-     * @memberof BrandToneOfVoice
-     */
-    sentenceLengthPreference?: SentenceLengthPreference;
+    forbiddenWords?: Array<string>;
 }
 
 
@@ -102,15 +78,11 @@ export function BrandToneOfVoiceFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'formalityLevel': json['formality_level'] == null ? undefined : json['formality_level'],
-        'humourLevel': json['humour_level'] == null ? undefined : json['humour_level'],
-        'irreverenceLevel': json['irreverence_level'] == null ? undefined : json['irreverence_level'],
-        'enthusiasmLevel': json['enthusiasm_level'] == null ? undefined : json['enthusiasm_level'],
-        'industryJargonUsageLevel': json['industry_jargon_usage_level'] == null ? undefined : json['industry_jargon_usage_level'],
-        'sensoryKeywords': json['sensory_keywords'] == null ? undefined : json['sensory_keywords'],
-        'excludedWords': json['excluded_words'] == null ? undefined : json['excluded_words'],
-        'signatureWords': json['signature_words'] == null ? undefined : json['signature_words'],
-        'sentenceLengthPreference': json['sentence_length_preference'] == null ? undefined : SentenceLengthPreferenceFromJSON(json['sentence_length_preference']),
+        'archetype': json['archetype'] == null ? undefined : BrandArchetypeNameFromJSON(json['archetype']),
+        'jargonDensity': json['jargon_density'] == null ? undefined : json['jargon_density'],
+        'visualDensity': json['visual_density'] == null ? undefined : json['visual_density'],
+        'mustUseWords': json['must_use_words'] == null ? undefined : json['must_use_words'],
+        'forbiddenWords': json['forbidden_words'] == null ? undefined : json['forbidden_words'],
     };
 }
 
@@ -125,15 +97,11 @@ export function BrandToneOfVoiceToJSONTyped(value?: BrandToneOfVoice | null, ign
 
     return {
         
-        'formality_level': value['formalityLevel'],
-        'humour_level': value['humourLevel'],
-        'irreverence_level': value['irreverenceLevel'],
-        'enthusiasm_level': value['enthusiasmLevel'],
-        'industry_jargon_usage_level': value['industryJargonUsageLevel'],
-        'sensory_keywords': value['sensoryKeywords'],
-        'excluded_words': value['excludedWords'],
-        'signature_words': value['signatureWords'],
-        'sentence_length_preference': SentenceLengthPreferenceToJSON(value['sentenceLengthPreference']),
+        'archetype': BrandArchetypeNameToJSON(value['archetype']),
+        'jargon_density': value['jargonDensity'],
+        'visual_density': value['visualDensity'],
+        'must_use_words': value['mustUseWords'],
+        'forbidden_words': value['forbiddenWords'],
     };
 }
 

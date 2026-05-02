@@ -1,8 +1,5 @@
 <script lang="ts">
-	import {
-		createDefaultContentPillar,
-		type BrandSettingsFormData
-	} from '$lib/api/brands/model/BrandData';
+	import { createDefaultContentPillar, type BrandSettingsFormData } from './form-data';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Megaphone, Plus } from 'lucide-svelte';

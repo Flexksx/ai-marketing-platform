@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ContentPillarParsed } from '$lib/api/brand-data/schema/ContentPillar';
-	import type { BrandAudience } from '$lib/api/brand-data/model/BrandData';
+	import type { ContentPillar } from '$lib/api/generated/models/ContentPillar';
+	import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
@@ -8,7 +8,7 @@
 	import { Trash2 } from 'lucide-svelte';
 
 	interface Props {
-		pillar: ContentPillarParsed;
+		pillar: ContentPillar;
 		audiences: BrandAudience[];
 		open?: boolean;
 		readonly?: boolean;
@@ -23,18 +23,17 @@
 		onDelete
 	}: Props = $props();
 
-	function updatePillar(patch: Partial<ContentPillarParsed>) {
+	function updatePillar(patch: Partial<ContentPillar>) {
 		if (readonly) return;
 		pillar = { ...pillar, ...patch };
 	}
 
 	function toggleAudience(audienceId: string) {
 		if (readonly) return;
-		const isLinked = pillar.audienceIds.includes(audienceId);
+		const current = pillar.audienceIds ?? [];
+		const isLinked = current.includes(audienceId);
 		updatePillar({
-			audienceIds: isLinked
-				? pillar.audienceIds.filter((id) => id !== audienceId)
-				: [...pillar.audienceIds, audienceId]
+			audienceIds: isLinked ? current.filter((id) => id !== audienceId) : [...current, audienceId]
 		});
 	}
 </script>
@@ -63,14 +62,14 @@
 				{#if audiences.length > 0}
 					<div class="flex flex-wrap gap-2">
 						{#each audiences as audience (audience.id)}
-							{@const isLinked = pillar.audienceIds.includes(audience.id)}
+							{@const isLinked = (pillar.audienceIds ?? []).includes(audience.id ?? '')}
 							<button
 								type="button"
 								class="inline-flex items-center rounded-full border px-3 py-1 text-xs transition-colors
 									{isLinked
 									? 'bg-primary text-primary-foreground border-primary'
 									: 'bg-background text-muted-foreground hover:bg-muted'}"
-								onclick={() => toggleAudience(audience.id)}
+								onclick={() => toggleAudience(audience.id ?? '')}
 								disabled={readonly}
 							>
 								{audience.name || 'Untitled audience'}

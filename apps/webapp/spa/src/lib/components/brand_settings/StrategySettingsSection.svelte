@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BrandSettingsFormData } from '$lib/api/brand-data/model/BrandData';
+	import type { BrandSettingsFormData } from './form-data';
 	import ContentPillarItemMarketingSetting from '$lib/components/brand_settings/ContentPillarItemMarketingSetting.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';

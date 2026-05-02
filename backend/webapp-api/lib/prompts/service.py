@@ -11,18 +11,12 @@ from lib.prompts.model import (
     PromptLibraries,
     PromptTemplateName,
 )
-from webapp_api_contract.brand.settings import (
-    ContentType,
-    ContentTypeName,
-    ToneOfVoiceDimension,
-    ToneOfVoiceDimensionLevel,
-    ToneOfVoiceDimensionName,
-)
-from webapp_api_contract.brand import (
+from webapp_api_contract.brand.archetype import (
     BrandArchetype,
     BrandArchetypeData,
     BrandArchetypeName,
 )
+from webapp_api_contract.brand.content_type import ContentType, ContentTypeName
 
 
 @public.add
@@ -60,7 +54,6 @@ class PromptService:
 
     def _load_libraries(self) -> PromptLibraries:
         return PromptLibraries(
-            tone_library=self._load_tone_library(),
             archetype_library=self._load_archetype_library(),
             content_type_library=self._load_content_type_library(),
         )
@@ -71,7 +64,6 @@ class PromptService:
             autoescape=select_autoescape(default=False),
         )
         tmpl_globals = cast(dict[str, Any], env.globals)
-        tmpl_globals["tone_library"] = self._transform_tone_library_for_template()
         tmpl_globals["archetype_library"] = (
             self._transform_archetype_library_for_template()
         )
@@ -80,77 +72,6 @@ class PromptService:
         )
 
         return env
-
-    def _load_tone_library(
-        self,
-    ) -> dict[ToneOfVoiceDimensionName, ToneOfVoiceDimension]:
-        path = self._prompts_dir / "brand" / "tone_of_voice.toml"
-        if not path.exists():
-            raise PromptConfigError(f"Missing tone of voice config at {path}")
-
-        with path.open("rb") as f:
-            data = tomllib.load(f)
-
-        if not isinstance(data, dict):
-            raise PromptConfigError(f"Invalid tone of voice config structure in {path}")
-
-        result: dict[ToneOfVoiceDimensionName, ToneOfVoiceDimension] = {}
-
-        for section_name, levels in data.items():
-            if not isinstance(levels, dict):
-                raise PromptConfigError(
-                    f"Invalid levels for tone dimension {section_name} in {path}"
-                )
-
-            try:
-                dimension_name = ToneOfVoiceDimensionName[section_name.upper()]
-            except KeyError as e:
-                raise PromptConfigError(
-                    f"Unknown tone dimension {section_name} in {path}"
-                ) from e
-
-            ordered_levels: list[ToneOfVoiceDimensionLevel] = []
-
-            for scale_key, description in sorted(
-                levels.items(), key=lambda item: int(str(item[0]))
-            ):
-                if not isinstance(scale_key, str):
-                    raise PromptConfigError(
-                        f"Invalid level key type for dimension {section_name} in {path}"
-                    )
-                try:
-                    scale_number = int(scale_key)
-                except ValueError as e:
-                    raise PromptConfigError(
-                        f"Invalid level key {scale_key} for dimension {section_name} in {path}"
-                    ) from e
-
-                if not isinstance(description, str):
-                    raise PromptConfigError(
-                        f"Invalid description for level {scale_key} in {section_name} in {path}"
-                    )
-
-                name = description.split(":", 1)[0].strip() or f"Level {scale_number}"
-
-                ordered_levels.append(
-                    ToneOfVoiceDimensionLevel(
-                        scale_number=scale_number,
-                        name=name,
-                        description=description,
-                    )
-                )
-
-            if not ordered_levels:
-                raise PromptConfigError(
-                    f"No levels defined for tone dimension {section_name} in {path}"
-                )
-
-            result[dimension_name] = ToneOfVoiceDimension(
-                name=dimension_name,
-                levels=ordered_levels,
-            )
-
-        return result
 
     def _load_archetype_library(self) -> dict[BrandArchetypeName, BrandArchetype]:
         path = self._prompts_dir / "brand" / "archetypes.toml"
@@ -249,20 +170,6 @@ class PromptService:
             )
 
         return result
-
-    def _transform_tone_library_for_template(
-        self,
-    ) -> dict[str, dict[int, dict[str, str]]]:
-        return {
-            dimension_name.value.lower(): {
-                level.scale_number: {
-                    "name": level.name,
-                    "description": level.description,
-                }
-                for level in dimension.levels
-            }
-            for dimension_name, dimension in self._libraries.tone_library.items()
-        }
 
     def _transform_archetype_library_for_template(self) -> dict[str, dict[str, str]]:
         return {

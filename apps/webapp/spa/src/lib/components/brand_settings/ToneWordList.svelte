@@ -4,7 +4,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Plus } from 'lucide-svelte';
 
-	export type ToneWordListVariant = 'sensory' | 'excluded' | 'signature';
+	export type ToneWordListVariant = 'must_use' | 'forbidden';
 
 	interface Props {
 		title: string;
@@ -18,7 +18,7 @@
 		title,
 		words = $bindable([]),
 		readonly = false,
-		variant = 'sensory',
+		variant = 'must_use',
 		class: className
 	}: Props = $props();
 

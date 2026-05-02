@@ -1,23 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { BrandEndpoints } from '$lib/api/brands/BrandEndpoints';
-	import { useDeleteBrand, useUpdateBrand } from '$lib/api/brands/mutations';
-	import { useBrand } from '$lib/api/brands/queries';
-	import { queryKeys } from '$lib/api/shared/queryKeys';
-	import type { BrandUpdateRequest } from '$lib/api/brands/schema/BrandUpdateRequest';
-	import { audienceToRequest } from '$lib/api/brands/schema/BrandAudience';
-	import { contentPillarToRequest } from '$lib/api/brand-data/schema/ContentPillar';
-	import type { BrandArchetypeName } from '$lib/api/brands/schema/BrandArchetypeName';
+	import { useBrand, } from '$lib/resources/brands/queries';
+	import { useDeleteBrand, useUpdateBrand } from '$lib/resources/brands/mutations';
 	import { useQueryClient } from '@tanstack/svelte-query';
-import {
-	AudienceSettingsSection,
-	BrandImagesSection,
-	GeneralSettingsSection,
-	MarketingSettingsSection,
-	ToneOfVoiceSection,
-	createEmptyBrandSettingsFormData,
-	type BrandSettingsFormData
-} from '$lib/components/brand_settings';
+	import type { BrandData } from '$lib/api/generated/models/BrandData';
+	import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
+	import type { ContentPillar } from '$lib/api/generated/models/ContentPillar';
+	import {
+		AudienceSettingsSection,
+		BrandImagesSection,
+		GeneralSettingsSection,
+		MarketingSettingsSection,
+		ToneOfVoiceSection,
+		createEmptyBrandSettingsFormData,
+		type BrandSettingsFormData
+	} from '$lib/components/brand_settings';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { ArrowLeft, Building2, LoaderCircle, Save, X } from 'lucide-svelte';
@@ -39,21 +36,26 @@ import {
 
 	$effect(() => {
 		if (brand) {
-			const next = {
+			const next: BrandSettingsFormData = {
 				name: brand.name ?? '',
 				logoUrl: brand.data?.logoUrl ?? '',
-				description: brand.data?.positioning.description ?? '',
+				description: brand.data?.positioning?.description ?? '',
 				brandMission: brand.data?.brandMission ?? '',
-				archetype: brand.data?.archetype ?? '',
 				locale: brand.data?.locale ?? null,
 				colors: brand.data?.colors ? [...brand.data.colors] : [],
 				mediaUrls: brand.data?.mediaUrls ? [...brand.data.mediaUrls] : [],
 				audiences: brand.data?.audiences ? [...brand.data.audiences] : [],
 				contentPillars: brand.data?.contentPillars ? [...brand.data.contentPillars] : [],
-				toneOfVoice: brand.data?.toneOfVoice ?? null,
-				positioningPointsOfParity: brand.data?.positioning.pointsOfParity ?? [],
-				positioningPointsOfDifference: brand.data?.positioning.pointsOfDifference ?? [],
-				productDescription: brand.data?.positioning.productDescription ?? '',
+				toneOfVoice: brand.data?.toneOfVoice ?? {
+					archetype: null,
+					jargonDensity: 1,
+					visualDensity: 1,
+					mustUseWords: [],
+					forbiddenWords: []
+				},
+				positioningPointsOfParity: brand.data?.positioning?.pointsOfParity ?? [],
+				positioningPointsOfDifference: brand.data?.positioning?.pointsOfDifference ?? [],
+				productDescription: brand.data?.positioning?.productDescription ?? '',
 				pendingLogoFile: null
 			};
 			formData = next;
@@ -73,34 +75,29 @@ import {
 	let showDeleteModal = $state(false);
 
 	const handleUpdate = async () => {
-		const request: BrandUpdateRequest = {
-			name: formData.name,
-			data: {
-				logo_url: formData.logoUrl,
-				media_urls: formData.mediaUrls,
-				colors: formData.colors,
-				brand_mission: formData.brandMission,
-				archetype: (formData.archetype || null) as BrandArchetypeName | null,
-				locale: formData.locale,
-				audiences: formData.audiences.map(audienceToRequest),
-				content_pillars: formData.contentPillars.map(contentPillarToRequest),
-				tone_of_voice: formData.toneOfVoice,
-				positioning: {
-					description: formData.description,
-					points_of_parity: formData.positioningPointsOfParity,
-					points_of_difference: formData.positioningPointsOfDifference,
-					product_description: formData.productDescription
-				}
+		const data: BrandData = {
+			logoUrl: formData.logoUrl || null,
+			mediaUrls: formData.mediaUrls,
+			colors: formData.colors,
+			brandMission: formData.brandMission || null,
+			locale: formData.locale,
+			audiences: formData.audiences as BrandAudience[],
+			contentPillars: formData.contentPillars as ContentPillar[],
+			toneOfVoice: formData.toneOfVoice,
+			positioning: {
+				description: formData.description,
+				pointsOfParity: formData.positioningPointsOfParity,
+				pointsOfDifference: formData.positioningPointsOfDifference,
+				productDescription: formData.productDescription
 			}
 		};
 
-		if (formData.pendingLogoFile) {
-			await BrandEndpoints.uploadLogo(brandId ?? '', formData.pendingLogoFile, request);
-			queryClient.invalidateQueries({ queryKey: queryKeys.brand(brandId ?? '') });
-			queryClient.invalidateQueries({ queryKey: queryKeys.brands() });
-		} else {
-			await updateBrandMutation.mutateAsync({ brandId, request });
-		}
+		await updateBrandMutation.mutateAsync({
+			brandId,
+			name: formData.name,
+			data,
+			logoFile: formData.pendingLogoFile ?? undefined
+		});
 	};
 
 	const handleDelete = async () => {

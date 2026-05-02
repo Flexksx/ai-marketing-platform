@@ -1,15 +1,14 @@
 <script lang="ts">
-	import type { ContentPillarParsed } from '$lib/api/brand-data/model/BrandData';
 	import { Button } from '$lib/components/ui/button';
 	import * as Item from '$lib/components/ui/item';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Pencil, Trash2 } from 'lucide-svelte';
 
 	interface Props {
-		pillar: ContentPillarParsed;
+		pillar: string;
 		readonly?: boolean;
 		startInEditMode?: boolean;
-		onSave: (updated: ContentPillarParsed) => void;
+		onSave: (updated: string) => void;
 		onRemove: () => void;
 	}
 
@@ -20,17 +19,17 @@
 	$effect(() => {
 		if (startInEditMode && !isEditing) {
 			isEditing = true;
-			editValue = pillar.name;
+			editValue = pillar;
 		}
 	});
 
 	function startEdit() {
 		isEditing = true;
-		editValue = pillar.name;
+		editValue = pillar;
 	}
 
 	function commitSave() {
-		onSave({ ...pillar, name: editValue.trim() });
+		onSave(editValue.trim());
 		isEditing = false;
 	}
 
@@ -72,7 +71,7 @@
 			tabindex={readonly ? undefined : 0}
 		>
 			<Item.Title class="whitespace-pre-wrap break-words w-full min-w-0 text-left"
-				>{pillar.name || 'Untitled pillar'}</Item.Title
+				>{pillar || 'Untitled'}</Item.Title
 			>
 		</Item.Content>
 	{/if}

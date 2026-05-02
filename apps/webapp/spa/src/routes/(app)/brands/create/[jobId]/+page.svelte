@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { navigate } from '$lib/navigation';
-	import { useBrandGenerationJob } from '$lib/api/brand-generation-jobs/queries';
+	import { useBrandGenerationJob } from '$lib/resources/brand-generation-jobs/queries';
 	import BrandCreationDialogPolling from '$lib/components/brand/creation/BrandCreationDialogPolling.svelte';
 	import BrandCreationDialogResult from '$lib/components/brand/creation/BrandCreationDialogResult.svelte';
 	import { Button } from '$lib/components/ui/button';

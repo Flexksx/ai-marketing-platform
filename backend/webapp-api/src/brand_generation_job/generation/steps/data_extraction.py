@@ -24,11 +24,9 @@ from webapp_api_contract.brand_generation_job import (
     BrandGenerationJob,
     BrandGenerationResult,
 )
-from webapp_api_contract.brand.settings import (
-    BrandToneOfVoice,
-    PositioningBrandData,
-)
 from webapp_api_contract.brand import BrandCreateRequest, BrandData
+from webapp_api_contract.brand.positioning import PositioningBrandData
+from webapp_api_contract.brand.tone_of_voice import BrandToneOfVoice
 
 
 logger = logging.getLogger(__name__)
@@ -196,15 +194,11 @@ class BrandDataExtractionStep(BrandGenerationBaseStep):
         )
 
         tone = BrandToneOfVoice(
-            sentence_length_preference=tone_result.sentence_length_preference,
-            industry_jargon_usage_level=tone_result.industry_jargon_usage_level,
-            formality_level=tone_result.formality_level,
-            irreverence_level=tone_result.irreverence_level,
-            enthusiasm_level=tone_result.enthusiasm_level,
-            humour_level=tone_result.humour_level,
-            sensory_keywords=tone_result.sensory_keywords,
-            excluded_words=tone_result.excluded_words,
-            signature_words=tone_result.signature_words,
+            archetype=tone_result.archetype,
+            jargon_density=tone_result.jargon_density,
+            visual_density=tone_result.visual_density,
+            must_use_words=tone_result.must_use_words,
+            forbidden_words=tone_result.forbidden_words,
         )
 
         return BrandCreateRequest(
@@ -214,7 +208,6 @@ class BrandDataExtractionStep(BrandGenerationBaseStep):
                 media_urls=scrape_result.image_urls,
                 colors=core_result.colors,
                 brand_mission=core_result.brand_mission,
-                archetype=core_result.archetype,
                 audiences=audiences_result.audiences,
                 tone_of_voice=tone,
                 positioning=positioning_result,

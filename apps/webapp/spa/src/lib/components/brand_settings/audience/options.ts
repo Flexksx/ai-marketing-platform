@@ -1,9 +1,7 @@
-import {
-	BrandAudienceAgeRange,
-	BrandAudienceGender,
-	BrandAudienceIncomeRange
-} from '$lib/api/brand-data/model/BrandData';
-import type { ContentChannelName } from '$lib/api/content-channel/ContentChannelName';
+import { BrandAudienceAgeRange } from '$lib/api/generated/models/BrandAudienceAgeRange';
+import { BrandAudienceGender } from '$lib/api/generated/models/BrandAudienceGender';
+import { BrandAudienceIncomeRange } from '$lib/api/generated/models/BrandAudienceIncomeRange';
+import type { ContentChannelName } from '$lib/api/generated/models/ContentChannelName';
 import {
 	Baby,
 	BadgeDollarSign,
@@ -39,37 +37,37 @@ type ChannelOption = {
 
 export const AGE_RANGE_OPTIONS: AgeRangeOption[] = [
 	{
-		value: BrandAudienceAgeRange.TEENS,
+		value: BrandAudienceAgeRange.teens,
 		shortLabel: 'Teens',
 		fullLabel: 'Teens (13–19)',
 		icon: Baby
 	},
 	{
-		value: BrandAudienceAgeRange.YOUNG_ADULTS,
+		value: BrandAudienceAgeRange.youngAdults,
 		shortLabel: 'Young',
 		fullLabel: 'Young adults (20–29)',
 		icon: Waypoints
 	},
 	{
-		value: BrandAudienceAgeRange.ADULTS,
+		value: BrandAudienceAgeRange.adults,
 		shortLabel: 'Adults',
 		fullLabel: 'Adults (30–39)',
 		icon: Workflow
 	},
 	{
-		value: BrandAudienceAgeRange.MIDDLE_AGED,
+		value: BrandAudienceAgeRange.middleAged,
 		shortLabel: 'Middle',
 		fullLabel: 'Middle aged (40–59)',
 		icon: LineChart
 	},
 	{
-		value: BrandAudienceAgeRange.SENIORS,
+		value: BrandAudienceAgeRange.seniors,
 		shortLabel: 'Seniors',
 		fullLabel: 'Seniors (60+)',
 		icon: Wheat
 	},
 	{
-		value: BrandAudienceAgeRange.ANY,
+		value: BrandAudienceAgeRange.any,
 		shortLabel: 'Any',
 		fullLabel: 'Any age',
 		icon: Waypoints
@@ -78,19 +76,19 @@ export const AGE_RANGE_OPTIONS: AgeRangeOption[] = [
 
 export const GENDER_OPTIONS: GenderOption[] = [
 	{
-		value: BrandAudienceGender.MALE,
+		value: BrandAudienceGender.male,
 		shortLabel: 'Male',
 		fullLabel: 'Male',
 		icon: CircleUserRound
 	},
 	{
-		value: BrandAudienceGender.FEMALE,
+		value: BrandAudienceGender.female,
 		shortLabel: 'Female',
 		fullLabel: 'Female',
 		icon: CircleUserRound
 	},
 	{
-		value: BrandAudienceGender.ANY,
+		value: BrandAudienceGender.any,
 		shortLabel: 'Any',
 		fullLabel: 'Any gender',
 		icon: CircleUserRound
@@ -99,31 +97,31 @@ export const GENDER_OPTIONS: GenderOption[] = [
 
 export const INCOME_RANGE_OPTIONS: IncomeRangeOption[] = [
 	{
-		value: BrandAudienceIncomeRange.LOW_INCOME,
+		value: BrandAudienceIncomeRange.lowIncome,
 		shortLabel: 'Low',
 		fullLabel: 'Low income',
 		icon: LandPlot
 	},
 	{
-		value: BrandAudienceIncomeRange.MIDDLE_INCOME,
+		value: BrandAudienceIncomeRange.middleIncome,
 		shortLabel: 'Middle',
 		fullLabel: 'Middle income',
 		icon: Wallet
 	},
 	{
-		value: BrandAudienceIncomeRange.UPPER_MIDDLE_INCOME,
+		value: BrandAudienceIncomeRange.upperMiddleIncome,
 		shortLabel: 'Upper',
 		fullLabel: 'Upper middle income',
 		icon: Banknote
 	},
 	{
-		value: BrandAudienceIncomeRange.HIGH_INCOME,
+		value: BrandAudienceIncomeRange.highIncome,
 		shortLabel: 'High',
 		fullLabel: 'High income',
 		icon: BadgeDollarSign
 	},
 	{
-		value: BrandAudienceIncomeRange.ANY,
+		value: BrandAudienceIncomeRange.any,
 		shortLabel: 'Any',
 		fullLabel: 'Any income',
 		icon: Wallet

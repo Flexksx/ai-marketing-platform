@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BrandAudience } from '$lib/api/brand-data/model/BrandData';
+	import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
@@ -43,14 +43,14 @@
 		value: string
 	) {
 		if (readonly) return;
-		const next = [...audience[field]];
+		const next = [...(audience[field] ?? [])];
 		next[index] = value;
 		updateAudience({ [field]: next } as Partial<BrandAudience>);
 	}
 
 	function addArrayItem(field: keyof Pick<BrandAudience, 'painPoints' | 'objections'>) {
 		if (readonly) return;
-		const next = [...audience[field], ''];
+		const next = [...(audience[field] ?? []), ''];
 		updateAudience({ [field]: next } as Partial<BrandAudience>);
 	}
 
@@ -59,23 +59,22 @@
 		index: number
 	) {
 		if (readonly) return;
-		const next = audience[field].filter((_, i) => i !== index);
+		const next = (audience[field] ?? []).filter((_, i) => i !== index);
 		updateAudience({ [field]: next } as Partial<BrandAudience>);
 	}
 
-	function toggleChannel(value: BrandAudience['channels'][number]) {
+	function toggleChannel(value: NonNullable<BrandAudience['channels']>[number]) {
 		if (readonly) return;
-		const exists = audience.channels.includes(value);
+		const channels = audience.channels ?? [];
+		const exists = channels.includes(value);
 		updateAudience({
-			channels: exists
-				? audience.channels.filter((c) => c !== value)
-				: [...audience.channels, value]
+			channels: exists ? channels.filter((c) => c !== value) : [...channels, value]
 		});
 	}
 
-	const ageLabel = $derived(getAgeRangeLabels(audience.ageRange));
-	const genderLabel = $derived(getGenderLabels(audience.gender));
-	const incomeLabel = $derived(getIncomeRangeLabels(audience.incomeRange));
+	const ageLabel = $derived(getAgeRangeLabels(audience.ageRange ?? 'ANY'));
+	const genderLabel = $derived(getGenderLabels(audience.gender ?? 'ANY'));
+	const incomeLabel = $derived(getIncomeRangeLabels(audience.incomeRange ?? 'ANY'));
 </script>
 
 <Dialog.Root bind:open>
@@ -218,7 +217,7 @@
 							<p class="text-xs text-muted-foreground">
 								The biggest frustration you are addressing.
 							</p>
-							{#each audience.painPoints as item, index (index)}
+							{#each (audience.painPoints ?? []) as item, index (index)}
 								<div class="flex items-start gap-2">
 									<Textarea
 										class="w-full  rounded-xl"
@@ -261,7 +260,7 @@
 							<p class="text-xs text-muted-foreground">
 								What stops them from interacting with you.
 							</p>
-							{#each audience.objections as item, index (index)}
+							{#each (audience.objections ?? []) as item, index (index)}
 								<div class="flex items-start gap-2">
 									<Textarea
 										class="w-full rounded-xl"
@@ -304,7 +303,7 @@
 				<Label>Channels</Label>
 				<div class="flex flex-wrap gap-2">
 					{#each CHANNEL_OPTIONS as option (option.value)}
-						{@const isSelected = audience.channels.includes(option.value)}
+						{@const isSelected = (audience.channels ?? []).includes(option.value)}
 						{@const Icon = option.icon as typeof SvelteComponent}
 						<button
 							type="button"
