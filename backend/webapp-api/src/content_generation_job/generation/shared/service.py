@@ -7,8 +7,8 @@ from fastapi import Depends
 import src.content_generation_job.service as content_generation_job_service
 from lib.db.session_factory import DbSessionFactory
 from src.content_generation_job.errors import ContentGenerationJobRuntimeException
+from src.content_generation_job.model import ContentGenerationJob
 from webapp_api_contract.content_generation import (
-    ContentGenerationJob,
     ContentGenerationJobResult,
     ContentGenerationJobUpdateRequest,
 )

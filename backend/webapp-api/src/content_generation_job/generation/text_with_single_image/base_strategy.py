@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
+from src.content_generation_job.model import ContentGenerationJob
 from webapp_api_contract.content_generation import (
-    ContentGenerationJob,
     TextWithSingleImageContentGenerationJobResult,
 )
 

@@ -5,10 +5,10 @@ from lib.prompts import PromptTemplateName
 from src.campaign_generation.generation.content_brief.service import (
     CampaignContentBriefGenerator,
 )
+from src.campaign_generation.model import CampaignGenerationJob
 from webapp_api_contract.campaign_generation import (
     AiGeneratedCampaignGenerationJobUserInput,
     BaseCampaignGenerationJobUserInput,
-    CampaignGenerationJob,
     CampaignGenerationJobResult,
     ProductLifestyleCampaignGenerationJobUserInput,
 )

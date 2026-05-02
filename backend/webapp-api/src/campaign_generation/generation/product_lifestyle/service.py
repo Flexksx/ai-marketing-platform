@@ -17,10 +17,8 @@ from src.campaign_generation.generation.content_plan import (
 from src.campaign_generation.generation.shared.service import (
     BaseCampaignGenerationJobRunner,
 )
-from webapp_api_contract.campaign_generation import (
-    CampaignGenerationJob,
-    CampaignGenerationJobResult,
-)
+from src.campaign_generation.model import CampaignGenerationJob
+from webapp_api_contract.campaign_generation import CampaignGenerationJobResult
 
 
 logger = logging.getLogger(__name__)

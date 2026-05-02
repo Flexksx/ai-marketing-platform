@@ -26,14 +26,3 @@ class CampaignData(BaseModel):
     end_date: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
-
-
-class Campaign(BaseModel):
-    id: str
-    brand_id: str
-    state: CampaignState
-    data: CampaignData | None = None
-    created_at: datetime
-    updated_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)

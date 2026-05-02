@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
 
-from webapp_api_contract.brand_generation_job import (
-    BrandGenerationJob,
-    BrandGenerationResult,
-)
+from src.brand_generation_job.model import BrandGenerationJob, BrandGenerationResult
 
 
 class BrandGenerationBaseStep(ABC):

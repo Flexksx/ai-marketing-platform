@@ -2,8 +2,8 @@ import builtins
 
 import src.brand.repository as brand_repository
 from lib.db.session_factory import DbSessionFactory
+from src.brand.model import Brand
 from webapp_api_contract.brand import (
-    Brand,
     BrandCreateRequest,
     BrandSearchRequest,
     BrandUpdateRequest,

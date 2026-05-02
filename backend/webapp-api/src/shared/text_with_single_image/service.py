@@ -30,10 +30,10 @@ from lib.supabase_client import (
     StorageUploadRequest,
     SupabaseStorageService,
 )
+from src.brand.model import Brand
 from src.shared.text_with_single_image.model import (
     TextWithSingleImageContent,
 )
-from webapp_api_contract.brand import Brand
 from webapp_api_contract.shared import ContentChannelName, ContentFormat
 
 

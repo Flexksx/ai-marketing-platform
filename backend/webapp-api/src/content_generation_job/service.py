@@ -5,9 +5,9 @@ from src.content_generation_job.errors import (
     ContentGenerationJobNoResultException,
     ContentGenerationJobUnsupportedWorkflowTypeException,
 )
+from src.content_generation_job.model import ContentGenerationJob
 from webapp_api_contract.content import ContentCreateRequest, TextOnlyContentData
 from webapp_api_contract.content_generation import (
-    ContentGenerationJob,
     ContentGenerationJobCreateRequest,
     ContentGenerationJobSearchRequest,
     ContentGenerationJobUpdateRequest,

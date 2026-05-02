@@ -9,7 +9,7 @@ import src.content_channel.service as content_channel_service
 from lib.ai_agents import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
 from lib.prompts import PromptService, PromptTemplateName
-from webapp_api_contract.brand import Brand
+from src.brand.model import Brand
 from webapp_api_contract.brand.content_pillar import ContentPillarBusinessGoal
 from webapp_api_contract.campaign_generation import (
     CampaignGenerationJobResult,

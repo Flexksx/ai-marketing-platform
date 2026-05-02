@@ -5,11 +5,11 @@ from lib.db.session_factory import DbSessionFactory
 from lib.utils import new_id
 from src.brand_generation_job.entity import BrandGenerationJobRecord
 from src.brand_generation_job.errors import BrandGenerationJobNotFoundError
-from webapp_api_contract.brand_generation_job import (
+from src.brand_generation_job.model import (
     BrandGenerationJob,
-    BrandGenerationJobCreateRequest,
     BrandGenerationJobUpdateRequest,
 )
+from webapp_api_contract.brand_generation_job import BrandGenerationJobCreateRequest
 from webapp_api_contract.shared import JobStatus
 
 

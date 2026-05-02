@@ -4,7 +4,6 @@ from pydantic import BaseModel, ConfigDict, Field
 from scraper_api_contract.scraper import ScrapeResult
 
 from webapp_api_contract.brand import BrandData
-from webapp_api_contract.brand_generation_job.model import BrandGenerationResult
 from webapp_api_contract.shared import JobStatus
 
 
@@ -21,15 +20,6 @@ class BrandGenerationJobCreateRequest(BaseModel):
     extra_routes: list[str] = Field(
         default=["/about", "/help"],
         description="The extra routes of the website to extract the brand from",
-    )
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class BrandGenerationJobUpdateRequest(BaseModel):
-    status: JobStatus = Field(..., description="The status of the brand extraction job")
-    result: BrandGenerationResult | None = Field(
-        None, description="The result of the brand extraction job"
     )
 
     model_config = ConfigDict(from_attributes=True)

@@ -8,11 +8,11 @@ from pydantic_ai import format_as_xml
 import src.campaign_generation.service as campaign_generation_job_service
 from lib.db.session_factory import DbSessionFactory
 from lib.prompts import PromptTemplateName
+from src.campaign_generation.model import CampaignGenerationJob
 from src.shared.text_with_single_image import (
     TextWithSingleImageContentGenerator,
 )
 from webapp_api_contract.campaign_generation import (
-    CampaignGenerationJob,
     CampaignGenerationJobResult,
     ContentPlanItem,
 )

@@ -8,17 +8,20 @@ import src.brand.service as brand_service
 import src.brand_generation_job.repository as brand_generation_job_repository
 from lib.db.session_factory import DbSessionFactory
 from lib.prompts.service import PromptService
+from src.brand.model import Brand
 from src.brand_generation_job.generation.steps.data_extraction import (
     BrandDataExtractionStep,
 )
-from src.config import get_settings
-from webapp_api_contract.brand import Brand, BrandCreateRequest
-from webapp_api_contract.brand_generation_job import (
+from src.brand_generation_job.model import (
     BrandGenerationJob,
-    BrandGenerationJobAcceptRequest,
-    BrandGenerationJobCreateRequest,
     BrandGenerationJobUpdateRequest,
     BrandGenerationResult,
+)
+from src.config import get_settings
+from webapp_api_contract.brand import BrandCreateRequest
+from webapp_api_contract.brand_generation_job import (
+    BrandGenerationJobAcceptRequest,
+    BrandGenerationJobCreateRequest,
 )
 from webapp_api_contract.shared import JobStatus
 

@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from lib.db.session_factory import DbSessionFactory
 from lib.utils import new_id
 from src.campaigns.entity import CampaignRecord, CampaignState
+from src.campaigns.model import Campaign
 from webapp_api_contract.campaigns import (
-    Campaign,
     CampaignCreateRequest,
     CampaignListRequest,
     CampaignUpdateRequest,

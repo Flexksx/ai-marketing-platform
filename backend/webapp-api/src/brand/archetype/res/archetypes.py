@@ -1,10 +1,7 @@
 from typing import Final
 
-from webapp_api_contract.brand import (
-    BrandArchetype,
-    BrandArchetypeData,
-    BrandArchetypeName,
-)
+from src.brand.archetype.model import BrandArchetype, BrandArchetypeData
+from webapp_api_contract.brand.archetype import BrandArchetypeName
 
 
 ARCHETYPE_DATA: Final[dict[BrandArchetypeName, BrandArchetype]] = {

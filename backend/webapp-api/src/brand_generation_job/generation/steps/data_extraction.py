@@ -20,13 +20,10 @@ from src.brand_generation_job.generation.brand_data_generation import (
     PositioningBrandDataResult,
 )
 from src.brand_generation_job.generation.steps.base import BrandGenerationBaseStep
+from src.brand_generation_job.model import BrandGenerationJob, BrandGenerationResult
 from webapp_api_contract.brand import BrandCreateRequest, BrandData
 from webapp_api_contract.brand.positioning import PositioningBrandData
 from webapp_api_contract.brand.tone_of_voice import BrandToneOfVoice
-from webapp_api_contract.brand_generation_job import (
-    BrandGenerationJob,
-    BrandGenerationResult,
-)
 
 
 logger = logging.getLogger(__name__)

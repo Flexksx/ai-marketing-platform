@@ -8,7 +8,7 @@ from src.brand_generation_job.generation.steps.data_extraction import (
     BrandDataExtractionStep,
 )
 from src.brand_generation_job.generation.steps.scraping import BrandScrapingStep
-from webapp_api_contract.brand_generation_job import (
+from src.brand_generation_job.model import (
     BrandGenerationJob,
     BrandGenerationJobUpdateRequest,
     BrandGenerationResult,

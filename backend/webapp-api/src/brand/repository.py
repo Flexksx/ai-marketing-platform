@@ -7,8 +7,8 @@ from lib.db.session_factory import DbSessionFactory
 from lib.utils import new_id
 from src.brand.entity import BrandRecord
 from src.brand.errors import BrandNotFoundError
+from src.brand.model import Brand
 from webapp_api_contract.brand import (
-    Brand,
     BrandCreateRequest,
     BrandSearchRequest,
     BrandUpdateRequest,

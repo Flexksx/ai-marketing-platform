@@ -8,12 +8,12 @@ from pydantic_ai import ImageUrl
 import src.brand.service as brand_service
 from lib.db.session_factory import DbSessionFactory
 from lib.prompts import PromptService, PromptTemplateName
+from src.brand.model import Brand
 from src.campaign_generation.generation.content_brief.service import (
     CampaignContentBriefGenerator,
 )
-from webapp_api_contract.brand import Brand
+from src.campaign_generation.model import CampaignGenerationJob
 from webapp_api_contract.campaign_generation import (
-    CampaignGenerationJob,
     CampaignGenerationJobResult,
     UserMediaOnlyCampaignGenerationJobUserInput,
 )

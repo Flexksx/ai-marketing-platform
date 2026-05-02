@@ -8,10 +8,7 @@ from scraper_api_contract.scraper import ScrapeResult
 
 from lib.scraper.http_client import HttpScraperClient
 from src.brand_generation_job.generation.steps.base import BrandGenerationBaseStep
-from webapp_api_contract.brand_generation_job import (
-    BrandGenerationJob,
-    BrandGenerationResult,
-)
+from src.brand_generation_job.model import BrandGenerationJob, BrandGenerationResult
 
 
 logger = logging.getLogger(__name__)

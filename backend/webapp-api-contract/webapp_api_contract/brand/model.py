@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_extra_types.language_code import LanguageAlpha2
 
@@ -27,12 +25,3 @@ class BrandData(BaseModel):
     positioning: PositioningBrandData = Field(default_factory=PositioningBrandData)
 
     model_config = ConfigDict(from_attributes=True)
-
-
-class Brand(BaseModel):
-    id: str
-    user_id: str
-    name: str
-    data: BrandData = Field(default_factory=BrandData)
-    created_at: datetime
-    updated_at: datetime

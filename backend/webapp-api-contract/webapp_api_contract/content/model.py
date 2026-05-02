@@ -1,9 +1,8 @@
-from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from webapp_api_contract.shared import ContentChannelName, ContentFormat
+from webapp_api_contract.shared import ContentFormat
 
 
 class TextWithSingleImageContentData(BaseModel):
@@ -24,17 +23,3 @@ class TextOnlyContentData(BaseModel):
 
 
 ContentData = TextWithSingleImageContentData | TextOnlyContentData
-
-
-class Content(BaseModel):
-    id: str
-    brand_id: str
-    campaign_id: str | None = None
-    channel: ContentChannelName
-    content_format: ContentFormat
-    data: ContentData
-    created_at: datetime
-    updated_at: datetime
-    scheduled_at: datetime | None = None
-
-    model_config = ConfigDict(from_attributes=True)

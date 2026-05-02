@@ -2,20 +2,20 @@ from fastapi import Depends
 from pydantic import BaseModel
 
 from lib.prompts import PromptTemplateName
+from src.brand.model import Brand
 from src.content_generation_job.errors import (
     ContentGenerationJobInvalidUserInputException,
 )
 from src.content_generation_job.generation.text_with_single_image.base_strategy import (
     BaseTextWithSingleImageContentGenerationJobStrategy,
 )
+from src.content_generation_job.model import ContentGenerationJob
 from src.shared import (
     TextWithSingleImageContent,
     TextWithSingleImageContentGenerator,
 )
-from webapp_api_contract.brand import Brand
 from webapp_api_contract.content import TextWithSingleImageContentData
 from webapp_api_contract.content_generation import (
-    ContentGenerationJob,
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
