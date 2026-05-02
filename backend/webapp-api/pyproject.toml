@@ -71,7 +71,7 @@ extend = "../ruff.toml"
 known-first-party = ["src", "lib", "webapp_api_contract", "test"]
 
 [tool.ty.environment]
-root = ["."]
+python = ".venv/bin/python"
 
 [tool.pytest.ini_options]
 minversion = "8.0"
