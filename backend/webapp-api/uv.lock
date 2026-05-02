@@ -2603,6 +2603,12 @@ dependencies = [
 [package.metadata]
 requires-dist = [{ name = "pydantic", specifier = ">=2.12.5" }]
 
+[package.metadata.requires-dev]
+dev = [
+    { name = "ruff", specifier = ">=0.15.10" },
+    { name = "ty", specifier = ">=0.0.29" },
+]
+
 [[package]]
 name = "secretstorage"
 version = "3.5.0"
@@ -3204,6 +3210,12 @@ requires-dist = [
     { name = "pydantic-extra-types", specifier = ">=2.11.0" },
     { name = "python-ulid", specifier = ">=3.1.0" },
     { name = "scraper-api-contract", directory = "../scraper-api-contract" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "ruff", specifier = ">=0.15.10" },
+    { name = "ty", specifier = ">=0.0.29" },
 ]
 
 [[package]]

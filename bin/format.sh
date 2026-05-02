@@ -23,10 +23,15 @@ case "${target}" in
         (cd "${repo_root}/apps/webapp/spa" && pnpm run format:write && pnpm run lint:write)
         ;;
     api)
-        (cd "${repo_root}/backend/webapp-api" && \
-            uv run ruff check --fix . || true; \
-            uv run ruff format . ; \
-            uv run ty check --fix . || true)
+        for py_project in "${repo_root}/backend/webapp-api" \
+                          "${repo_root}/backend/scraper-api" \
+                          "${repo_root}/backend/webapp-api-contract" \
+                          "${repo_root}/backend/scraper-api-contract"; do
+            (cd "${py_project}" && \
+                uv run ruff check --fix . || true; \
+                uv run ruff format . ; \
+                uv run ty check --fix . || true)
+        done
         ;;
     *)
         echo "Unknown format target: ${target}" >&2
