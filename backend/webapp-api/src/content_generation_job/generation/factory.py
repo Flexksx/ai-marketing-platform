@@ -1,13 +1,15 @@
 import public
 from fastapi import Depends
 
+from src.content_generation_job.errors import (
+    ContentGenerationJobInvalidUserInputException,
+)
 from src.content_generation_job.generation.shared.service import (
     BaseContentGenerationJobRunner,
 )
 from src.content_generation_job.generation.text_with_single_image.service import (
     TextWithSingleImageContentGenerationJobRunner,
 )
-from src.content_generation_job.errors import ContentGenerationJobInvalidUserInputException
 from webapp_api_contract.content_generation import (
     ContentGenerationJob,
     ContentGenerationJobWorkflowType,

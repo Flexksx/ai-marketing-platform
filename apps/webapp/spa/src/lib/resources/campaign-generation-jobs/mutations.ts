@@ -19,18 +19,15 @@ export function useCreateCampaignGenerationJob() {
 			for (const file of files) {
 				formData.append('request_files', file);
 			}
-			return creationApi.brandCampaignCreationStart(
-				{ brandId, requestData },
-				async ({ init }) => ({
-					...init,
-					body: formData,
-					headers: Object.fromEntries(
-						Object.entries(init.headers as Record<string, string>).filter(
-							([key]) => key.toLowerCase() !== 'content-type'
-						)
+			return creationApi.brandCampaignCreationStart({ brandId, requestData }, async ({ init }) => ({
+				...init,
+				body: formData,
+				headers: Object.fromEntries(
+					Object.entries(init.headers as Record<string, string>).filter(
+						([key]) => key.toLowerCase() !== 'content-type'
 					)
-				})
-			);
+				)
+			}));
 		},
 		onSuccess: (job) => {
 			queryClient.setQueryData(queryKeys.campaignGenerationJob(job.id), job);

@@ -8,6 +8,7 @@ from lib.db.session_factory import DbSessionFactory
 from src.auth import get_current_user_id
 from src.auth_access import validate_brand_generation_job_access
 from src.config import get_settings
+from webapp_api_contract.brand import BrandResponse
 from webapp_api_contract.brand_generation_job import (
     BrandGenerationJob,
     BrandGenerationJobAcceptRequest,
@@ -15,7 +16,6 @@ from webapp_api_contract.brand_generation_job import (
     BrandGenerationJobCreateRequestBody,
     BrandGenerationJobResponse,
 )
-from webapp_api_contract.brand import BrandResponse
 
 
 router = APIRouter(prefix="/brand-generation", tags=["brand-generation"])

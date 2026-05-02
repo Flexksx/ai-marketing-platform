@@ -32,7 +32,9 @@ function parseCookies(cookieString: string): Record<string, string> {
 
 function bearerFromBrowserCookies(): string | undefined {
 	const cookies = parseCookies(document.cookie || '');
-	const authKey = Object.keys(cookies).find((k) => k.startsWith('sb-') && k.endsWith('-auth-token'));
+	const authKey = Object.keys(cookies).find(
+		(k) => k.startsWith('sb-') && k.endsWith('-auth-token')
+	);
 	if (!authKey) return undefined;
 	try {
 		const session = JSON.parse(cookies[authKey]);

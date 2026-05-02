@@ -6,10 +6,12 @@ import src.brand.service as brand_service
 from lib.ai_agents.schema import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
 from lib.prompts import PromptService, PromptTemplateName
+from src.content_generation_job.errors import (
+    ContentGenerationJobInvalidUserInputException,
+)
 from src.content_generation_job.generation.text_with_single_image import base_strategy
 from webapp_api_contract.brand import Brand
 from webapp_api_contract.content import TextWithSingleImageContentData
-from src.content_generation_job.errors import ContentGenerationJobInvalidUserInputException
 from webapp_api_contract.content_generation import (
     ContentGenerationJob,
     FromUserMediaTextWithSingleImageContentGenerationJobUserInput,

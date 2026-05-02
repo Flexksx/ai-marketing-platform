@@ -33,18 +33,15 @@ export function useUpdateBrand() {
 			if (logoFile) {
 				formData.append('logo_file', logoFile);
 			}
-			return api.brandsUpdate(
-				{ brandId, requestData },
-				async ({ init }) => ({
-					...init,
-					body: formData,
-					headers: Object.fromEntries(
-						Object.entries(init.headers as Record<string, string>).filter(
-							([key]) => key.toLowerCase() !== 'content-type'
-						)
+			return api.brandsUpdate({ brandId, requestData }, async ({ init }) => ({
+				...init,
+				body: formData,
+				headers: Object.fromEntries(
+					Object.entries(init.headers as Record<string, string>).filter(
+						([key]) => key.toLowerCase() !== 'content-type'
 					)
-				})
-			);
+				)
+			}));
 		},
 		onSuccess: (_result, variables) => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.brand(variables.brandId) });

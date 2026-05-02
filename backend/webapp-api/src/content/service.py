@@ -1,3 +1,4 @@
+import src.content.repository as content_repository
 from lib.db.session_factory import DbSessionFactory
 from webapp_api_contract.content import (
     Content,
@@ -5,7 +6,6 @@ from webapp_api_contract.content import (
     ContentListRequest,
     ContentUpdateRequest,
 )
-import src.content.repository as content_repository
 
 
 async def search(

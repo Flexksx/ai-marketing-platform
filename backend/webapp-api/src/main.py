@@ -6,8 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 
 import lib.db.schema_registry  # noqa: F401 - Ensures all SQLAlchemy models are registered
-from src.brand_generation_job.routes import router as brand_generation_router
 from src.brand.routes import router as brand_router
+from src.brand_generation_job.routes import router as brand_generation_router
 from src.config import get_settings
 from src.docs import router as docs_router
 from src.http_logging import http_logging_middleware

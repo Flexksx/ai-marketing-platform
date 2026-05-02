@@ -15,18 +15,15 @@ export function useCreateContentGenerationJob() {
 			if (file) {
 				formData.append('request_file', file);
 			}
-			return api.brandContentGenerationJobsStart(
-				{ brandId, requestData },
-				async ({ init }) => ({
-					...init,
-					body: formData,
-					headers: Object.fromEntries(
-						Object.entries(init.headers as Record<string, string>).filter(
-							([key]) => key.toLowerCase() !== 'content-type'
-						)
+			return api.brandContentGenerationJobsStart({ brandId, requestData }, async ({ init }) => ({
+				...init,
+				body: formData,
+				headers: Object.fromEntries(
+					Object.entries(init.headers as Record<string, string>).filter(
+						([key]) => key.toLowerCase() !== 'content-type'
 					)
-				})
-			);
+				)
+			}));
 		},
 		onSuccess: (job) => {
 			queryClient.setQueryData(queryKeys.contentGenerationJob(job.id), job);

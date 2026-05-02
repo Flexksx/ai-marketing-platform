@@ -3,6 +3,10 @@ from fastapi import Depends
 from pydantic import BaseModel, ConfigDict
 
 from lib.db.session_factory import DbSessionFactory
+from src.content_generation_job.errors import (
+    ContentGenerationJobInvalidUserInputException,
+    ContentGenerationJobUnsupportedWorkflowTypeException,
+)
 from src.content_generation_job.generation.shared import (
     BaseContentGenerationJobRunner,
 )
@@ -19,10 +23,6 @@ from src.content_generation_job.generation.text_with_single_image.product_lifest
     ProductLifestyleTextWithSingleImageContentGenerationJobStrategy,
 )
 from webapp_api_contract.brand import Brand
-from src.content_generation_job.errors import (
-    ContentGenerationJobInvalidUserInputException,
-    ContentGenerationJobUnsupportedWorkflowTypeException,
-)
 from webapp_api_contract.content_generation import (
     AiGeneratedTextWithSingleImageContentGenerationJobUserInput,
     ContentGenerationJob,

@@ -8,9 +8,7 @@ const api = new BrandCampaignsApi(openApiConfiguration);
 
 export function useCampaignsForBrand(
 	brandIdGetter: () => string | undefined,
-	paramsGetter?: () =>
-		| { state?: CampaignState | null; limit?: number; offset?: number }
-		| undefined
+	paramsGetter?: () => { state?: CampaignState | null; limit?: number; offset?: number } | undefined
 ) {
 	return createQuery(() => {
 		const brandId = brandIdGetter();

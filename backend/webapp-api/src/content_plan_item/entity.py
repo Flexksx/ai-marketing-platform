@@ -1,7 +1,7 @@
-from lib.db import Base
 from sqlalchemy import Column, Enum, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, TIMESTAMP
 
+from lib.db import Base
 from webapp_api_contract.shared import ContentChannelName, ContentFormat, JobStatus
 
 

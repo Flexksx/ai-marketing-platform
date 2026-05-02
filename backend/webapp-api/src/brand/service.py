@@ -1,5 +1,6 @@
 import builtins
 
+import src.brand.repository as brand_repository
 from lib.db.session_factory import DbSessionFactory
 from webapp_api_contract.brand import (
     Brand,
@@ -7,7 +8,6 @@ from webapp_api_contract.brand import (
     BrandSearchRequest,
     BrandUpdateRequest,
 )
-import src.brand.repository as brand_repository
 
 
 async def get(session_factory: DbSessionFactory, brand_id: str) -> Brand:

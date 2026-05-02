@@ -4,14 +4,15 @@ import logging
 import httpx
 from scraper_api_contract.scraper import ScrapeResult
 
-import src.brand_generation_job.repository as brand_generation_job_repository
 import src.brand.service as brand_service
+import src.brand_generation_job.repository as brand_generation_job_repository
 from lib.db.session_factory import DbSessionFactory
 from lib.prompts.service import PromptService
 from src.brand_generation_job.generation.steps.data_extraction import (
     BrandDataExtractionStep,
 )
 from src.config import get_settings
+from webapp_api_contract.brand import Brand, BrandCreateRequest
 from webapp_api_contract.brand_generation_job import (
     BrandGenerationJob,
     BrandGenerationJobAcceptRequest,
@@ -19,7 +20,6 @@ from webapp_api_contract.brand_generation_job import (
     BrandGenerationJobUpdateRequest,
     BrandGenerationResult,
 )
-from webapp_api_contract.brand import Brand, BrandCreateRequest
 from webapp_api_contract.shared import JobStatus
 
 

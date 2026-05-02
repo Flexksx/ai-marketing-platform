@@ -15,8 +15,7 @@ export function useContentGenerationJob(
 		const jobId = jobIdGetter();
 		return {
 			queryKey: queryKeys.contentGenerationJob(jobId ?? ''),
-			queryFn: () =>
-				api.brandContentGenerationJobsGet({ brandId: brandId!, jobId: jobId! }),
+			queryFn: () => api.brandContentGenerationJobsGet({ brandId: brandId!, jobId: jobId! }),
 			enabled: !!brandId && !!jobId,
 			refetchInterval: (query) => {
 				const job = query.state.data;

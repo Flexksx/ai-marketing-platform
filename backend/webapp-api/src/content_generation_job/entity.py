@@ -1,9 +1,9 @@
-from lib.db import Base
 from sqlalchemy import Column, ForeignKey, String, func
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import DateTime
 
+from lib.db import Base
 from webapp_api_contract.shared import ContentFormat, JobStatus
 
 

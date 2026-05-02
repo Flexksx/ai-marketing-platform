@@ -8,6 +8,10 @@ from scraper_api_contract.scraper import ScrapeResult
 
 from lib.ai_agents.schema import PydanticAiModel
 from lib.prompts import PromptService, PromptTemplateName
+from src.brand_generation_job.errors import (
+    BrandGenerationJobResultElementNotFoundError,
+    BrandGenerationJobResultNotFoundError,
+)
 from src.brand_generation_job.generation.brand_data_generation import (
     BrandGenerationContentPillarResult,
     BrandGenerationJobAudienceProfilingResult,
@@ -16,17 +20,13 @@ from src.brand_generation_job.generation.brand_data_generation import (
     PositioningBrandDataResult,
 )
 from src.brand_generation_job.generation.steps.base import BrandGenerationBaseStep
-from src.brand_generation_job.errors import (
-    BrandGenerationJobResultElementNotFoundError,
-    BrandGenerationJobResultNotFoundError,
-)
+from webapp_api_contract.brand import BrandCreateRequest, BrandData
+from webapp_api_contract.brand.positioning import PositioningBrandData
+from webapp_api_contract.brand.tone_of_voice import BrandToneOfVoice
 from webapp_api_contract.brand_generation_job import (
     BrandGenerationJob,
     BrandGenerationResult,
 )
-from webapp_api_contract.brand import BrandCreateRequest, BrandData
-from webapp_api_contract.brand.positioning import PositioningBrandData
-from webapp_api_contract.brand.tone_of_voice import BrandToneOfVoice
 
 
 logger = logging.getLogger(__name__)
