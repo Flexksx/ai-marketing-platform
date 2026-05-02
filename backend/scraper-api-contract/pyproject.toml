@@ -26,4 +26,4 @@ extend = "../ruff.toml"
 known-first-party = ["scraper_api_contract"]
 
 [tool.ty.environment]
-root = ["."]
+python = "../.venv/bin/python"

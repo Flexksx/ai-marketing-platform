@@ -1,0 +1,7 @@
+[tool.uv.workspace]
+members = [
+  "webapp-api",
+  "scraper-api",
+  "webapp-api-contract",
+  "scraper-api-contract",
+]

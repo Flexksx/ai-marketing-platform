@@ -38,8 +38,8 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-webapp-api-contract = { path = "../webapp-api-contract" }
-scraper-api-contract = { path = "../scraper-api-contract" }
+webapp-api-contract = { workspace = true }
+scraper-api-contract = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
@@ -71,7 +71,7 @@ extend = "../ruff.toml"
 known-first-party = ["src", "lib", "webapp_api_contract", "test"]
 
 [tool.ty.environment]
-python = ".venv/bin/python"
+python = "../.venv/bin/python"
 
 [tool.pytest.ini_options]
 minversion = "8.0"

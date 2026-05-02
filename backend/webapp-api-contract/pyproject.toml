@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-scraper-api-contract = { path = "../scraper-api-contract" }
+scraper-api-contract = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
@@ -32,4 +32,4 @@ extend = "../ruff.toml"
 known-first-party = ["webapp_api_contract"]
 
 [tool.ty.environment]
-root = ["."]
+python = "../.venv/bin/python"
