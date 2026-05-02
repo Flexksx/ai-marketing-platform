@@ -13,17 +13,23 @@ dependencies = [
   "httpx>=0.28.1",
   "python-ulid>=3.1.0",
   "python-dotenv>=1.0.1",
+  "scraper-api-contract",
+  "webapp-api-contract",
 ]
+
+[tool.uv.sources]
+scraper-api-contract = { path = "../scraper-api-contract" }
+webapp-api-contract = { path = "../webapp-api-contract" }
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["scraper_api"]
+packages = ["src"]
 
 [project.scripts]
-serve = "scraper_api.main:main"
+serve = "src.main:main"
 
 [dependency-groups]
 dev = [
@@ -70,7 +76,7 @@ unfixable = []
 "__init__.py" = ["F403"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["scraper_api"]
+known-first-party = ["src", "scraper_api_contract", "webapp_api_contract"]
 section-order = [
   "future",
   "standard-library",

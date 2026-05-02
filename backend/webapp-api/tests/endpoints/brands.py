@@ -3,7 +3,7 @@ from typing import Any
 import public
 from httpx import AsyncClient
 
-from vozai.domain.brand import (
+from webapp_api_contract.brands import (
     BrandCreateRequest,
     BrandNotFoundError,
     BrandResponse,

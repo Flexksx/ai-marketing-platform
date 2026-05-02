@@ -18,12 +18,12 @@ ENV PATH="/usr/local/bin:$PATH"
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-COPY vozai/ vozai/
-COPY db/ db/
-COPY scripts/ scripts/
-COPY alembic/ alembic/
-COPY alembic.ini ./
+# Build context must be set to backend/ directory
+# docker build -t webapp-api -f webapp-api/Dockerfile .
+COPY webapp-api/pyproject.toml webapp-api/uv.lock ./
+COPY webapp-api-contract/ /app/webapp-api-contract/
+COPY webapp-api/src/ src/
+COPY webapp-api/lib/ lib/
 
 RUN uv sync --frozen --no-dev
 
@@ -38,4 +38,4 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD uv run python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')" || exit 1
 
-CMD ["/app/.venv/bin/uvicorn", "vozai.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["/app/.venv/bin/uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080"]

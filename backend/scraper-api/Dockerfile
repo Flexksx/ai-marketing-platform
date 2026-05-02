@@ -35,8 +35,12 @@ ENV PATH="/usr/local/bin:$PATH"
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-COPY scraper_api/ scraper_api/
+# Build context must be set to backend/ directory
+# docker build -t scraper-api -f scraper-api/Dockerfile .
+COPY scraper-api/pyproject.toml scraper-api/uv.lock ./
+COPY scraper-api-contract/ /app/scraper-api-contract/
+COPY webapp-api-contract/ /app/webapp-api-contract/
+COPY scraper-api/src/ src/
 
 RUN uv sync --frozen --no-dev
 
@@ -52,4 +56,4 @@ EXPOSE 8081
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8081/health')" || exit 1
 
-CMD ["/app/.venv/bin/uvicorn", "scraper_api.main:app", "--host", "0.0.0.0", "--port", "8081"]
+CMD ["/app/.venv/bin/uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8081"]

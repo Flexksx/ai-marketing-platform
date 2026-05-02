@@ -4,7 +4,7 @@ import pytest
 
 from tests.blackbox import AuthenticatedUser
 from tests.blackbox.brands import BrandMockFactory
-from vozai.domain.brand import (
+from webapp_api_contract.brands import (
     BrandColor,
     BrandCreateRequest,
     BrandData,

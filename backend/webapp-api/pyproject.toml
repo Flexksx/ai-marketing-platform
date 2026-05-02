@@ -1,11 +1,10 @@
 [project]
-name = "vozai"
+name = "webapp-api"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
   "openai>=2.8.0",
   "google-genai>=1.52.0",
-  "google-cloud-tasks>=2.16.0",
   "beautifulsoup4>=4.12.3",
   "lxml>=5.3.0",
   "html2text>=2025.4.15",
@@ -24,7 +23,6 @@ dependencies = [
   "jinja2>=3.1.0",
   "psycopg2-binary>=2.9.10",
   "asyncpg>=0.31.0",
-  "alembic>=1.14.0",
   "pydantic-settings>=2.6.0",
   "supabase>=2.24.0",
   "python-dotenv>=1.0.1",
@@ -34,27 +32,23 @@ dependencies = [
   "fastapi-utils>=0.8.0",
   "python-ulid>=3.1.0",
   "faker>=40.5.1",
+  "webapp-api-contract",
+  "scraper-api-contract",
 ]
+
+[tool.uv.sources]
+webapp-api-contract = { path = "../webapp-api-contract" }
+scraper-api-contract = { path = "../scraper-api-contract" }
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = [
-  "vozai",
-  "db",
-  "scripts",
-]
+packages = ["src", "lib"]
 
 [project.scripts]
-migrate-generate = "scripts.migrate_generate:main"
-migrate-push = "scripts.migrate_push:main"
-serve-api = "vozai.main:main"
-db-migrate = "db.scripts.db_migrate:main"
-db-push = "db.scripts.db_push:main"
-db-generate = "db.scripts.db_generate:main"
-db-reset = "db.scripts.db_reset:main"
+serve-api = "src.main:main"
 
 [dependency-groups]
 dev = [
@@ -85,7 +79,6 @@ extend-exclude = [
   "build",
   "dist",
   "__pycache__",
-  "alembic/versions",
 ]
 
 [tool.ruff.lint]
@@ -116,14 +109,10 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F403"]
-"alembic/versions/*.py" = ["E501", "F401", "F403", "F841"]
-"alembic/env.py" = ["E402"]
-"db/scripts/*.py" = ["T20"]
 "tests/*.py" = ["ARG001", "ARG002", "PLR2004"]
 
-
 [tool.ruff.lint.isort]
-known-first-party = ["vozai", "db", "test"]
+known-first-party = ["src", "lib", "webapp_api_contract", "test"]
 section-order = [
   "future",
   "standard-library",
