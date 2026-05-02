@@ -44,15 +44,13 @@ build-backend = "hatchling.build"
 packages = [
   "vozai",
   "db",
-  "services",
   "scripts",
 ]
 
 [project.scripts]
 migrate-generate = "scripts.migrate_generate:main"
 migrate-push = "scripts.migrate_push:main"
-serve-api = "services.client_api.main:main"
-serve-worker = "services.worker_api.main:main"
+serve-api = "vozai.main:main"
 db-migrate = "db.scripts.db_migrate:main"
 db-push = "db.scripts.db_push:main"
 db-generate = "db.scripts.db_generate:main"
@@ -125,7 +123,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 
 [tool.ruff.lint.isort]
-known-first-party = ["vozai", "db", "services", "test"]
+known-first-party = ["vozai", "db", "test"]
 section-order = [
   "future",
   "standard-library",

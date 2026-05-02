@@ -18,16 +18,13 @@ ENV PATH="/usr/local/bin:$PATH"
 
 WORKDIR /app
 
-# 1. Copy source
 COPY pyproject.toml uv.lock ./
 COPY vozai/ vozai/
 COPY db/ db/
-COPY services/ services/
 COPY scripts/ scripts/
 COPY alembic/ alembic/
 COPY alembic.ini ./
 
-# 2. Install project and dependencies
 RUN uv sync --frozen --no-dev
 
 
@@ -41,10 +38,4 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD uv run python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')" || exit 1
 
-FROM base as api
-
-CMD ["/app/.venv/bin/uvicorn", "services.client_api.main:app", "--host", "0.0.0.0", "--port", "8080"]
-
-FROM base as worker
-
-CMD ["/app/.venv/bin/uvicorn", "services.worker_api.main:app", "--host", "0.0.0.0", "--port", "8080", "--timeout-keep-alive", "3600"]
+CMD ["/app/.venv/bin/uvicorn", "vozai.main:app", "--host", "0.0.0.0", "--port", "8080"]

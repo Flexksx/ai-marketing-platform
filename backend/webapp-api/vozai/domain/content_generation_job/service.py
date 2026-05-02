@@ -16,7 +16,6 @@ from vozai.domain.content_generation_job.schema import (
     ContentGenerationJobSearchRequest,
     ContentGenerationJobUpdateRequest,
 )
-from vozai.lib.cloudtasks.service import CloudTasksService
 
 
 async def create(
@@ -50,16 +49,6 @@ async def search(
     request: ContentGenerationJobSearchRequest,
 ) -> list[ContentGenerationJob]:
     return await content_generation_job_repository.search(session_factory, request)
-
-
-async def start(
-    session_factory: DbSessionFactory,
-    tasks_service: CloudTasksService,
-    request: ContentGenerationJobCreateRequest,
-) -> ContentGenerationJob:
-    job = await create(session_factory, request)
-    await tasks_service.enqueue_content_generation(job.id)
-    return job
 
 
 async def accept(session_factory: DbSessionFactory, job_id: str):

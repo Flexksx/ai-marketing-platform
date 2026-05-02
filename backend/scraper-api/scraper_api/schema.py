@@ -3,6 +3,8 @@ from pydantic import BaseModel
 
 class ScrapeRequest(BaseModel):
     url: str
+    callback_url: str | None = None
+    callback_secret: str | None = None
 
 
 class ScrapeResult(BaseModel):

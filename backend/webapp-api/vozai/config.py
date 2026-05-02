@@ -10,7 +10,6 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
-        # Allow reading variables with different names
         populate_by_name=True,
     )
 
@@ -30,29 +29,24 @@ class Settings(BaseSettings):
         default="", alias="GOOGLE_CLOUD_SERVICES_API_KEY"
     )
     gemini_api_key: str = Field(default="", alias="GEMINI_API_KEY")
-    gcp_project_id: str = Field(default="", alias="GCP_PROJECT_ID")
-    gcp_location: str = Field(default="europe-central2", alias="GCP_LOCATION")
-    cloud_tasks_queue: str = Field(
-        default="campaign-generation-jobs", alias="CLOUD_TASKS_QUEUE"
-    )
-    worker_service_url: str = Field(default="", alias="WORKER_SERVICE_URL")
-    worker_service_account_email: str = Field(
-        default="", alias="WORKER_SERVICE_ACCOUNT_EMAIL"
-    )
     scraper_service_url: str = Field(
         default="http://localhost:8081", alias="SCRAPER_SERVICE_URL"
+    )
+    api_base_url: str = Field(
+        default="http://localhost:8000", alias="API_BASE_URL"
+    )
+    scraper_callback_secret: str = Field(
+        default="dev-secret", alias="SCRAPER_CALLBACK_SECRET"
     )
     environment: str = "development"
     log_level: str = "INFO"
 
     @model_validator(mode="after")
     def set_supabase_from_public_env(self):
-        # Use PUBLIC_ prefixed vars as fallback if supabase_url/supabase_key are not set
         if not self.supabase_url and self.public_supabase_url:
             self.supabase_url = self.public_supabase_url
         if not self.supabase_key and self.public_supabase_publishable_key:
             self.supabase_key = self.public_supabase_publishable_key
-        # Also check actual environment variables as final fallback
         if not self.supabase_url:
             self.supabase_url = os.getenv("PUBLIC_SUPABASE_URL", "") or os.getenv(
                 "SUPABASE_URL", ""

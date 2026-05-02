@@ -29,7 +29,6 @@ from vozai.domain.content.model import (
 )
 from vozai.domain.content.schema import ContentCreateRequest
 from vozai.domain.content_plan_item.schema import ContentPlanItemUpdateRequest
-from vozai.lib.cloudtasks.service import CloudTasksService
 
 
 logger = logging.getLogger(__name__)
@@ -71,18 +70,6 @@ async def create(
     job = await campaign_generation_job_repository.create(session_factory, request)
     if not job:
         raise CampaignGenerationJobCreationFailedException()
-    return job
-
-
-async def start(
-    session_factory: DbSessionFactory,
-    tasks_service: CloudTasksService,
-    user_id: str,
-    request: CampaignGenerationJobCreateRequest,
-) -> CampaignGenerationJob:
-    job = await create(session_factory, request)
-    await tasks_service.enqueue_campaign_generation(job.id, user_id)
-    logger.info(f"Enqueued campaign generation task for job {job.id}")
     return job
 
 
