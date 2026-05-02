@@ -62,7 +62,8 @@
 			"!**/dist/",
 			"!**/static/",
 			"!**/drizzle/",
-			"!**/src/lib/paraglide/"
+			"!**/src/lib/paraglide/",
+			"!apps/webapp/spa/src/lib/api/generated/**"
 		]
 	}
 }

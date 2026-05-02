@@ -19,11 +19,11 @@
 		"verify:check": "pnpm run check && pnpm run format:check && pnpm run lint:check",
 		"verify:write": "pnpm run format:write && pnpm run lint:write",
 		"cf-typegen": "wrangler types src/worker-configuration.d.ts",
-		"generate:api": "openapi-ts"
+		"generate:api": "bash scripts/generate-api.sh"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.13",
-		"@hey-api/openapi-ts": "^0.97.0",
+		"@openapitools/openapi-generator-cli": "2.32.0",
 		"@inlang/paraglide-js": "^2.4.0",
 		"@internationalized/date": "^3.10.0",
 		"@lucide/svelte": "^0.561.0",

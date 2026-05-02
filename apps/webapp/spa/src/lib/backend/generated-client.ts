@@ -1,10 +1,11 @@
 /**
- * Configures the auto-generated hey-api axios client with the correct base URL
- * and Supabase auth token injection. Import this module once, early in the app
- * lifecycle (e.g. root +layout.ts), before any generated SDK calls are made.
+ * Shared OpenAPI Generator (typescript-fetch) configuration: camelCase in TS,
+ * snake_case on the wire via *ToJSON / *FromJSON.
+ *
+ * Import `openApiConfiguration` when constructing generated *Api classes.
  */
 import { browser } from '$app/environment';
-import { client } from '$lib/api/generated/client.gen';
+import { Configuration, type Middleware } from '$lib/api/generated';
 
 const getBackendUrl = (): string => {
 	const url =
@@ -29,27 +30,36 @@ function parseCookies(cookieString: string): Record<string, string> {
 		);
 }
 
-client.setConfig({ baseURL: getBackendUrl() });
-
-if (browser) {
-	client.instance.interceptors.request.use((config) => {
-		if (!config.headers.Authorization) {
-			const cookies = parseCookies(document.cookie || '');
-			const authKey = Object.keys(cookies).find(
-				(k) => k.startsWith('sb-') && k.endsWith('-auth-token')
-			);
-			if (authKey) {
-				try {
-					const session = JSON.parse(cookies[authKey]);
-					const token = session[0];
-					if (token) config.headers.Authorization = `Bearer ${token}`;
-				} catch {
-					/* ignore */
-				}
-			}
-		}
-		return config;
-	});
+function bearerFromBrowserCookies(): string | undefined {
+	const cookies = parseCookies(document.cookie || '');
+	const authKey = Object.keys(cookies).find((k) => k.startsWith('sb-') && k.endsWith('-auth-token'));
+	if (!authKey) return undefined;
+	try {
+		const session = JSON.parse(cookies[authKey]);
+		const token = session[0];
+		return typeof token === 'string' ? token : undefined;
+	} catch {
+		return undefined;
+	}
 }
 
-export { client };
+const authMiddleware: Middleware = {
+	pre: async ({ url, init }) => {
+		if (!browser) return undefined;
+		const token = bearerFromBrowserCookies();
+		if (!token) return undefined;
+		const headers = new Headers(init.headers);
+		if (!headers.has('Authorization')) {
+			headers.set('Authorization', `Bearer ${token}`);
+		}
+		return { url, init: { ...init, headers } };
+	}
+};
+
+export const openApiConfiguration = new Configuration({
+	basePath: getBackendUrl(),
+	headers: {
+		'Content-Type': 'application/json'
+	},
+	middleware: browser ? [authMiddleware] : []
+});

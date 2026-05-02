@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Voisso API",
-    "description": "Voisso marketing automation platform API",
+    "title": "Voz AI API",
+    "description": "Voz AI marketing automation platform API",
     "version": "0.1.0"
   },
   "paths": {
@@ -187,6 +187,23 @@
             "schema": {
               "type": "string",
               "title": "Brand Id"
+            }
+          },
+          {
+            "name": "prompts_dir",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "path"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prompts Dir"
             }
           },
           {
@@ -399,6 +416,23 @@
             "schema": {
               "type": "string",
               "title": "Brand Id"
+            }
+          },
+          {
+            "name": "prompts_dir",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "path"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prompts Dir"
             }
           },
           {
@@ -1387,6 +1421,72 @@
         }
       }
     },
+    "/brand-generation/{job_id}/scrape-result": {
+      "put": {
+        "tags": [
+          "brand-generation"
+        ],
+        "summary": "Receive Scrape Result",
+        "operationId": "brand_generation_receive_scrape_result",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "x-callback-secret",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Callback-Secret"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeResult"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health Check",
@@ -2111,18 +2211,37 @@
       "CampaignData": {
         "properties": {
           "name": {
-            "type": "string",
-            "title": "Name",
-            "default": ""
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
           },
           "goal": {
-            "$ref": "#/components/schemas/ContentPillarBusinessGoal",
-            "default": "INCREASE_CONVERSION"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
           },
           "description": {
-            "type": "string",
-            "title": "Description",
-            "default": ""
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
           },
           "target_audience_ids": {
             "items": {
@@ -2160,21 +2279,31 @@
             "title": "Media Urls"
           },
           "start_date": {
-            "type": "string",
-            "format": "date-time",
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Start Date"
           },
           "end_date": {
-            "type": "string",
-            "format": "date-time",
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "End Date"
           }
         },
         "type": "object",
-        "required": [
-          "start_date",
-          "end_date"
-        ],
         "title": "CampaignData"
       },
       "CampaignGenerationJobResponse": {
@@ -2594,21 +2723,10 @@
           "content_data": {
             "anyOf": [
               {
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/TextWithSingleImageContentData"
-                  },
-                  {
-                    "$ref": "#/components/schemas/TextOnlyContentData"
-                  }
-                ],
-                "discriminator": {
-                  "propertyName": "content_format",
-                  "mapping": {
-                    "TEXT": "#/components/schemas/TextOnlyContentData",
-                    "TEXT_WITH_SINGLE_IMAGE": "#/components/schemas/TextWithSingleImageContentData"
-                  }
-                }
+                "$ref": "#/components/schemas/TextWithSingleImageContentData"
+              },
+              {
+                "$ref": "#/components/schemas/TextOnlyContentData"
               },
               {
                 "type": "null"
@@ -2712,7 +2830,7 @@
             "$ref": "#/components/schemas/ContentFormat"
           },
           "data": {
-            "oneOf": [
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/TextWithSingleImageContentData"
               },
@@ -2720,14 +2838,7 @@
                 "$ref": "#/components/schemas/TextOnlyContentData"
               }
             ],
-            "title": "Data",
-            "discriminator": {
-              "propertyName": "content_format",
-              "mapping": {
-                "TEXT": "#/components/schemas/TextOnlyContentData",
-                "TEXT_WITH_SINGLE_IMAGE": "#/components/schemas/TextWithSingleImageContentData"
-              }
-            }
+            "title": "Data"
           },
           "scheduled_at": {
             "anyOf": [
@@ -2998,21 +3109,10 @@
           "content_data": {
             "anyOf": [
               {
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/TextWithSingleImageContentData"
-                  },
-                  {
-                    "$ref": "#/components/schemas/TextOnlyContentData"
-                  }
-                ],
-                "discriminator": {
-                  "propertyName": "content_format",
-                  "mapping": {
-                    "TEXT": "#/components/schemas/TextOnlyContentData",
-                    "TEXT_WITH_SINGLE_IMAGE": "#/components/schemas/TextWithSingleImageContentData"
-                  }
-                }
+                "$ref": "#/components/schemas/TextWithSingleImageContentData"
+              },
+              {
+                "$ref": "#/components/schemas/TextOnlyContentData"
               },
               {
                 "type": "null"
