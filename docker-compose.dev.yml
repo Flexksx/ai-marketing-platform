@@ -1,6 +1,69 @@
 name: ai-marketing-platform-dev
 
 services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: vozai
+      POSTGRES_PASSWORD: vozai_dev_password
+      POSTGRES_DB: vozai_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vozai -d vozai_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  webapp-api:
+    build:
+      context: ./backend
+      dockerfile: webapp-api/Dockerfile
+    env_file:
+      - path: ./backend/webapp-api/.env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://vozai:vozai_dev_password@postgres:5432/vozai_dev
+      DIRECT_URL: postgresql://vozai:vozai_dev_password@postgres:5432/vozai_dev
+      SCRAPER_SERVICE_URL: http://scraper-api:8081
+      API_BASE_URL: http://webapp-api:8080
+      SCRAPER_CALLBACK_SECRET: dev-secret
+      ENVIRONMENT: development
+      LOG_LEVEL: DEBUG
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+
+  scraper-api:
+    build:
+      context: ./backend
+      dockerfile: scraper-api/Dockerfile
+    env_file:
+      - path: ./backend/scraper-api/.env
+        required: false
+    environment:
+      PORT: "8081"
+      ENVIRONMENT: development
+      LOG_LEVEL: DEBUG
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8081/health')"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+
   spa:
     build:
       context: .
@@ -18,3 +81,4 @@ services:
 
 volumes:
   workspace_node_modules:
+  postgres_data:

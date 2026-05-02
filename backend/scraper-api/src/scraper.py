@@ -1,4 +1,5 @@
 import logging
+import shutil
 import uuid
 from urllib.parse import urljoin, urlparse
 
@@ -33,8 +34,6 @@ class PlaywrightScraper:
             logger.debug("Starting Playwright")
             self._playwright = await async_playwright().start()
         if not self._browser:
-            import shutil
-
             chromium_path = shutil.which("chromium") or shutil.which("chromium-browser")
             if chromium_path:
                 logger.info(f"Launching Chromium from system path: {chromium_path}")
