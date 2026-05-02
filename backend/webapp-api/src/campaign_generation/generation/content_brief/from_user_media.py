@@ -7,19 +7,17 @@ from pydantic_ai import ImageUrl
 
 import src.brands.service as brand_service
 from lib.db.session_factory import DbSessionFactory
+from lib.prompts import PromptService, PromptTemplateName
 from src.campaign_generation.generation.content_brief.service import (
     CampaignContentBriefGenerator,
 )
 from webapp_api_contract.brands import Brand
 from webapp_api_contract.campaign_generation import (
-    UserMediaOnlyCampaignGenerationJobUserInput,
-)
-from webapp_api_contract.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
+    UserMediaOnlyCampaignGenerationJobUserInput,
 )
 from webapp_api_contract.shared import ContentChannel
-from lib.prompts import PromptService, PromptTemplateName
 
 
 logger = logging.getLogger(__name__)

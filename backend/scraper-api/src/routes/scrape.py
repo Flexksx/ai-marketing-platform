@@ -4,8 +4,8 @@ import logging
 import httpx
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from scraper_api_contract.scraper import ScrapeRequest, ScrapeResult
 
+from scraper_api_contract.scraper import ScrapeRequest, ScrapeResult
 from src.dependencies import get_scraper
 from src.scraper import PlaywrightScraper
 

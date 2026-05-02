@@ -2,15 +2,15 @@ from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lib.db.session_factory import DbSessionFactory
+from lib.utils import new_id
 from src.content.entity import ContentRecord
 from src.content.errors import ContentNotFoundException
-from webapp_api_contract.content import Content
 from webapp_api_contract.content import (
+    Content,
     ContentCreateRequest,
     ContentListRequest,
     ContentUpdateRequest,
 )
-from lib.utils import new_id
 
 
 async def create(

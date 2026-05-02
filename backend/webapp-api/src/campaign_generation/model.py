@@ -9,19 +9,12 @@ from webapp_api_contract.brand_settings import (
 )
 from webapp_api_contract.campaign_generation import (
     AiGeneratedCampaignGenerationJobUserInput,
-)
-from webapp_api_contract.campaign_generation import (
     CampaignGenerationJobWorkflowType,
-)
-from webapp_api_contract.campaign_generation import (
     ProductLifestyleCampaignGenerationJobUserInput,
-)
-from webapp_api_contract.campaign_generation import (
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
-from webapp_api_contract.shared import ContentChannelName
 from webapp_api_contract.content_plan_items import ContentPlanItem
-from webapp_api_contract.shared import JobStatus
+from webapp_api_contract.shared import ContentChannelName, JobStatus
 
 
 @public.add

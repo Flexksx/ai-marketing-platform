@@ -5,6 +5,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lib.db.session_factory import DbSessionFactory
+from lib.utils import new_id
 from src.campaign_generation.entity import CampaignGenerationJobRecord
 from src.campaign_generation.errors import (
     CampaignGenerationJobNotFoundException,
@@ -12,16 +13,13 @@ from src.campaign_generation.errors import (
     PostingPlanItemNotFoundException,
 )
 from webapp_api_contract.campaign_generation import (
+    CampaignCreationJobUpdateInput,
     CampaignGenerationJob,
+    CampaignGenerationJobCreateRequest,
     CampaignGenerationJobResult,
     ContentPlanItem,
 )
-from webapp_api_contract.campaign_generation import (
-    CampaignCreationJobUpdateInput,
-    CampaignGenerationJobCreateRequest,
-)
 from webapp_api_contract.shared import JobStatus
-from lib.utils import new_id
 
 
 logger = logging.getLogger(__name__)

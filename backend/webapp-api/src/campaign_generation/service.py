@@ -1,12 +1,10 @@
 import logging
 
-import src.campaigns.service as campaign_service
 import src.campaign_generation.repository as campaign_generation_job_repository
+import src.campaigns.service as campaign_service
 import src.content.service as content_service
 import src.content_plan_item.service as content_plan_item_service
 from lib.db.session_factory import DbSessionFactory
-from webapp_api_contract.campaigns import Campaign, CampaignData
-from webapp_api_contract.campaigns import CampaignCreateRequest
 from src.campaign_generation.errors import (
     CampaignGenerationJobCreationFailedException,
     CampaignGenerationJobResultNotFoundException,
@@ -14,20 +12,19 @@ from src.campaign_generation.errors import (
     ContentPlanItemMissingContentDataException,
 )
 from webapp_api_contract.campaign_generation import (
-    CampaignGenerationJob,
-    UserMediaOnlyCampaignGenerationJobUserInput,
-)
-from webapp_api_contract.campaign_generation import (
     CampaignCreationAcceptRequest,
     CampaignCreationJobUpdateInput,
+    CampaignGenerationJob,
     CampaignGenerationJobCreateRequest,
     CampaignGenerationJobWorkflowType,
+    UserMediaOnlyCampaignGenerationJobUserInput,
 )
+from webapp_api_contract.campaigns import Campaign, CampaignCreateRequest, CampaignData
 from webapp_api_contract.content import (
+    ContentCreateRequest,
     TextOnlyContentData,
     TextWithSingleImageContentData,
 )
-from webapp_api_contract.content import ContentCreateRequest
 from webapp_api_contract.content_plan_items import ContentPlanItemUpdateRequest
 
 

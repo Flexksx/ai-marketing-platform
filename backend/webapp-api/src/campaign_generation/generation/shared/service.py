@@ -3,13 +3,13 @@ from abc import ABC, abstractmethod
 
 from fastapi import Depends
 
-from lib.db.session_factory import DbSessionFactory
 import src.campaign_generation.service as campaign_generation_job_service
+from lib.db.session_factory import DbSessionFactory
 from webapp_api_contract.campaign_generation import (
+    CampaignCreationJobUpdateInput,
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
-from webapp_api_contract.campaign_generation import CampaignCreationJobUpdateInput
 from webapp_api_contract.shared import JobStatus
 
 

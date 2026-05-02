@@ -1,10 +1,10 @@
 import public
+from db import Base
 from sqlalchemy import Column, String, func
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import ARRAY, DateTime
 
-from db import Base
 from webapp_api_contract.shared import JobStatus
 
 

@@ -2,13 +2,13 @@ from pathlib import Path
 
 import pytest
 
-from webapp_api_contract.brands import BrandArchetypeName
+from lib.prompts.model import PromptConfigError
+from lib.prompts.service import PromptService
 from webapp_api_contract.brand_settings import (
     ContentTypeName,
     ToneOfVoiceDimensionName,
 )
-from lib.prompts.model import PromptConfigError
-from lib.prompts.service import PromptService
+from webapp_api_contract.brands import BrandArchetypeName
 
 
 def test_prompt_service_loads_libraries_from_repo_prompts() -> None:
@@ -20,7 +20,7 @@ def test_prompt_service_loads_libraries_from_repo_prompts() -> None:
     assert ContentTypeName.TESTIMONIAL in libraries.content_type_library
 
     testimonial = libraries.content_type_library[ContentTypeName.TESTIMONIAL]
-    assert testimonial["description"].startswith("Highlight the specific 'before'")
+    assert testimonial.description.startswith("Highlight the specific 'before'")
 
 
 def test_prompt_service_raises_for_invalid_tone_config(tmp_path: Path) -> None:

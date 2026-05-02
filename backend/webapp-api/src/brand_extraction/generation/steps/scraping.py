@@ -4,14 +4,14 @@ from urllib.parse import urlparse
 
 import httpx
 from fastapi import Depends
+from scraper_api_contract.scraper import ScrapeResult
 
+from lib.scraper.http_client import HttpScraperClient
 from src.brand_extraction.generation.steps.base import BrandGenerationBaseStep
 from webapp_api_contract.brand_extraction import (
     BrandGenerationJob,
     BrandGenerationResult,
 )
-from lib.scraper.http_client import HttpScraperClient
-from scraper_api_contract.scraper import ScrapeResult
 
 
 logger = logging.getLogger(__name__)

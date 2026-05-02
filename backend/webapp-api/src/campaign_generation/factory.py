@@ -2,16 +2,16 @@ import asyncio
 
 from fastapi import UploadFile
 
-from webapp_api_contract.campaign_generation import (
-    CampaignGenerationJobCreateRequest,
-    ProductLifestyleCampaignGenerationJobUserInput,
-    UserMediaOnlyCampaignGenerationJobUserInput,
-)
 from lib.supabase_client import (
     StorageBucket,
     StorageUploadRequest,
     StorageUploadResult,
     SupabaseStorageService,
+)
+from webapp_api_contract.campaign_generation import (
+    CampaignGenerationJobCreateRequest,
+    ProductLifestyleCampaignGenerationJobUserInput,
+    UserMediaOnlyCampaignGenerationJobUserInput,
 )
 
 

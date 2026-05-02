@@ -3,8 +3,9 @@ from webapp_api_contract.shared import (
     ContentChannelImageSpecification,
     ContentChannelName,
     ContentFormat,
+    ImageAspectRatio,
+    ImageResolution,
 )
-from webapp_api_contract.shared import ImageAspectRatio, ImageResolution
 
 
 _INSTAGRAM_CONTENT_CHANNEL = ContentChannel(

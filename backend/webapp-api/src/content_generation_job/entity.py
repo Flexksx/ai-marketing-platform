@@ -1,11 +1,10 @@
+from db import Base
 from sqlalchemy import Column, ForeignKey, String, func
 from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import DateTime
 
-from db import Base
-from webapp_api_contract.shared import ContentFormat
-from webapp_api_contract.shared import JobStatus
+from webapp_api_contract.shared import ContentFormat, JobStatus
 
 
 class ContentGenerationJobRecord(Base):

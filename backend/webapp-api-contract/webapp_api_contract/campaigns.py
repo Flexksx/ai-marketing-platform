@@ -3,7 +3,7 @@ from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from webapp_api_contract.shared import ContentChannelName, ContentFormat
+from webapp_api_contract.shared import ContentChannelName
 
 
 class CampaignState(Enum):

@@ -10,6 +10,21 @@ target="$1"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 
+# Ruff resolves shared rules via `[tool.ruff] extend = \"../ruff.toml\"` in each package's pyproject.toml.
+backend_python_projects=(
+    "${repo_root}/backend/webapp-api"
+    "${repo_root}/backend/scraper-api"
+    "${repo_root}/backend/webapp-api-contract"
+    "${repo_root}/backend/scraper-api-contract"
+)
+
+format_python_package() {
+    local proj_dir="$1"
+    uv run --directory "${proj_dir}" ruff check --fix . || true
+    uv run --directory "${proj_dir}" ruff format .
+    uv run --directory "${proj_dir}" ty check --fix . || true
+}
+
 case "${target}" in
     all)
         "${BASH_SOURCE[0]}" nix
@@ -23,14 +38,8 @@ case "${target}" in
         (cd "${repo_root}/apps/webapp/spa" && pnpm run format:write && pnpm run lint:write)
         ;;
     api)
-        for py_project in "${repo_root}/backend/webapp-api" \
-                          "${repo_root}/backend/scraper-api" \
-                          "${repo_root}/backend/webapp-api-contract" \
-                          "${repo_root}/backend/scraper-api-contract"; do
-            (cd "${py_project}" && \
-                uv run ruff check --fix . || true; \
-                uv run ruff format . ; \
-                uv run ty check --fix . || true)
+        for proj_dir in "${backend_python_projects[@]}"; do
+            format_python_package "${proj_dir}"
         done
         ;;
     *)

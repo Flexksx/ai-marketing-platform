@@ -4,11 +4,9 @@ import public
 from pydantic import BaseModel, ConfigDict, Field
 
 from webapp_api_contract.campaign_generation import (
-    CampaignGenerationJobWorkflowType,
-)
-from webapp_api_contract.campaign_generation import (
     CampaignGenerationJobResult,
     CampaignGenerationJobUserInput,
+    CampaignGenerationJobWorkflowType,
 )
 from webapp_api_contract.shared import JobStatus
 

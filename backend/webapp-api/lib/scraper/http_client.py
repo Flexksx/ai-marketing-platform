@@ -2,9 +2,9 @@ import logging
 
 import httpx
 import public
+from scraper_api_contract.scraper import ScrapeResult
 
 from src.config import get_settings
-from scraper_api_contract.scraper import ScrapeResult
 
 
 logger = logging.getLogger(__name__)

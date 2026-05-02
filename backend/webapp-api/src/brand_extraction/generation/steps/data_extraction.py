@@ -4,7 +4,10 @@ import re
 
 from fastapi import Depends
 from pydantic_ai import Agent, ImageUrl
+from scraper_api_contract.scraper import ScrapeResult
 
+from lib.ai_agents.schema import PydanticAiModel
+from lib.prompts import PromptService, PromptTemplateName
 from src.brand_extraction.generation.brand_data_generation import (
     BrandGenerationContentPillarResult,
     BrandGenerationJobAudienceProfilingResult,
@@ -13,7 +16,6 @@ from src.brand_extraction.generation.brand_data_generation import (
     PositioningBrandDataResult,
 )
 from src.brand_extraction.generation.steps.base import BrandGenerationBaseStep
-from webapp_api_contract.brands import BrandCreateRequest, BrandData
 from webapp_api_contract.brand_extraction import (
     BrandGenerationJob,
     BrandGenerationJobResultElementNotFoundError,
@@ -24,9 +26,7 @@ from webapp_api_contract.brand_settings import (
     BrandToneOfVoice,
     PositioningBrandData,
 )
-from lib.ai_agents.schema import PydanticAiModel
-from lib.prompts import PromptService, PromptTemplateName
-from scraper_api_contract.scraper import ScrapeResult
+from webapp_api_contract.brands import BrandCreateRequest, BrandData
 
 
 logger = logging.getLogger(__name__)

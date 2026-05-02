@@ -1,6 +1,6 @@
 from fastapi import Depends
-
 from scraper_api_contract.scraper import ScrapeResult
+
 from lib.scraper.playwright_scraper import PlaywrightScraper
 
 

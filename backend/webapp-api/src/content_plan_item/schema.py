@@ -5,8 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from webapp_api_contract.brand_settings import ContentTypeName
 from webapp_api_contract.content import ContentData
-from webapp_api_contract.shared import ContentChannelName, ContentFormat
-from webapp_api_contract.shared import JobStatus
+from webapp_api_contract.shared import ContentChannelName, ContentFormat, JobStatus
 
 
 @public.add

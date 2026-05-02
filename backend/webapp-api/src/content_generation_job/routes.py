@@ -4,16 +4,16 @@ from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Path, Uploa
 
 import src.content_generation_job.service as content_generation_job_service
 from lib.db.session_factory import DbSessionFactory
+from lib.supabase_client import (
+    SupabaseStorageService,
+)
 from src.auth_access import validate_brand_access
-from webapp_api_contract.content import ContentResponse
-from webapp_api_contract.content_generation import ContentGenerationJobResponse
 from src.content_generation_job.factory import get_from_request_form
 from src.content_generation_job.generation.factory import (
     ContentGenerationJobRunnerFactory,
 )
-from lib.supabase_client import (
-    SupabaseStorageService,
-)
+from webapp_api_contract.content import ContentResponse
+from webapp_api_contract.content_generation import ContentGenerationJobResponse
 
 
 router = APIRouter(tags=["Brand Content Generation Jobs"])

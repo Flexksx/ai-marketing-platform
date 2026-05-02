@@ -3,16 +3,16 @@ import asyncio
 import public
 from fastapi import UploadFile
 
-from webapp_api_contract.content_generation import (
-    ContentGenerationJobCreateRequest,
-    FromUserMediaTextWithSingleImageContentGenerationJobUserInput,
-    ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
-)
 from lib.supabase_client import (
     StorageBucket,
     StorageUploadRequest,
     StorageUploadResult,
     SupabaseStorageService,
+)
+from webapp_api_contract.content_generation import (
+    ContentGenerationJobCreateRequest,
+    FromUserMediaTextWithSingleImageContentGenerationJobUserInput,
+    ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
 )
 
 

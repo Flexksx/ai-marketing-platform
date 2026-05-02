@@ -2,28 +2,25 @@ import asyncio
 import logging
 
 import httpx
+from scraper_api_contract.scraper import ScrapeResult
 
-import src.brands.service as brand_service
 import src.brand_extraction.repository as brand_generation_job_repository
+import src.brands.service as brand_service
 from lib.db.session_factory import DbSessionFactory
-from src.config import get_settings
-from webapp_api_contract.brands import Brand
-from webapp_api_contract.brands import BrandCreateRequest
+from lib.prompts.service import PromptService
 from src.brand_extraction.generation.steps.data_extraction import (
     BrandDataExtractionStep,
 )
+from src.config import get_settings
 from webapp_api_contract.brand_extraction import (
     BrandGenerationJob,
-    BrandGenerationResult,
-)
-from webapp_api_contract.brand_extraction import (
     BrandGenerationJobAcceptRequest,
     BrandGenerationJobCreateRequest,
     BrandGenerationJobUpdateRequest,
+    BrandGenerationResult,
 )
+from webapp_api_contract.brands import Brand, BrandCreateRequest
 from webapp_api_contract.shared import JobStatus
-from lib.prompts.service import PromptService
-from scraper_api_contract.scraper import ScrapeResult
 
 
 logger = logging.getLogger(__name__)
@@ -115,7 +112,9 @@ async def _run_data_extraction(
                 result=result,
             ),
         )
-        logger.info(f"Brand generation job {job.id} completed", extra={"job_id": job.id})
+        logger.info(
+            f"Brand generation job {job.id} completed", extra={"job_id": job.id}
+        )
     except Exception as exception:
         logger.error(
             f"Brand generation job {job.id} failed during data extraction: {exception}",
@@ -137,7 +136,9 @@ async def _mark_job_failed(
             job_id,
             BrandGenerationJobUpdateRequest(
                 status=JobStatus.FAILED,
-                result=BrandGenerationResult(scraper_result=scrape_result, brand_data=None),
+                result=BrandGenerationResult(
+                    scraper_result=scrape_result, brand_data=None
+                ),
             ),
         )
     except Exception as update_error:
@@ -149,7 +150,9 @@ async def _mark_job_failed(
 
 async def _dispatch_scrape_request(job_id: str, website_url: str) -> None:
     settings = get_settings()
-    callback_url = f"{settings.api_base_url.rstrip('/')}/brand-generation/{job_id}/scrape-result"
+    callback_url = (
+        f"{settings.api_base_url.rstrip('/')}/brand-generation/{job_id}/scrape-result"
+    )
     scraper_url = f"{settings.scraper_service_url.rstrip('/')}/scrape"
 
     logger.info(

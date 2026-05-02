@@ -10,7 +10,9 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from lib.db.database import engine
+from sqlalchemy import create_engine
+
+from lib.db.database import get_database_url
 from lib.db.schema_registry import Base
 
 
@@ -21,12 +23,16 @@ def main():
         sys.exit(0)
 
     print("Dropping all tables...")
+    sync_engine = create_engine(
+        get_database_url(),
+        pool_pre_ping=True,
+    )
     try:
-        Base.metadata.drop_all(engine)
+        Base.metadata.drop_all(sync_engine)
         print("✓ All tables dropped.")
 
         print("Creating tables from schema...")
-        Base.metadata.create_all(engine)
+        Base.metadata.create_all(sync_engine)
         print("✓ Database reset successfully!")
     except Exception as e:
         print(f"✗ Error resetting database: {e}", file=sys.stderr)

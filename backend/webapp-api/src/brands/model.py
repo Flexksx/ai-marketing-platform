@@ -4,13 +4,13 @@ import public
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_extra_types.language_code import LanguageAlpha2
 
-from webapp_api_contract.brands import BrandArchetypeName
 from webapp_api_contract.brand_settings import (
     BrandAudience,
     BrandToneOfVoice,
     ContentPillar,
     PositioningBrandData,
 )
+from webapp_api_contract.brands import BrandArchetypeName
 
 
 @public.add

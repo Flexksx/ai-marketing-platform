@@ -19,7 +19,6 @@ from src.content_generation_job.generation.text_with_single_image.product_lifest
     ProductLifestyleTextWithSingleImageContentGenerationJobStrategy,
 )
 from webapp_api_contract.brands import Brand
-from webapp_api_contract.shared import ContentChannelName
 from webapp_api_contract.content_generation import (
     AiGeneratedTextWithSingleImageContentGenerationJobUserInput,
     ContentGenerationJob,
@@ -30,6 +29,7 @@ from webapp_api_contract.content_generation import (
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
+from webapp_api_contract.shared import ContentChannelName
 
 
 class _AgentOutputFromUserMedia(BaseModel):

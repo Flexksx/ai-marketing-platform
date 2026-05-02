@@ -1,21 +1,17 @@
 import public
 from fastapi import Depends
 
+from lib.prompts import PromptTemplateName
 from src.campaign_generation.generation.content_brief.service import (
     CampaignContentBriefGenerator,
 )
-from webapp_api_contract.campaign_generation import AiGeneratedCampaignGenerationJobUserInput
 from webapp_api_contract.campaign_generation import (
+    AiGeneratedCampaignGenerationJobUserInput,
     BaseCampaignGenerationJobUserInput,
-)
-from webapp_api_contract.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
-)
-from webapp_api_contract.campaign_generation import (
     ProductLifestyleCampaignGenerationJobUserInput,
 )
-from lib.prompts import PromptTemplateName
 
 
 @public.add

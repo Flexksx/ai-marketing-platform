@@ -2,13 +2,13 @@ import public
 from pydantic import BaseModel, ConfigDict
 from strenum import StrEnum
 
-from webapp_api_contract.brands import BrandArchetype, BrandArchetypeName
-from webapp_api_contract.brand_settings import ContentType
-from webapp_api_contract.brand_settings import ContentTypeName
 from webapp_api_contract.brand_settings import (
+    ContentType,
+    ContentTypeName,
     ToneOfVoiceDimension,
     ToneOfVoiceDimensionName,
 )
+from webapp_api_contract.brands import BrandArchetype, BrandArchetypeName
 
 
 @public.add

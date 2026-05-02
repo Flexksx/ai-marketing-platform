@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
-
 from scraper_api_contract.scraper import ScrapeResult
+
 from webapp_api_contract.brands import BrandCreateRequest, BrandData
 from webapp_api_contract.shared import JobStatus
 

@@ -2,8 +2,8 @@ import public
 from pydantic import BaseModel, ConfigDict, Field
 from strenum import StrEnum
 
-from webapp_api_contract.shared import ContentChannelName
 from lib.utils import new_id
+from webapp_api_contract.shared import ContentChannelName
 
 
 @public.add

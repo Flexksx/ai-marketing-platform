@@ -4,8 +4,7 @@ from typing import Annotated, Literal
 import public
 from pydantic import BaseModel, ConfigDict, Field
 
-from webapp_api_contract.shared import ContentFormat
-from webapp_api_contract.shared import ContentChannelName
+from webapp_api_contract.shared import ContentChannelName, ContentFormat
 
 
 @public.add

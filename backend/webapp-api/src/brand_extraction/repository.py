@@ -2,15 +2,15 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lib.db.session_factory import DbSessionFactory
+from lib.utils import new_id
 from src.brand_extraction.entity import BrandGenerationJobRecord
 from src.brand_extraction.errors import BrandGenerationJobNotFoundError
-from webapp_api_contract.brand_extraction import BrandGenerationJob
 from webapp_api_contract.brand_extraction import (
+    BrandGenerationJob,
     BrandGenerationJobCreateRequest,
     BrandGenerationJobUpdateRequest,
 )
 from webapp_api_contract.shared import JobStatus
-from lib.utils import new_id
 
 
 async def create(

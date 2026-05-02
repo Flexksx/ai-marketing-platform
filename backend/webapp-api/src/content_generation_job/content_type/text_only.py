@@ -3,12 +3,14 @@ from typing import Literal
 from pydantic import ConfigDict, Field
 
 from webapp_api_contract.content import TextOnlyContentData
-from webapp_api_contract.shared import ContentChannelName
 from webapp_api_contract.content_generation import (
     BaseContentGenerationJobResult,
     BaseContentGenerationJobUserInput,
 )
-from webapp_api_contract.shared import ContentGenerationJobWorkflowType
+from webapp_api_contract.shared import (
+    ContentChannelName,
+    ContentGenerationJobWorkflowType,
+)
 
 
 class TextOnlyContentGenerationJobResult(BaseContentGenerationJobResult):

@@ -4,14 +4,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lib.db.session_factory import DbSessionFactory
+from lib.utils import new_id
 from src.content_plan_item.entity import ContentPlanItemRecord
 from src.content_plan_item.errors import ContentPlanItemNotFoundException
-from webapp_api_contract.content_plan_items import ContentPlanItem
 from webapp_api_contract.content_plan_items import (
+    ContentPlanItem,
     ContentPlanItemCreateRequest,
     ContentPlanItemUpdateRequest,
 )
-from lib.utils import new_id
 
 
 async def create(

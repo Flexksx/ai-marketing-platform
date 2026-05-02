@@ -2,18 +2,18 @@ from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lib.db.session_factory import DbSessionFactory
+from lib.utils import new_id
 from src.content_generation_job.entity import ContentGenerationJobRecord
 from src.content_generation_job.errors import (
     ContentGenerationJobNotFoundException,
 )
-from webapp_api_contract.content_generation import ContentGenerationJob
 from webapp_api_contract.content_generation import (
+    ContentGenerationJob,
     ContentGenerationJobCreateRequest,
     ContentGenerationJobSearchRequest,
     ContentGenerationJobUpdateRequest,
 )
 from webapp_api_contract.shared import JobStatus
-from lib.utils import new_id
 
 
 async def create(

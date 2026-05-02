@@ -1,13 +1,13 @@
 import logging
 
 from fastapi import APIRouter, Body, Depends, Header, HTTPException, status
+from scraper_api_contract.scraper import ScrapeResult
 
 import src.brand_extraction.service as brand_generation_job_service
 from lib.db.session_factory import DbSessionFactory
 from src.auth import get_current_user_id
 from src.auth_access import validate_brand_generation_job_access
 from src.config import get_settings
-from webapp_api_contract.brands import BrandResponse
 from webapp_api_contract.brand_extraction import (
     BrandGenerationJob,
     BrandGenerationJobAcceptRequest,
@@ -15,7 +15,7 @@ from webapp_api_contract.brand_extraction import (
     BrandGenerationJobCreateRequestBody,
     BrandGenerationJobResponse,
 )
-from scraper_api_contract.scraper import ScrapeResult
+from webapp_api_contract.brands import BrandResponse
 
 
 router = APIRouter(prefix="/brand-generation", tags=["brand-generation"])

@@ -2,15 +2,6 @@ from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
 
 import src.brands.service as brand_service
 from lib.db.session_factory import DbSessionFactory
-from src.auth import get_current_user_id
-from src.auth_access import validate_brand_access
-from webapp_api_contract.brands import (
-    BrandCreateRequest,
-    BrandData,
-    BrandResponse,
-    BrandSearchRequest,
-    BrandUpdateRequest,
-)
 from lib.supabase_client import (
     SupabaseStorageService,
 )
@@ -18,6 +9,8 @@ from lib.supabase_client.storage.schema import (
     StorageBucket,
     StorageUploadRequest,
 )
+from src.auth import get_current_user_id
+from src.auth_access import validate_brand_access
 from src.campaign_generation.routes import (
     router as campaign_creation_router,
 )
@@ -32,6 +25,13 @@ from src.content_generation_job.routes import (
 )
 from src.content_plan_item.routes import (
     router as content_plan_items_router,
+)
+from webapp_api_contract.brands import (
+    BrandCreateRequest,
+    BrandData,
+    BrandResponse,
+    BrandSearchRequest,
+    BrandUpdateRequest,
 )
 
 

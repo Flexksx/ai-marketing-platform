@@ -1,6 +1,7 @@
 from fastapi import Depends
 from pydantic import BaseModel
 
+from lib.prompts import PromptTemplateName
 from src.content_generation_job.generation.text_with_single_image.base_strategy import (
     BaseTextWithSingleImageContentGenerationJobStrategy,
 )
@@ -10,14 +11,13 @@ from src.shared import (
 )
 from webapp_api_contract.brands import Brand
 from webapp_api_contract.content import TextWithSingleImageContentData
-from webapp_api_contract.shared import ContentChannelName
 from webapp_api_contract.content_generation import (
     AiGeneratedTextWithSingleImageContentGenerationJobUserInput,
     ContentGenerationJob,
     ContentGenerationJobInvalidUserInputException,
     TextWithSingleImageContentGenerationJobResult,
 )
-from lib.prompts import PromptTemplateName
+from webapp_api_contract.shared import ContentChannelName
 
 
 class _AgentDependencies(BaseModel):

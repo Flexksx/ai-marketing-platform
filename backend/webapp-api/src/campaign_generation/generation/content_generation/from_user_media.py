@@ -8,6 +8,7 @@ from pydantic_ai import format_as_xml
 import src.brands.service as brand_service
 import src.campaign_generation.service as campaign_generation_job_service
 from lib.db.session_factory import DbSessionFactory
+from lib.prompts import PromptTemplateName
 from src.shared import TextWithSingleImageContentGenerator
 from webapp_api_contract.brands import Brand
 from webapp_api_contract.campaign_generation import (
@@ -17,7 +18,6 @@ from webapp_api_contract.campaign_generation import (
 )
 from webapp_api_contract.content_plan_items import ContentPlanItemUpdateRequest
 from webapp_api_contract.shared import JobStatus
-from lib.prompts import PromptTemplateName
 
 
 logger = logging.getLogger(__name__)

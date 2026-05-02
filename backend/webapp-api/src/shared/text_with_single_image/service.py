@@ -17,13 +17,8 @@ from pydantic_ai import (
 
 import src.brands.service as brand_service
 import src.content_channel.service as content_channel_service
-from lib.db.session_factory import DbSessionFactory
-from src.shared.text_with_single_image.model import (
-    TextWithSingleImageContent,
-)
-from webapp_api_contract.brands import Brand
-from webapp_api_contract.shared import ContentChannelName, ContentFormat
 from lib.ai_agents import PydanticAiModel
+from lib.db.session_factory import DbSessionFactory
 from lib.nano_banana import (
     NanoBananaRequest,
     NanoBananaResponse,
@@ -35,6 +30,11 @@ from lib.supabase_client import (
     StorageUploadRequest,
     SupabaseStorageService,
 )
+from src.shared.text_with_single_image.model import (
+    TextWithSingleImageContent,
+)
+from webapp_api_contract.brands import Brand
+from webapp_api_contract.shared import ContentChannelName, ContentFormat
 
 
 logger = logging.getLogger(__name__)

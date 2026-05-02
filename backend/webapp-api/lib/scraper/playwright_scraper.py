@@ -4,8 +4,8 @@ import html2text
 import public
 from fastapi import Depends
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
-
 from scraper_api_contract.scraper import ScrapeResult
+
 from lib.scraper.scraper import WebsiteScraper
 from lib.supabase_client.storage.schema import (
     StorageBucket,

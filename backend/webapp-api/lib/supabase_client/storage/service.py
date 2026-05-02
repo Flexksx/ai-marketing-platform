@@ -6,13 +6,13 @@ import public
 from fastapi import Depends
 from supabase import AsyncClient
 
-from src.auth import get_async_supabase_service_client
 from lib.supabase_client.storage.schema import (
     ImageByUrlStorageUploadRequest,
     StorageBucket,
     StorageUploadRequest,
     StorageUploadResult,
 )
+from src.auth import get_async_supabase_service_client
 
 
 @public.add

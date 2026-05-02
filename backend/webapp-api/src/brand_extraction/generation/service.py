@@ -10,9 +10,9 @@ from src.brand_extraction.generation.steps.data_extraction import (
 from src.brand_extraction.generation.steps.scraping import BrandScrapingStep
 from webapp_api_contract.brand_extraction import (
     BrandGenerationJob,
+    BrandGenerationJobUpdateRequest,
     BrandGenerationResult,
 )
-from webapp_api_contract.brand_extraction import BrandGenerationJobUpdateRequest
 from webapp_api_contract.shared import JobStatus
 
 

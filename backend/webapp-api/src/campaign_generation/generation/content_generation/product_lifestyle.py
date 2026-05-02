@@ -5,11 +5,12 @@ import public
 from fastapi import Depends
 from pydantic_ai import format_as_xml
 
+import src.campaign_generation.service as campaign_generation_job_service
 from lib.db.session_factory import DbSessionFactory
+from lib.prompts import PromptTemplateName
 from src.shared.text_with_single_image import (
     TextWithSingleImageContentGenerator,
 )
-import src.campaign_generation.service as campaign_generation_job_service
 from webapp_api_contract.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
@@ -18,7 +19,6 @@ from webapp_api_contract.campaign_generation import (
 from webapp_api_contract.content import TextWithSingleImageContentData
 from webapp_api_contract.content_plan_items import ContentPlanItemUpdateRequest
 from webapp_api_contract.shared import JobStatus
-from lib.prompts import PromptTemplateName
 
 
 logger = logging.getLogger(__name__)

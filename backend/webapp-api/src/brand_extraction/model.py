@@ -2,10 +2,10 @@ from datetime import datetime
 
 import public
 from pydantic import BaseModel, ConfigDict, Field
+from scraper_api_contract.scraper import ScrapeResult
 
 from webapp_api_contract.brands import BrandCreateRequest
 from webapp_api_contract.shared import JobStatus
-from scraper_api_contract.scraper import ScrapeResult
 
 
 @public.add

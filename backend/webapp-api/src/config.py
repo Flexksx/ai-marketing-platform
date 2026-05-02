@@ -32,9 +32,7 @@ class Settings(BaseSettings):
     scraper_service_url: str = Field(
         default="http://localhost:8081", alias="SCRAPER_SERVICE_URL"
     )
-    api_base_url: str = Field(
-        default="http://localhost:8000", alias="API_BASE_URL"
-    )
+    api_base_url: str = Field(default="http://localhost:8000", alias="API_BASE_URL")
     scraper_callback_secret: str = Field(
         default="dev-secret", alias="SCRAPER_CALLBACK_SECRET"
     )

@@ -2,13 +2,13 @@ from pathlib import Path
 
 import pytest
 
+from src.brands.errors import BrandNotFoundError
 from tests.blackbox import AuthenticatedUser
 from tests.blackbox.brands import BrandMockFactory
 from webapp_api_contract.brands import (
     BrandColor,
     BrandCreateRequest,
     BrandData,
-    BrandNotFoundError,
     BrandUpdateRequest,
 )
 
@@ -50,10 +50,11 @@ async def test_update_brand(create_actor):
         ),
     )
     assert updated_brand.name == "Updated Brand"
-    assert updated_brand.data.colors[0].hex_value == "#FF0000"
-
-    assert updated_brand.data.description == brand_data.description
-    assert updated_brand.data.audiences == brand_data.audiences
+    assert updated_brand.data is not None
+    data = updated_brand.data
+    assert data.colors[0].hex_value == "#FF0000"
+    assert data.brand_mission == brand_data.brand_mission
+    assert data.audiences == brand_data.audiences
 
 
 @pytest.mark.asyncio
@@ -103,6 +104,7 @@ async def test_update_brand_logo(create_actor):
 
     updated_brand = await user.brands.update(brand_id=brand.id, logo_file=logo_tuple)
 
+    assert updated_brand.data is not None
     assert updated_brand.data.logo_url is not None
     assert f"{brand.id}" in updated_brand.data.logo_url
 
@@ -110,5 +112,6 @@ async def test_update_brand_logo(create_actor):
 
     final_brand = await user.brands.update(brand_id=brand.id, logo_file=logo2_tuple)
 
+    assert final_brand.data is not None
     assert final_brand.data.logo_url is not None
     assert f"{brand.id}" in final_brand.data.logo_url

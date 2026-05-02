@@ -3,8 +3,8 @@ from datetime import datetime
 import public
 from pydantic import BaseModel, ConfigDict, Field
 
-from webapp_api_contract.brand_settings import ContentPillarBusinessGoal
 from src.campaigns.entity import CampaignState
+from webapp_api_contract.brand_settings import ContentPillarBusinessGoal
 from webapp_api_contract.shared import ContentChannelName
 
 

@@ -1,7 +1,7 @@
 import src.content_plan_item.repository as content_plan_item_repository
 from lib.db.session_factory import DbSessionFactory
-from webapp_api_contract.content_plan_items import ContentPlanItem
 from webapp_api_contract.content_plan_items import (
+    ContentPlanItem,
     ContentPlanItemCreateRequest,
     ContentPlanItemUpdateRequest,
 )

@@ -1,5 +1,5 @@
-from webapp_api_contract.brands import BrandArchetype, BrandArchetypeName
 from src.brand_archetype.res.archetypes import ARCHETYPE_DATA
+from webapp_api_contract.brands import BrandArchetype, BrandArchetypeName
 
 
 def get(name: BrandArchetypeName) -> BrandArchetype | None:

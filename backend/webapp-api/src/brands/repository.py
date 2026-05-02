@@ -4,15 +4,15 @@ from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lib.db.session_factory import DbSessionFactory
+from lib.utils import new_id
 from src.brands.entity import BrandRecord
 from src.brands.errors import BrandNotFoundError
-from webapp_api_contract.brands import Brand
 from webapp_api_contract.brands import (
+    Brand,
     BrandCreateRequest,
     BrandSearchRequest,
     BrandUpdateRequest,
 )
-from lib.utils import new_id
 
 
 async def create(

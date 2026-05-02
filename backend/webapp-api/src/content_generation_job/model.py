@@ -4,18 +4,15 @@ from typing import Annotated
 import public
 from pydantic import BaseModel, ConfigDict, Field
 
-from webapp_api_contract.shared import ContentFormat
-from webapp_api_contract.content_generation import (
-    TextOnlyContentGenerationJobResult,
-    TextOnlyContentGenerationJobUserInput,
-)
 from webapp_api_contract.content_generation import (
     AiGeneratedTextWithSingleImageContentGenerationJobUserInput,
     FromUserMediaTextWithSingleImageContentGenerationJobUserInput,
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
+    TextOnlyContentGenerationJobResult,
+    TextOnlyContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
-from webapp_api_contract.shared import JobStatus
+from webapp_api_contract.shared import ContentFormat, JobStatus
 
 
 ContentGenerationJobUserInput = Annotated[

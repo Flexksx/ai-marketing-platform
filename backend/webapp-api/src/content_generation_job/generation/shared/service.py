@@ -4,14 +4,14 @@ from abc import ABC, abstractmethod
 import public
 from fastapi import Depends
 
-from lib.db.session_factory import DbSessionFactory
 import src.content_generation_job.service as content_generation_job_service
+from lib.db.session_factory import DbSessionFactory
 from webapp_api_contract.content_generation import (
+    ContentGenerationJob,
     ContentGenerationJobResult,
     ContentGenerationJobRuntimeException,
     ContentGenerationJobUpdateRequest,
 )
-from webapp_api_contract.content_generation import ContentGenerationJob
 from webapp_api_contract.shared import JobStatus
 
 

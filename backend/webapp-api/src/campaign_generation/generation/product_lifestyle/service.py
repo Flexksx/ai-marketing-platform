@@ -4,6 +4,7 @@ import public
 from fastapi import Depends
 
 from lib.db.session_factory import DbSessionFactory
+from lib.prompts import PromptTemplateName
 from src.campaign_generation.generation.content_brief.ai_generated import (
     AIGeneratedContentBriefGenerator,
 )
@@ -20,7 +21,6 @@ from webapp_api_contract.campaign_generation import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
 )
-from lib.prompts import PromptTemplateName
 
 
 logger = logging.getLogger(__name__)

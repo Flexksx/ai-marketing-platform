@@ -8,7 +8,9 @@ from pydantic_ai import Agent, ImageUrl, RunContext, format_as_xml
 import src.brands.service as brand_service
 import src.content_channel.service as content_channel_service
 import src.content_plan_item.service as content_plan_item_service
+from lib.ai_agents.schema import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
+from lib.prompts import PromptService, PromptTemplateName
 from src.campaign_generation.generation.content_plan.model import (
     AgentGeneratedPostingPlanItem,
     AgentGeneratedPostingPlanResult,
@@ -19,18 +21,14 @@ from src.campaign_generation.generation.errors import (
 from webapp_api_contract.brands import Brand
 from webapp_api_contract.campaign_generation import (
     CampaignGenerationJob,
+    CampaignGenerationJobResult,
     CampaignGenerationJobResultElementNotFoundException,
     CampaignGenerationJobResultNotFoundException,
     ContentBriefCampaignGenerationJobResult,
-)
-from webapp_api_contract.campaign_generation import CampaignGenerationJobResult
-from webapp_api_contract.campaign_generation import (
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
-from webapp_api_contract.shared import ContentChannel
 from webapp_api_contract.content_plan_items import ContentPlanItemCreateRequest
-from lib.ai_agents.schema import PydanticAiModel
-from lib.prompts import PromptService, PromptTemplateName
+from webapp_api_contract.shared import ContentChannel
 
 
 class UserImagesOnlyContentPlanGenerationDependencies(BaseModel):

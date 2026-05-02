@@ -61,7 +61,7 @@ class PlaywrightScraper:
             await self._playwright.stop()
             self._playwright = None
 
-    async def __aenter__(self) -> "PlaywrightScraper":
+    async def __aenter__(self) -> PlaywrightScraper:
         await self._ensure_browser()
         return self
 
@@ -109,8 +109,7 @@ class PlaywrightScraper:
             return False
         supported = [".jpg", ".jpeg", ".png", ".gif", ".webp"]
         return any(
-            url_lower.endswith(ext) or f".{ext[1:]}" in url_lower
-            for ext in supported
+            url_lower.endswith(ext) or f".{ext[1:]}" in url_lower for ext in supported
         )
 
     async def _extract_image_urls(self, page: Page, base_url: str) -> list[str]:
@@ -137,7 +136,11 @@ class PlaywrightScraper:
 
             if w > 300 and h > 300:
                 abs_url = self._resolve_url(base_url, src)
-                if abs_url and abs_url not in image_urls and self._is_supported_image_format(abs_url):
+                if (
+                    abs_url
+                    and abs_url not in image_urls
+                    and self._is_supported_image_format(abs_url)
+                ):
                     image_urls.append(abs_url)
 
         return image_urls
@@ -190,7 +193,9 @@ class PlaywrightScraper:
             viewport = page.viewport_size
             vh = viewport.get("height", 1080) if viewport else 1080
             vw = viewport.get("width", 1920) if viewport else 1920
-            content_h = await page.evaluate("() => document.documentElement.scrollHeight")
+            content_h = await page.evaluate(
+                "() => document.documentElement.scrollHeight"
+            )
             clip_h = min(content_h, vh * 2)
 
             screenshot_bytes = await page.screenshot(
@@ -226,7 +231,9 @@ class PlaywrightScraper:
     def _resolve_url(self, base_url: str, relative_url: str) -> str | None:
         if not relative_url:
             return None
-        if relative_url.startswith(("data:", "blob:", "javascript:", "mailto:", "tel:")):
+        if relative_url.startswith(
+            ("data:", "blob:", "javascript:", "mailto:", "tel:")
+        ):
             return None
         if relative_url.startswith(("http://", "https://")):
             return relative_url

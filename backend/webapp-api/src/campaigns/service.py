@@ -1,7 +1,7 @@
 import src.campaigns.repository as campaign_repository
 from lib.db.session_factory import DbSessionFactory
-from webapp_api_contract.campaigns import Campaign
 from webapp_api_contract.campaigns import (
+    Campaign,
     CampaignCreateRequest,
     CampaignListRequest,
     CampaignUpdateRequest,

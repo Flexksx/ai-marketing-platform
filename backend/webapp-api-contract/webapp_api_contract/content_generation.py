@@ -3,7 +3,10 @@ from typing import Annotated, Literal
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
-from webapp_api_contract.content import TextOnlyContentData, TextWithSingleImageContentData
+from webapp_api_contract.content import (
+    TextOnlyContentData,
+    TextWithSingleImageContentData,
+)
 from webapp_api_contract.shared import (
     ContentChannelName,
     ContentFormat,

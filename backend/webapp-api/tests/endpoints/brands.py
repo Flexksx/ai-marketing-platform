@@ -3,9 +3,9 @@ from typing import Any
 import public
 from httpx import AsyncClient
 
+from src.brands.errors import BrandNotFoundError
 from webapp_api_contract.brands import (
     BrandCreateRequest,
-    BrandNotFoundError,
     BrandResponse,
     BrandSearchRequest,
     BrandUpdateRequest,

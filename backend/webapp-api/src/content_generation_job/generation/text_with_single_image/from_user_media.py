@@ -3,19 +3,19 @@ from pydantic import BaseModel, ConfigDict
 from pydantic_ai import Agent, ImageUrl, RunContext
 
 import src.brands.service as brand_service
+from lib.ai_agents.schema import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
+from lib.prompts import PromptService, PromptTemplateName
 from src.content_generation_job.generation.text_with_single_image import base_strategy
 from webapp_api_contract.brands import Brand
 from webapp_api_contract.content import TextWithSingleImageContentData
-from webapp_api_contract.shared import ContentChannelName
 from webapp_api_contract.content_generation import (
     ContentGenerationJob,
     ContentGenerationJobInvalidUserInputException,
     FromUserMediaTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
-from lib.ai_agents.schema import PydanticAiModel
-from lib.prompts import PromptService, PromptTemplateName
+from webapp_api_contract.shared import ContentChannelName
 
 
 class _AgentDependencies(BaseModel):

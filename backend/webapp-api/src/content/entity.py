@@ -8,8 +8,7 @@ from sqlalchemy.types import DateTime, String
 from sqlalchemy.types import Enum as SQLAlchemyEnum
 
 from lib.db.database import Base
-from webapp_api_contract.shared import ContentFormat
-from webapp_api_contract.shared import ContentChannelName
+from webapp_api_contract.shared import ContentChannelName, ContentFormat
 
 
 @public.add
