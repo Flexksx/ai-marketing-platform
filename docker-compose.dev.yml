@@ -26,6 +26,11 @@ services:
     build:
       context: ./backend
       dockerfile: webapp-api/Dockerfile
+    command: [
+      "/app/.venv/bin/uvicorn", "src.main:app",
+      "--host", "0.0.0.0", "--port", "8080",
+      "--reload", "--reload-dir", "/app/src", "--reload-dir", "/app/lib"
+    ]
     env_file:
       - path: ./backend/webapp-api/.env
         required: false
@@ -37,12 +42,15 @@ services:
       SCRAPER_CALLBACK_SECRET: dev-secret
       ENVIRONMENT: development
       LOG_LEVEL: DEBUG
-      # OpenTelemetry — send traces to the collector
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
       OTEL_SERVICE_NAME: webapp-api
-      # logfire: disable cloud export, use local OTLP instead
       LOGFIRE_SEND_TO_LOGFIRE: "false"
       LOGFIRE_OTLP_ENDPOINT: http://otel-collector:4318
+    volumes:
+      - ./backend/webapp-api/src:/app/src
+      - ./backend/webapp-api/lib:/app/lib
+      - ./backend/webapp-api-contract:/webapp-api-contract
+      - ./backend/scraper-api-contract:/scraper-api-contract
     ports:
       - "8080:8080"
     depends_on:
@@ -59,6 +67,11 @@ services:
     build:
       context: ./backend
       dockerfile: scraper-api/Dockerfile
+    command: [
+      "/app/.venv/bin/uvicorn", "src.main:app",
+      "--host", "0.0.0.0", "--port", "8081",
+      "--reload", "--reload-dir", "/app/src"
+    ]
     env_file:
       - path: ./backend/scraper-api/.env
         required: false
@@ -70,6 +83,10 @@ services:
       OTEL_SERVICE_NAME: scraper-api
       LOGFIRE_SEND_TO_LOGFIRE: "false"
       LOGFIRE_OTLP_ENDPOINT: http://otel-collector:4318
+    volumes:
+      - ./backend/scraper-api/src:/app/src
+      - ./backend/scraper-api-contract:/scraper-api-contract
+      - ./backend/webapp-api-contract:/webapp-api-contract
     ports:
       - "8081:8081"
     healthcheck:
@@ -171,6 +188,7 @@ services:
       - "--config.file=/etc/prometheus/config.yaml"
       - "--storage.tsdb.path=/prometheus"
       - "--web.enable-lifecycle"
+      - "--web.enable-remote-write-receiver"
     volumes:
       - ./infra/dev/prometheus/config.yaml:/etc/prometheus/config.yaml:ro
       - prometheus_data:/prometheus

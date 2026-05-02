@@ -10,7 +10,6 @@ processors:
   batch:
     timeout: 1s
     send_batch_size: 1024
-  # Add service.name as a resource attribute if missing
   resource:
     attributes:
       - key: deployment.environment
@@ -25,10 +24,8 @@ exporters:
   prometheus:
     endpoint: 0.0.0.0:8889
     namespace: vozai
-    # Expose resource attributes (service.name, etc.) as prometheus labels
     resource_to_telemetry_conversion:
       enabled: true
-  # Prints spans to collector logs — useful during initial instrumentation
   debug:
     verbosity: basic
 
@@ -40,5 +37,5 @@ service:
       exporters: [otlp/tempo, debug]
     metrics:
       receivers: [otlp]
-      processors: [batch]
+      processors: [batch, resource]
       exporters: [prometheus]

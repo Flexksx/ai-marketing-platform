@@ -24,12 +24,15 @@ scrape_configs:
       - source_labels: [__meta_docker_container_log_stream]
         target_label: logstream
     pipeline_stages:
-      # Parse JSON logs (FastAPI outputs JSON in structured logging mode)
-      - json:
-          expressions:
-            level: level
-            message: message
-            trace_id: trace_id
-      - labels:
-          level:
-          trace_id:
+      # Only attempt JSON parsing for backend Python services
+      - match:
+          selector: '{service=~"webapp-api|scraper-api"}'
+          stages:
+            - json:
+                expressions:
+                  level: level
+                  message: message
+                  trace_id: trace_id
+            - labels:
+                level:
+                trace_id:
