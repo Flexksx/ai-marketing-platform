@@ -1,5 +1,0 @@
-export enum CampaignGenerationJobWorkflowType {
-	USER_MEDIA_ONLY = 'USER_MEDIA_ONLY',
-	AI_GENERATED = 'AI_GENERATED',
-	PRODUCT_LIFESTYLE = 'PRODUCT_LIFESTYLE'
-}

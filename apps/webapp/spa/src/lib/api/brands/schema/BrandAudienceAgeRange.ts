@@ -1,8 +1,0 @@
-export enum BrandAudienceAgeRange {
-	TEENS = 'TEENS',
-	YOUNG_ADULTS = 'YOUNG_ADULTS',
-	ADULTS = 'ADULTS',
-	MIDDLE_AGED = 'MIDDLE_AGED',
-	SENIORS = 'SENIORS',
-	ANY = 'ANY'
-}
