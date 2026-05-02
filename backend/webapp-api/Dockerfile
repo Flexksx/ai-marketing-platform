@@ -18,10 +18,14 @@ ENV PATH="/usr/local/bin:$PATH"
 
 WORKDIR /app
 
-# 1. Copy config files
-COPY pyproject.toml uv.lock README.md ./
-COPY backend/ backend/
-COPY prompts/ prompts/
+# 1. Copy source
+COPY pyproject.toml uv.lock ./
+COPY vozai/ vozai/
+COPY db/ db/
+COPY services/ services/
+COPY scripts/ scripts/
+COPY alembic/ alembic/
+COPY alembic.ini ./
 
 # 2. Install project and dependencies
 RUN uv sync --frozen --no-dev

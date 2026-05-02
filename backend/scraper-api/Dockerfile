@@ -35,13 +35,12 @@ ENV PATH="/usr/local/bin:$PATH"
 
 WORKDIR /app
 
-COPY pyproject.toml ./
-RUN uv sync --frozen --no-dev 2>/dev/null || uv sync --no-dev
-
+COPY pyproject.toml uv.lock ./
 COPY scraper_api/ scraper_api/
 
-RUN uv run playwright install chromium && \
-    uv run playwright install-deps chromium
+RUN uv sync --frozen --no-dev
+
+RUN uv run playwright install chromium
 
 RUN useradd -m -u 1000 appuser && \
     chown -R appuser:appuser /app /ms-playwright
