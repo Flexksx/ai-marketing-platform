@@ -17,10 +17,10 @@
       "format_on_save": "on",
     },
     "TypeScript": {
-      "language_servers": ["biomejs/biome"],
+      "language_servers": ["biomejs/biome", "vtsls"],
     },
     "Svelte": {
-      "language_servers": ["svelte-language-server", "biome"],
+      "language_servers": ["svelte-language-server", "biomejs/biome", "vtsls"],
       "format_on_save": "on",
     },
   },
