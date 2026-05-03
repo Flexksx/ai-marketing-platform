@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     supabase_service_role_key: str = Field(
         default="", alias="SUPABASE_SERVICE_ROLE_KEY"
     )
+    webapp_api_url: str = Field(default="http://localhost:8000", alias="WEBAPP_API_URL")
     environment: str = "development"
     log_level: str = "INFO"
     port: int = Field(default=8081, alias="PORT")

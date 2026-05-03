@@ -261,6 +261,7 @@ services:
       PORT: "8081"
       SUPABASE_URL: http://kong:8000
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      WEBAPP_API_URL: http://webapp-api:8080
       ENVIRONMENT: development
       LOG_LEVEL: DEBUG
       OTEL_EXPORTER_OTLP_ENDPOINT: http://vector:4317
@@ -276,6 +277,8 @@ services:
     depends_on:
       vector:
         condition: service_started
+      webapp-api:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8081/health')"]
       interval: 30s

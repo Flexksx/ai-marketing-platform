@@ -1,9 +1,11 @@
 import logging
 from contextlib import asynccontextmanager
 
+import httpx
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from src.config import get_settings
 from src.logging_config import configure_logging
@@ -50,6 +52,17 @@ app.include_router(scrape_router)
 
 @app.get("/health")
 async def health():
+    webapp_api_url = settings.webapp_api_url
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f"{webapp_api_url}/health")
+            response.raise_for_status()
+    except Exception as error:
+        logger.error("webapp-api readiness probe failed: %s", error)
+        return JSONResponse(
+            status_code=503,
+            content={"status": "unavailable", "reason": "webapp-api unreachable"},
+        )
     return {"status": "healthy", "service": "scraper"}
 
 

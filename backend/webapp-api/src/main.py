@@ -1,17 +1,24 @@
+import logging
 import re
 
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
+from sqlalchemy import text
 
 import lib.db.schema_registry  # noqa: F401 - Ensures all SQLAlchemy models are registered
+from lib.db.database import engine
 from src.brand.routes import router as brand_router
 from src.brand_generation_job.routes import router as brand_generation_router
 from src.config import get_settings
 from src.docs import router as docs_router
 from src.http_logging import http_logging_middleware
 from src.logging_config import configure_logging
+
+
+logger = logging.getLogger(__name__)
 
 
 settings = get_settings()
@@ -70,6 +77,15 @@ app.include_router(brand_generation_router)
 
 @app.get("/health")
 async def health_check():
+    try:
+        async with engine.connect() as connection:
+            await connection.execute(text("SELECT 1"))
+    except Exception as error:
+        logger.error("Database readiness probe failed: %s", error)
+        return JSONResponse(
+            status_code=503,
+            content={"status": "unavailable", "reason": "database unreachable"},
+        )
     return {"status": "ok", "environment": settings.environment}
 
 
