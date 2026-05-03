@@ -4,8 +4,8 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Megaphone, Plus } from 'lucide-svelte';
-	import ContentPillarCard from '$lib/components/brand_settings/content-pillar/ContentPillarCard.svelte';
-	import ContentPillarEditDialog from '$lib/components/brand_settings/content-pillar/ContentPillarEditDialog.svelte';
+	import ContentPillarCard from '$lib/components/brand/settings/content-pillar/ContentPillarCard.svelte';
+	import ContentPillarEditDialog from '$lib/components/brand/settings/content-pillar/ContentPillarEditDialog.svelte';
 
 	interface Props {
 		readonly?: boolean;

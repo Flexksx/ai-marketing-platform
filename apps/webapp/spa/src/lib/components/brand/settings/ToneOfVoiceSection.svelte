@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { BrandArchetypeName } from '$lib/api/generated/models/BrandArchetypeName';
 	import { useBrandEditorStore } from './BrandEditorStore.svelte';
-	import ToneDimensionSlider from '$lib/components/brand_settings/ToneDimensionSlider.svelte';
-	import ToneWordList from '$lib/components/brand_settings/ToneWordList.svelte';
+	import ToneDimensionSlider from '$lib/components/brand/settings/ToneDimensionSlider.svelte';
+	import ToneWordList from '$lib/components/brand/settings/ToneWordList.svelte';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import * as Select from '$lib/components/ui/select';
 	import { BRAND_ARCHETYPE_NAMES, getArchetypeDescription, getArchetypeLabel } from '$lib/utils/brandArchetype';

@@ -2,8 +2,8 @@
 	import MarkdownRenderer from '$lib/components/markdown/MarkdownRenderer.svelte';
 	import type { BrandArchetypeName } from '$lib/api/generated/models/BrandArchetypeName';
 	import { getArchetypeDescription, getArchetypeLabel } from '$lib/utils/brandArchetype';
-	import { BrandColorsSection, BrandLogoUpload } from '$lib/components/brand_settings';
-	import { useBrandEditorStore } from '$lib/components/brand_settings/BrandEditorStore.svelte';
+	import { BrandColorsSection, BrandLogoUpload } from '$lib/components/brand/settings';
+	import { useBrandEditorStore } from '$lib/components/brand/settings/BrandEditorStore.svelte';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Edit3, Sparkles } from 'lucide-svelte';
 

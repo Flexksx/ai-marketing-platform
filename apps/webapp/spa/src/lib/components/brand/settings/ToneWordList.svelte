@@ -1,5 +1,5 @@
 <script lang="ts">
-	import WordItemToneOfVoiceBrandSetting from '$lib/components/brand_settings/WordItemToneOfVoiceBrandSetting.svelte';
+	import WordItemToneOfVoiceBrandSetting from '$lib/components/brand/settings/WordItemToneOfVoiceBrandSetting.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Plus } from 'lucide-svelte';

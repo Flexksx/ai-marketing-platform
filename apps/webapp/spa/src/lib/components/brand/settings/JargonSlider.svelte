@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BrandSettingsSlider from '$lib/components/brand_settings/BrandSettingsSlider.svelte';
+	import BrandSettingsSlider from '$lib/components/brand/settings/BrandSettingsSlider.svelte';
 	import { Label } from '$lib/components/ui/label';
 
 	const MIN = 1;

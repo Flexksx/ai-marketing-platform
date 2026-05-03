@@ -51,7 +51,7 @@
 			{ websiteUrl: normalized },
 			{
 				onSuccess: (job) => {
-					navigate(resolve(`/brands/create/${job.id}`));
+					navigate(resolve('/brands/create/[jobId]', { jobId: job.id }));
 				},
 				onError: (err) => {
 					error = err instanceof Error ? err.message : 'Failed to start brand extraction';

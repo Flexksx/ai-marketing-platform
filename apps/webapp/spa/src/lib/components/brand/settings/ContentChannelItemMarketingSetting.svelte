@@ -6,7 +6,7 @@
 		hashtag_level: number;
 		emoji_level: number;
 	}
-	import ChannelLevelSlider from '$lib/components/brand_settings/ChannelLevelSlider.svelte';
+	import ChannelLevelSlider from '$lib/components/brand/settings/ChannelLevelSlider.svelte';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Label } from '$lib/components/ui/label';
 	import { Instagram, Linkedin } from 'lucide-svelte';

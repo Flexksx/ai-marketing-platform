@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { useBrandEditorStore } from './BrandEditorStore.svelte';
-	import StringItemSetting from '$lib/components/brand_settings/StringItemSetting.svelte';
+	import StringItemSetting from '$lib/components/brand/settings/StringItemSetting.svelte';
 	import * as Item from '$lib/components/ui/item';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';

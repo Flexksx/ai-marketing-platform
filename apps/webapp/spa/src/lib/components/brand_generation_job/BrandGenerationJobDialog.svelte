@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { useBrandGenerationJob } from '$lib/resources/brand-generation-jobs/queries';
-	import BrandCreationDialogInputs from './BrandCreationDialogInputs.svelte';
-	import BrandCreationDialogPolling from './BrandCreationDialogPolling.svelte';
-	import BrandCreationDialogResult from './BrandCreationDialogResult.svelte';
+	import BrandGenerationJobInputs from './BrandGenerationJobInputs.svelte';
+	import BrandGenerationJobPolling from './BrandGenerationJobPolling.svelte';
+	import BrandGenerationJobResult from './BrandGenerationJobResult.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Building2, Loader2 } from '@lucide/svelte';
@@ -65,17 +65,17 @@
 
 		<div class="relative flex min-h-0 flex-1 flex-col overflow-hidden py-4 min-w-0">
 			{#if mode === 'input'}
-				<BrandCreationDialogInputs />
+				<BrandGenerationJobInputs />
 			{:else if mode === 'loading'}
 				<div class="flex flex-col items-center justify-center min-h-[60vh]">
 					<Loader2 class="w-12 h-12 text-primary animate-spin mb-4" />
 					<p class="text-muted-foreground">Loading brand generation job...</p>
 				</div>
 			{:else if mode === 'extracting' || mode === 'analyzing'}
-				<BrandCreationDialogPolling mode={mode === 'analyzing' ? 'analyzing' : 'extracting'} {scraperResult} />
-			{:else if mode === 'form'}
-				<BrandCreationDialogResult
-					{jobId}
+				<BrandGenerationJobPolling mode={mode === 'analyzing' ? 'analyzing' : 'extracting'} {scraperResult} />
+			{:else if mode === 'form' && jobId}
+				<BrandGenerationJobResult
+					jobId={jobId}
 					{brandData}
 					onClose={handleSaveComplete}
 					onGenerateAnother={handleGenerateAnother}

@@ -10,8 +10,8 @@
 		GeneralSettingsSection,
 		MarketingSettingsSection,
 		ToneOfVoiceSection
-	} from '$lib/components/brand_settings';
-	import { setBrandEditorStore } from '$lib/components/brand_settings/BrandEditorStore.svelte';
+	} from '$lib/components/brand/settings';
+	import { setBrandEditorStore } from '$lib/components/brand/settings/BrandEditorStore.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { CheckCircle2, Loader2 } from 'lucide-svelte';
 	import { fade } from 'svelte/transition';
@@ -29,8 +29,10 @@
 
 	const store = setBrandEditorStore();
 
-	// Component only renders when brandData is non-null (mode === 'form' in parent)
-	if (brandData) store.initFromBrand(brandData);
+	$effect(() => {
+		const data = brandData;
+		if (data) store.initFromBrand(data);
+	});
 
 	function handleSave() {
 		if (!jobId) return;

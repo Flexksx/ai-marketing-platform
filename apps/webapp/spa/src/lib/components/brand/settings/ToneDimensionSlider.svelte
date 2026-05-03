@@ -1,10 +1,10 @@
 <script lang="ts">
-	import BrandSettingsSlider from '$lib/components/brand_settings/BrandSettingsSlider.svelte';
+	import BrandSettingsSlider from '$lib/components/brand/settings/BrandSettingsSlider.svelte';
 	import {
 		TONE_DIMENSION_DATA,
 		getLevelDescription,
 		type ToneDimensionKey
-	} from '$lib/components/brand_settings/tone_of_voice_data';
+	} from '$lib/components/brand/settings/tone_of_voice_data';
 	import { Label } from '$lib/components/ui/label';
 
 	const MIN = 1;

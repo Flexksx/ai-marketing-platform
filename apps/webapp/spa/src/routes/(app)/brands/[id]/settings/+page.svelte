@@ -12,8 +12,8 @@
 		GeneralSettingsSection,
 		MarketingSettingsSection,
 		ToneOfVoiceSection
-	} from '$lib/components/brand_settings';
-	import { setBrandEditorStore } from '$lib/components/brand_settings/BrandEditorStore.svelte';
+	} from '$lib/components/brand/settings';
+	import { setBrandEditorStore } from '$lib/components/brand/settings/BrandEditorStore.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { ArrowLeft, Building2, LoaderCircle, Save, X } from 'lucide-svelte';

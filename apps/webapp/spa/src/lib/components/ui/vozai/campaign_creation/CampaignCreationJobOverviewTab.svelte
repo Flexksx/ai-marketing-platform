@@ -8,7 +8,7 @@
 		getAgeRangeLabels,
 		getGenderLabels,
 		getIncomeRangeLabels
-	} from '$lib/components/brand_settings/audience/options';
+	} from '$lib/components/brand/settings/audience/options';
 	import type { ContentBriefCampaignGenerationJobResult } from '$lib/api/campaign-generation-jobs';
 	import type { BrandAudience, ContentPillarParsed } from '$lib/api/brand-data/model/BrandData';
 

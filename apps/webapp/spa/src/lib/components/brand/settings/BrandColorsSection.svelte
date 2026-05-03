@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { BrandColor } from '$lib/api/generated/models/BrandColor';
 	import { useBrandEditorStore } from './BrandEditorStore.svelte';
-	import { getColor } from '$lib/components/brand_settings/utils';
+	import { getColor } from '$lib/components/brand/settings/utils';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import {
 		DropdownMenu,

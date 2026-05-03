@@ -2,8 +2,7 @@
 	import { page } from '$app/state';
 	import { navigate } from '$lib/navigation';
 	import { useBrandGenerationJob } from '$lib/resources/brand-generation-jobs/queries';
-	import BrandCreationDialogPolling from '$lib/components/brand/creation/BrandCreationDialogPolling.svelte';
-	import BrandCreationDialogResult from '$lib/components/brand/creation/BrandCreationDialogResult.svelte';
+	import { BrandGenerationJobPolling, BrandGenerationJobResult } from '$lib/components/brand_generation_job';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Building2, Loader2 } from '@lucide/svelte';
@@ -70,10 +69,10 @@
 				</Card>
 			</div>
 		{:else if mode === 'extracting' || mode === 'analyzing'}
-			<BrandCreationDialogPolling mode={mode === 'analyzing' ? 'analyzing' : 'extracting'} {scraperResult} />
+			<BrandGenerationJobPolling mode={mode === 'analyzing' ? 'analyzing' : 'extracting'} {scraperResult} />
 		{:else if mode === 'form'}
 			<div class="max-w-[1800px] mx-auto">
-				<BrandCreationDialogResult
+				<BrandGenerationJobResult
 					{jobId}
 					{brandData}
 					onClose={handleSaveComplete}

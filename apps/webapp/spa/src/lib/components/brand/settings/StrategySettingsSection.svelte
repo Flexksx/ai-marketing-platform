@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { useBrandEditorStore } from './BrandEditorStore.svelte';
-	import ContentPillarItemMarketingSetting from '$lib/components/brand_settings/ContentPillarItemMarketingSetting.svelte';
+	import ContentPillarItemMarketingSetting from '$lib/components/brand/settings/ContentPillarItemMarketingSetting.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import * as Item from '$lib/components/ui/item';

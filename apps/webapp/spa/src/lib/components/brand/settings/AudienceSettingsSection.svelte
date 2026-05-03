@@ -4,8 +4,8 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Users, Plus } from 'lucide-svelte';
-	import AudienceCard from '$lib/components/brand_settings/audience/AudienceCard.svelte';
-	import AudienceEditDialog from '$lib/components/brand_settings/audience/AudienceEditDialog.svelte';
+	import AudienceCard from '$lib/components/brand/settings/audience/AudienceCard.svelte';
+	import AudienceEditDialog from '$lib/components/brand/settings/audience/AudienceEditDialog.svelte';
 
 	interface Props {
 		readonly?: boolean;

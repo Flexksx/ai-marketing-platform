@@ -1,26 +1,205 @@
 name: ai-marketing-platform-dev
 
+# ── Shared Supabase local dev credentials ─────────────────────────────────────
+# These are the canonical well-known keys for local Supabase development.
+# They are NOT secret — they are public demo values tied to the JWT secret below.
+#
+#   JWT_SECRET : super-secret-jwt-token-with-at-least-32-characters-long
+#   ANON_KEY   : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRFA0NiK7urOoD9boPsFEEgMsS5Y0HkfzS5NqMPV87o
+#   SERVICE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hj04zWl196z2-SBc0
+
+x-supabase-anon-key: &supabase-anon-key "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRFA0NiK7urOoD9boPsFEEgMsS5Y0HkfzS5NqMPV87o"
+x-supabase-service-key: &supabase-service-key "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hj04zWl196z2-SBc0"
+
 services:
 
-  # ── Database ─────────────────────────────────────────────────────────────────
+  # ── Supabase: Database ────────────────────────────────────────────────────
 
-  postgres:
-    image: postgres:17-alpine
+  db:
+    image: supabase/postgres:15.8.1.060
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - log_min_messages=fatal
     environment:
-      POSTGRES_USER: vozai
-      POSTGRES_PASSWORD: vozai_dev_password
-      POSTGRES_DB: vozai_dev
-    ports:
-      - "5433:5432"
+      POSTGRES_HOST: /var/run/postgresql
+      PGPORT: 5432
+      POSTGRES_PORT: 5432
+      PGPASSWORD: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATABASE: postgres
+      POSTGRES_DB: postgres
+      JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+      JWT_EXP: 3600
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - supabase_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vozai -d vozai_dev"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Supabase: Auth (GoTrue) ───────────────────────────────────────────────
+
+  auth:
+    image: supabase/gotrue:v2.170.0
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://localhost:8000
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgresql://supabase_auth_admin:postgres@db:5432/postgres
+      GOTRUE_SITE_URL: http://localhost:5173
+      GOTRUE_URI_ALLOW_LIST: ""
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_SMTP_ADMIN_EMAIL: admin@localhost
+      GOTRUE_SMTP_HOST: inbucket
+      GOTRUE_SMTP_PORT: 2500
+      GOTRUE_SMTP_USER: fake
+      GOTRUE_SMTP_PASS: fake
+      GOTRUE_SMTP_SENDER_NAME: vozai-dev
+      GOTRUE_MAILER_URLPATHS_INVITE: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_CONFIRMATION: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_RECOVERY: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: /auth/v1/verify
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Supabase: REST (PostgREST) ────────────────────────────────────────────
+
+  rest:
+    image: postgrest/postgrest:v12.2.8
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgresql://authenticator:postgres@db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage,graphql_public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+      PGRST_APP_SETTINGS_JWT_EXP: 3600
+    command: postgrest
+
+  # ── Supabase: Storage ─────────────────────────────────────────────────────
+
+  storage:
+    image: supabase/storage-api:v1.15.5
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
+    environment:
+      ANON_KEY: *supabase-anon-key
+      SERVICE_KEY: *supabase-service-key
+      POSTGREST_URL: http://rest:3000
+      PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+      DATABASE_URL: postgresql://supabase_storage_admin:postgres@db:5432/postgres
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      REGION: local
+      GLOBAL_S3_BUCKET: stub
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      IMGPROXY_URL: http://imgproxy:5001
+    volumes:
+      - supabase_storage_data:/var/lib/storage
+
+  # ── Supabase: Image proxy (for storage transforms) ────────────────────────
+
+  imgproxy:
+    image: darthsim/imgproxy:v3.8.0
+    environment:
+      IMGPROXY_BIND: 0.0.0.0:5001
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+      IMGPROXY_USE_ETAG: "true"
+      IMGPROXY_ENABLE_WEBP_DETECTION: "true"
+    volumes:
+      - supabase_storage_data:/var/lib/storage:ro
+
+  # ── Supabase: Postgres meta ───────────────────────────────────────────────
+
+  meta:
+    image: supabase/postgres-meta:v0.85.0
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_URL: postgresql://supabase_admin:postgres@db:5432/postgres
+
+  # ── Supabase: Kong API gateway ────────────────────────────────────────────
+
+  kong:
+    image: kong:2.8.1
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+    volumes:
+      - ./infra/dev/supabase/kong.yml:/var/lib/kong/kong.yml:ro
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "kong", "health"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # ── Backend services ──────────────────────────────────────────────────────────
+  # ── Supabase: Email catcher (dev only) ────────────────────────────────────
+
+  inbucket:
+    image: inbucket/inbucket:3.0.4
+    ports:
+      - "9000:9000"   # web UI: http://localhost:9000
+
+  # ── Supabase: Studio ──────────────────────────────────────────────────────
+
+  studio:
+    image: supabase/studio:2025.01.06
+    depends_on:
+      kong:
+        condition: service_healthy
+    environment:
+      STUDIO_PG_META_URL: http://meta:8080
+      POSTGRES_PASSWORD: postgres
+      DEFAULT_ORGANIZATION_NAME: vozai-local
+      DEFAULT_PROJECT_NAME: vozai-dev
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_PUBLIC_URL: http://localhost:8000
+      SUPABASE_ANON_KEY: *supabase-anon-key
+      SUPABASE_SERVICE_KEY: *supabase-service-key
+      AUTH_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+    ports:
+      - "3001:3000"
+
+  # ── Backend services ──────────────────────────────────────────────────────
 
   webapp-api:
     build:
@@ -35,8 +214,11 @@ services:
       - path: ./backend/webapp-api/.env
         required: false
     environment:
-      DATABASE_URL: postgresql://vozai:vozai_dev_password@postgres:5432/vozai_dev
-      DIRECT_URL: postgresql://vozai:vozai_dev_password@postgres:5432/vozai_dev
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/postgres
+      DIRECT_URL: postgresql://postgres:postgres@db:5432/postgres
+      PUBLIC_SUPABASE_URL: http://kong:8000
+      PUBLIC_SUPABASE_PUBLISHABLE_KEY: *supabase-anon-key
+      SUPABASE_SERVICE_ROLE_KEY: *supabase-service-key
       SCRAPER_SERVICE_URL: http://scraper-api:8081
       API_BASE_URL: http://webapp-api:8080
       SCRAPER_CALLBACK_SECRET: dev-secret
@@ -54,7 +236,9 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      postgres:
+      db:
+        condition: service_healthy
+      kong:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
@@ -96,7 +280,7 @@ services:
       start_period: 30s
       retries: 3
 
-  # ── Observability stack ───────────────────────────────────────────────────────
+  # ── Observability stack ───────────────────────────────────────────────────
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
@@ -143,7 +327,7 @@ services:
       - ./infra/dev/tempo/config.yaml:/etc/tempo/config.yaml:ro
       - tempo_data:/var/tempo
     ports:
-      - "3200:3200"   # Tempo HTTP API / query frontend
+      - "3200:3200"
     depends_on:
       - otel-collector
 
@@ -197,7 +381,8 @@ services:
       - loki
 
 volumes:
-  postgres_data:
+  supabase_db_data:
+  supabase_storage_data:
   tempo_data:
   loki_data:
   prometheus_data:
