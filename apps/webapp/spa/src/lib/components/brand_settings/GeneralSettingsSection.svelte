@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BrandData } from '$lib/api/generated/models/BrandData';
+	import { useBrandEditorStore } from './BrandEditorStore.svelte';
 	import { getLanguageName, ISO_639_1_LANGUAGE_CODES } from '$lib/utils/language';
 	import MarkdownRenderer from '$lib/components/markdown/MarkdownRenderer.svelte';
 	import BrandColorsSection from './BrandColorsSection.svelte';
@@ -12,15 +12,14 @@
 	import { Building2, Languages } from 'lucide-svelte';
 
 	interface Props {
-		name: string;
-		brandData: BrandData;
-		pendingLogoFile: File | null;
 		readonly?: boolean;
 	}
 
 	const NONE_VALUE = '';
 
-	let { name = $bindable(), brandData = $bindable(), pendingLogoFile = $bindable(), readonly = false }: Props = $props();
+	let { readonly = false }: Props = $props();
+
+	const store = useBrandEditorStore();
 
 	let isEditingName = $state(false);
 	let editName = $state('');
@@ -34,14 +33,14 @@
 	let selectedLocaleCode = $state('');
 
 	$effect(() => {
-		selectedLocaleCode = brandData.locale ?? NONE_VALUE;
+		selectedLocaleCode = store.locale ?? NONE_VALUE;
 	});
 	$effect(() => {
-		brandData.locale = selectedLocaleCode === NONE_VALUE ? null : selectedLocaleCode;
+		store.locale = selectedLocaleCode === NONE_VALUE ? null : selectedLocaleCode;
 	});
 
 	const localeLabel = $derived(
-		brandData.locale ? getLanguageName(brandData.locale) ?? brandData.locale : null
+		store.locale ? getLanguageName(store.locale) ?? store.locale : null
 	);
 
 	const languageOptionsSorted = $derived(
@@ -55,12 +54,12 @@
 	);
 
 	function startEditName() {
-		editName = name;
+		editName = store.name;
 		isEditingName = true;
 	}
 
 	function commitName() {
-		name = editName.trim();
+		store.name = editName.trim();
 		isEditingName = false;
 	}
 
@@ -69,12 +68,12 @@
 	}
 
 	function startEditMission() {
-		editMission = brandData.brandMission ?? '';
+		editMission = store.brandMission ?? '';
 		isEditingMission = true;
 	}
 
 	function commitMission() {
-		brandData.brandMission = editMission.trim();
+		store.brandMission = editMission.trim();
 		isEditingMission = false;
 	}
 
@@ -83,14 +82,12 @@
 	}
 
 	function startEditDescription() {
-		editDescription = brandData.positioning?.description ?? '';
+		editDescription = store.positioning.description ?? '';
 		isEditingDescription = true;
 	}
 
 	function commitDescription() {
-		if (brandData.positioning) {
-			brandData.positioning.description = editDescription.trim();
-		}
+		store.positioning.description = editDescription.trim();
 		isEditingDescription = false;
 	}
 
@@ -103,10 +100,10 @@
 	<CardContent class="p-6 h-full flex flex-col">
 		<div class="flex items-start gap-4 mb-4">
 			<BrandLogoUpload
-				logoUrl={brandData.logoUrl ?? null}
-				brandName={name}
-				pendingFile={pendingLogoFile}
-				onFileSelected={(file) => (pendingLogoFile = file)}
+				logoUrl={store.logoUrl}
+				brandName={store.name}
+				pendingFile={store.pendingLogoFile}
+				onFileSelected={(file) => (store.pendingLogoFile = file)}
 				{readonly}
 			/>
 			<div class="flex-1 min-w-0">
@@ -123,18 +120,18 @@
 							}}
 						/>
 					{:else if readonly}
-						<h3 class="text-xl font-bold">{name || 'Brand Name'}</h3>
+						<h3 class="text-xl font-bold">{store.name || 'Brand Name'}</h3>
 					{:else}
 						<button
 							type="button"
 							class="text-xl font-bold cursor-pointer hover:text-muted-foreground transition-colors text-left bg-transparent border-0 p-0"
 							onclick={startEditName}
 						>
-							{name || 'Brand Name'}
+							{store.name || 'Brand Name'}
 						</button>
 					{/if}
 					<div class="flex items-center gap-3">
-						<BrandColorsSection bind:colors={brandData.colors!} readonly={readonly} variant="inline" />
+						<BrandColorsSection {readonly} variant="inline" />
 					</div>
 				</div>
 			</div>
@@ -161,8 +158,8 @@
 					/>
 				{:else if readonly}
 					<div>
-						{#if brandData.brandMission}
-							<MarkdownRenderer content={brandData.brandMission} />
+						{#if store.brandMission}
+							<MarkdownRenderer content={store.brandMission} />
 						{:else}
 							<p class="text-muted-foreground italic text-sm">No mission statement yet...</p>
 						{/if}
@@ -177,8 +174,8 @@
 						role="button"
 						tabindex={0}
 					>
-						{#if brandData.brandMission}
-							<MarkdownRenderer content={brandData.brandMission} />
+						{#if store.brandMission}
+							<MarkdownRenderer content={store.brandMission} />
 						{:else}
 							<p class="text-muted-foreground italic text-sm">No mission statement yet...</p>
 						{/if}
@@ -204,8 +201,8 @@
 					/>
 				{:else if readonly}
 					<div>
-						{#if brandData.positioning?.description}
-							<p class="text-sm">{brandData.positioning.description}</p>
+						{#if store.positioning.description}
+							<p class="text-sm">{store.positioning.description}</p>
 						{:else}
 							<p class="text-muted-foreground italic text-sm">No description yet...</p>
 						{/if}
@@ -220,8 +217,8 @@
 						role="button"
 						tabindex={0}
 					>
-						{#if brandData.positioning?.description}
-							<p class="text-sm">{brandData.positioning.description}</p>
+						{#if store.positioning.description}
+							<p class="text-sm">{store.positioning.description}</p>
 						{:else}
 							<p class="text-muted-foreground italic text-sm">No description yet...</p>
 						{/if}
@@ -256,9 +253,7 @@
 				{/if}
 			</div>
 
-			{#if brandData.positioning}
-				<PositioningSection bind:positioning={brandData.positioning} {readonly} />
-			{/if}
+			<PositioningSection {readonly} />
 		</div>
 	</CardContent>
 </Card>

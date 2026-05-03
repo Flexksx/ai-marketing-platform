@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PositioningBrandData } from '$lib/api/generated/models/PositioningBrandData';
+	import { useBrandEditorStore } from './BrandEditorStore.svelte';
 	import StringItemSetting from '$lib/components/brand_settings/StringItemSetting.svelte';
 	import * as Item from '$lib/components/ui/item';
 	import { Button } from '$lib/components/ui/button';
@@ -7,49 +7,52 @@
 	import { Plus } from 'lucide-svelte';
 
 	interface Props {
-		positioning: PositioningBrandData;
 		readonly?: boolean;
 	}
 
-	let { positioning = $bindable(), readonly = false }: Props = $props();
+	let { readonly = false }: Props = $props();
+
+	const store = useBrandEditorStore();
 
 	let editingParityIndex = $state<number | null>(null);
 	let editingDifferenceIndex = $state<number | null>(null);
 
 	function addParity() {
-		positioning.pointsOfParity = [...(positioning.pointsOfParity ?? []), ''];
-		editingParityIndex = (positioning.pointsOfParity ?? []).length - 1;
+		store.positioning.pointsOfParity = [...(store.positioning.pointsOfParity ?? []), ''];
+		editingParityIndex = (store.positioning.pointsOfParity ?? []).length - 1;
 	}
 
 	function saveParityAt(index: number, newValue: string) {
-		const updated = [...(positioning.pointsOfParity ?? [])];
+		const updated = [...(store.positioning.pointsOfParity ?? [])];
 		if (newValue) updated[index] = newValue;
 		else updated.splice(index, 1);
-		positioning.pointsOfParity = updated;
+		store.positioning.pointsOfParity = updated;
 		editingParityIndex = null;
 	}
 
 	function removeParity(index: number) {
-		positioning.pointsOfParity = (positioning.pointsOfParity ?? []).filter((_, i) => i !== index);
+		store.positioning.pointsOfParity = (store.positioning.pointsOfParity ?? []).filter(
+			(_, i) => i !== index
+		);
 		if (editingParityIndex === index) editingParityIndex = null;
 		else if (editingParityIndex !== null && editingParityIndex > index) editingParityIndex--;
 	}
 
 	function addDifference() {
-		positioning.pointsOfDifference = [...(positioning.pointsOfDifference ?? []), ''];
-		editingDifferenceIndex = (positioning.pointsOfDifference ?? []).length - 1;
+		store.positioning.pointsOfDifference = [...(store.positioning.pointsOfDifference ?? []), ''];
+		editingDifferenceIndex = (store.positioning.pointsOfDifference ?? []).length - 1;
 	}
 
 	function saveDifferenceAt(index: number, newValue: string) {
-		const updated = [...(positioning.pointsOfDifference ?? [])];
+		const updated = [...(store.positioning.pointsOfDifference ?? [])];
 		if (newValue) updated[index] = newValue;
 		else updated.splice(index, 1);
-		positioning.pointsOfDifference = updated;
+		store.positioning.pointsOfDifference = updated;
 		editingDifferenceIndex = null;
 	}
 
 	function removeDifference(index: number) {
-		positioning.pointsOfDifference = (positioning.pointsOfDifference ?? []).filter(
+		store.positioning.pointsOfDifference = (store.positioning.pointsOfDifference ?? []).filter(
 			(_, i) => i !== index
 		);
 		if (editingDifferenceIndex === index) editingDifferenceIndex = null;
@@ -57,8 +60,8 @@
 			editingDifferenceIndex--;
 	}
 
-	const parity = $derived(positioning.pointsOfParity ?? []);
-	const difference = $derived(positioning.pointsOfDifference ?? []);
+	const parity = $derived(store.positioning.pointsOfParity ?? []);
+	const difference = $derived(store.positioning.pointsOfDifference ?? []);
 </script>
 
 <div class="mt-4 border-t border-border pt-4">
@@ -71,8 +74,8 @@
 		</div>
 		{#if readonly}
 			<p class="text-xs">
-				{#if positioning.productDescription}
-					{positioning.productDescription}
+				{#if store.positioning.productDescription}
+					{store.positioning.productDescription}
 				{:else}
 					<span class="text-muted-foreground italic">No product description yet.</span>
 				{/if}
@@ -81,7 +84,7 @@
 			<input
 				type="text"
 				class="w-full h-8 rounded-md border border-input bg-background px-2 text-xs"
-				bind:value={positioning.productDescription}
+				bind:value={store.positioning.productDescription}
 				placeholder="e.g. Premium residential brokerage"
 			/>
 		{/if}
@@ -102,19 +105,19 @@
 					</Button>
 				{/if}
 			</div>
-		{#if parity.length > 0}
-			<Item.Group class="space-y-1.5">
-				{#each parity as point, index (index)}
-					<StringItemSetting
-						value={point}
-						{readonly}
-						startInEditMode={editingParityIndex === index}
-						placeholder="e.g. Fast delivery"
-						onSave={(newValue) => saveParityAt(index, newValue)}
-						onRemove={() => removeParity(index)}
-					/>
-				{/each}
-			</Item.Group>
+			{#if parity.length > 0}
+				<Item.Group class="space-y-1.5">
+					{#each parity as point, index (index)}
+						<StringItemSetting
+							value={point}
+							{readonly}
+							startInEditMode={editingParityIndex === index}
+							placeholder="e.g. Fast delivery"
+							onSave={(newValue) => saveParityAt(index, newValue)}
+							onRemove={() => removeParity(index)}
+						/>
+					{/each}
+				</Item.Group>
 			{:else if !readonly}
 				<p class="text-muted-foreground italic text-xs">None yet. Add one above.</p>
 			{:else}
@@ -142,19 +145,19 @@
 					</Button>
 				{/if}
 			</div>
-		{#if difference.length > 0}
-			<Item.Group class="space-y-1.5">
-				{#each difference as point, index (index)}
-					<StringItemSetting
-						value={point}
-						{readonly}
-						startInEditMode={editingDifferenceIndex === index}
-						placeholder="e.g. Personalized service"
-						onSave={(newValue) => saveDifferenceAt(index, newValue)}
-						onRemove={() => removeDifference(index)}
-					/>
-				{/each}
-			</Item.Group>
+			{#if difference.length > 0}
+				<Item.Group class="space-y-1.5">
+					{#each difference as point, index (index)}
+						<StringItemSetting
+							value={point}
+							{readonly}
+							startInEditMode={editingDifferenceIndex === index}
+							placeholder="e.g. Personalized service"
+							onSave={(newValue) => saveDifferenceAt(index, newValue)}
+							onRemove={() => removeDifference(index)}
+						/>
+					{/each}
+				</Item.Group>
 			{:else if !readonly}
 				<p class="text-muted-foreground italic text-xs">None yet. Add one above.</p>
 			{:else}

@@ -1,18 +1,18 @@
 <script lang="ts">
+	import { useBrandEditorStore } from './BrandEditorStore.svelte';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Image as ImageIcon } from 'lucide-svelte';
 
 	interface Props {
-		mediaUrls: string[];
 		readonly?: boolean;
 	}
 
-	let { mediaUrls, readonly = false }: Props = $props();
+	let { readonly = false }: Props = $props();
 
-	const hasImages = $derived(mediaUrls.length > 0);
+	const store = useBrandEditorStore();
 </script>
 
-{#if hasImages}
+{#if store.mediaUrls.length > 0}
 	<Card class="border-0 bg-white/80 shadow-xl backdrop-blur-sm dark:bg-slate-800/80">
 		<CardHeader>
 			<CardTitle class="flex items-center gap-2">
@@ -22,7 +22,7 @@
 		</CardHeader>
 		<CardContent>
 			<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-				{#each mediaUrls.slice(0, 12) as imageUrl (imageUrl)}
+				{#each store.mediaUrls.slice(0, 12) as imageUrl (imageUrl)}
 					<div class="group relative aspect-square overflow-hidden rounded-lg shadow-md">
 						<img
 							src={imageUrl}

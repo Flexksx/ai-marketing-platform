@@ -1,22 +1,23 @@
 <script lang="ts">
 	import MarkdownRenderer from '$lib/components/markdown/MarkdownRenderer.svelte';
-	import type { BrandSettingsFormData } from '$lib/components/brand_settings/form-data';
 	import type { BrandArchetypeName } from '$lib/api/generated/models/BrandArchetypeName';
 	import { getArchetypeDescription, getArchetypeLabel } from '$lib/utils/brandArchetype';
 	import { BrandColorsSection, BrandLogoUpload } from '$lib/components/brand_settings';
+	import { useBrandEditorStore } from '$lib/components/brand_settings/BrandEditorStore.svelte';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Edit3, Sparkles } from 'lucide-svelte';
 
 	type Props = {
-		data: BrandSettingsFormData;
 		onEditClick: () => void;
 		onFileSelected?: (file: File) => void;
 		readonly?: boolean;
 	};
 
-	let { data, onEditClick, onFileSelected, readonly = false }: Props = $props();
+	let { onEditClick, onFileSelected, readonly = false }: Props = $props();
 
-	const archetype = $derived(data.data?.toneOfVoice?.archetype ?? null);
+	const store = useBrandEditorStore();
+
+	const archetype = $derived(store.toneOfVoice?.archetype ?? null);
 </script>
 
 <Card
@@ -30,25 +31,25 @@
 		<div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
 			<div class="flex items-start gap-4">
 				<BrandLogoUpload
-					logoUrl={data.data?.logoUrl ?? null}
-					brandName={data.name}
-					pendingFile={data.pendingLogoFile}
+					logoUrl={store.logoUrl}
+					brandName={store.name}
+					pendingFile={store.pendingLogoFile}
 					onFileSelected={(file) => onFileSelected?.(file)}
 					{readonly}
 				/>
 				<div class="flex-1 min-w-0">
-					<h3 class="text-xl font-bold mb-1">{data.name || 'Brand Name'}</h3>
+					<h3 class="text-xl font-bold mb-1">{store.name || 'Brand Name'}</h3>
 					<p class="text-sm text-muted-foreground">Brand identity overview</p>
 				</div>
 			</div>
 
 			<div class="flex flex-wrap items-center justify-start gap-3 md:justify-end">
-				<BrandColorsSection bind:colors={data.data.colors!} readonly={readonly} variant="inline" />
+				<BrandColorsSection {readonly} variant="inline" />
 			</div>
 		</div>
 
 		<div class="max-w-5xl text-left">
-			<MarkdownRenderer content={data.data?.positioning?.description || 'No description yet...'} />
+			<MarkdownRenderer content={store.positioning.description || 'No description yet...'} />
 		</div>
 
 		{#if archetype}

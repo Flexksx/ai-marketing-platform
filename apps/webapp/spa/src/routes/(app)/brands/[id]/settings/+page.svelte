@@ -1,17 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { useBrand, } from '$lib/resources/brands/queries';
+	import { useBrand } from '$lib/resources/brands/queries';
 	import { useDeleteBrand, useUpdateBrand } from '$lib/resources/brands/mutations';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { BrandsApi } from '$lib/api/generated/apis/BrandsApi';
+	import { openApiConfiguration } from '$lib/backend/generated-client';
+	import { queryKeys } from '$lib/resources/queryKeys';
 	import {
 		AudienceSettingsSection,
 		BrandImagesSection,
 		GeneralSettingsSection,
 		MarketingSettingsSection,
-		ToneOfVoiceSection,
-		createEmptyBrandSettingsFormData,
-		defaultToneOfVoice,
-		type BrandSettingsFormData
+		ToneOfVoiceSection
 	} from '$lib/components/brand_settings';
+	import { setBrandEditorStore } from '$lib/components/brand_settings/BrandEditorStore.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { ArrowLeft, Building2, LoaderCircle, Save, X } from 'lucide-svelte';
@@ -19,63 +21,28 @@
 
 	const brandId = $derived(page.params.id);
 	const brandQuery = useBrand(() => brandId);
+	const queryClient = useQueryClient();
+	const api = new BrandsApi(openApiConfiguration);
+
+	const store = setBrandEditorStore();
+
+	// brandQuery.data is synchronously available from cache (prefetched in +page.ts load fn)
+	if (brandQuery.data) store.initFromBrand(brandQuery.data);
 
 	const updateBrandMutation = useUpdateBrand();
 	const deleteBrandMutation = useDeleteBrand();
 
-	let brand = $derived(brandQuery?.data ?? null);
-	let isLoading = $derived(brandQuery?.isLoading ?? false);
-	let error = $derived(brandQuery?.error?.message ?? null);
-
-	let formData = $state<BrandSettingsFormData>(createEmptyBrandSettingsFormData());
-	let originalFormData = $state<BrandSettingsFormData>(createEmptyBrandSettingsFormData());
-
-	$effect(() => {
-		if (brand) {
-			const next: BrandSettingsFormData = {
-				name: brand.name ?? '',
-				data: {
-					logoUrl: brand.data?.logoUrl ?? null,
-					websiteUrl: brand.data?.websiteUrl ?? null,
-					brandMission: brand.data?.brandMission ?? null,
-					locale: brand.data?.locale ?? null,
-					colors: brand.data?.colors ? [...brand.data.colors] : [],
-					mediaUrls: brand.data?.mediaUrls ? [...brand.data.mediaUrls] : [],
-					audiences: brand.data?.audiences ? [...brand.data.audiences] : [],
-					contentPillars: brand.data?.contentPillars ? [...brand.data.contentPillars] : [],
-					toneOfVoice: brand.data?.toneOfVoice ?? { ...defaultToneOfVoice },
-					positioning: {
-						description: brand.data?.positioning?.description ?? '',
-						pointsOfParity: brand.data?.positioning?.pointsOfParity ?? [],
-						pointsOfDifference: brand.data?.positioning?.pointsOfDifference ?? [],
-						productDescription: brand.data?.positioning?.productDescription ?? ''
-					}
-				},
-				pendingLogoFile: null
-			};
-			formData = next;
-			originalFormData = JSON.parse(JSON.stringify(next));
-		}
-	});
-
-	const isDirty = $derived(
-		JSON.stringify({ ...formData, pendingLogoFile: null }) !== JSON.stringify(originalFormData)
-		|| formData.pendingLogoFile !== null
-	);
-
-	function discardChanges() {
-		formData = { ...JSON.parse(JSON.stringify(originalFormData)), pendingLogoFile: null };
-	}
+	const isDirty = $derived(store.isDirty);
 
 	let showDeleteModal = $state(false);
 
 	const handleUpdate = async () => {
-		await updateBrandMutation.mutateAsync({
-			brandId,
-			name: formData.name,
-			data: formData.data,
-			logoFile: formData.pendingLogoFile ?? undefined
+		await updateBrandMutation.mutateAsync({ brandId, ...store.buildSavePayload() });
+		const fresh = await queryClient.fetchQuery({
+			queryKey: queryKeys.brand(brandId),
+			queryFn: () => api.brandsGet({ brandId })
 		});
+		store.initFromBrand(fresh);
 	};
 
 	const handleDelete = async () => {
@@ -84,11 +51,11 @@
 </script>
 
 <div class="container mx-auto px-4 py-8">
-	{#if isLoading}
+	{#if brandQuery.isLoading}
 		<div class="flex items-center justify-center py-12">
 			<LoaderCircle class="h-8 w-8 animate-spin text-muted-foreground" />
 		</div>
-	{:else if error || !brand}
+	{:else if brandQuery.error || !brandQuery.data}
 		<div class="flex flex-col items-center justify-center py-24 text-center">
 			<div class="text-6xl mb-4">😢</div>
 			<h1 class="text-3xl font-bold mb-2">Brand Not Found</h1>
@@ -99,7 +66,7 @@
 				<ArrowLeft class="h-4 w-4 mr-2" /> Back to Brands
 			</Button>
 		</div>
-	{:else if brand}
+	{:else}
 		<form
 			onsubmit={(e) => {
 				e.preventDefault();
@@ -117,41 +84,30 @@
 					</div>
 				</div>
 
-				<div
-					class="overflow-y-auto overflow-x-hidden px-1 {isDirty ? 'pb-24' : ''}"
-				>
-				<div class="grid grid-cols-2 gap-4 auto-rows-min pb-4">
-					<div>
-						<GeneralSettingsSection
-							bind:name={formData.name}
-							bind:brandData={formData.data}
-							bind:pendingLogoFile={formData.pendingLogoFile}
-							readonly={false}
-						/>
-					</div>
-
-					{#if (formData.data.mediaUrls ?? []).length > 0}
-						<div class="row-span-2">
-							<BrandImagesSection mediaUrls={formData.data.mediaUrls ?? []} readonly={false} />
+				<div class="overflow-y-auto overflow-x-hidden px-1 {isDirty ? 'pb-24' : ''}">
+					<div class="grid grid-cols-2 gap-4 auto-rows-min pb-4">
+						<div>
+							<GeneralSettingsSection readonly={false} />
 						</div>
-					{/if}
 
-					<div class="col-span-2">
-						<MarketingSettingsSection
-							bind:contentPillars={formData.data.contentPillars!}
-							audiences={formData.data.audiences ?? []}
-							readonly={false}
-						/>
-					</div>
+						{#if store.mediaUrls.length > 0}
+							<div class="row-span-2">
+								<BrandImagesSection readonly={false} />
+							</div>
+						{/if}
 
-					<div class="col-span-2">
-						<AudienceSettingsSection bind:audiences={formData.data.audiences!} readonly={false} />
-					</div>
+						<div class="col-span-2">
+							<MarketingSettingsSection readonly={false} />
+						</div>
 
-					<div class="col-span-2">
-						<ToneOfVoiceSection bind:toneOfVoice={formData.data.toneOfVoice} readonly={false} />
+						<div class="col-span-2">
+							<AudienceSettingsSection readonly={false} />
+						</div>
+
+						<div class="col-span-2">
+							<ToneOfVoiceSection readonly={false} />
+						</div>
 					</div>
-				</div>
 				</div>
 
 				{#if isDirty}
@@ -163,7 +119,7 @@
 								type="button"
 								variant="outline"
 								size="lg"
-								onclick={discardChanges}
+								onclick={() => store.discard()}
 							>
 								<X class="h-4 w-4 mr-2" />
 								Discard

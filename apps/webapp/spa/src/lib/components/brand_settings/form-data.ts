@@ -1,12 +1,5 @@
-import type { BrandData } from '$lib/api/generated/models/BrandData';
 import type { BrandToneOfVoice } from '$lib/api/generated/models/BrandToneOfVoice';
 import type { ContentPillar } from '$lib/api/generated/models/ContentPillar';
-
-export interface BrandSettingsFormData {
-	name: string;
-	data: BrandData;
-	pendingLogoFile: File | null;
-}
 
 export const defaultToneOfVoice: BrandToneOfVoice = {
 	archetype: null,
@@ -15,29 +8,6 @@ export const defaultToneOfVoice: BrandToneOfVoice = {
 	mustUseWords: [],
 	forbiddenWords: []
 };
-
-export function createEmptyBrandSettingsFormData(): BrandSettingsFormData {
-	return {
-		name: '',
-		data: {
-			logoUrl: null,
-			brandMission: null,
-			locale: null,
-			colors: [],
-			mediaUrls: [],
-			audiences: [],
-			contentPillars: [],
-			toneOfVoice: { ...defaultToneOfVoice },
-			positioning: {
-				description: '',
-				pointsOfParity: [],
-				pointsOfDifference: [],
-				productDescription: ''
-			}
-		},
-		pendingLogoFile: null
-	};
-}
 
 export function createDefaultContentPillar(): ContentPillar {
 	return {

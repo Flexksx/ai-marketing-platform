@@ -1,6 +1,5 @@
 <script lang="ts">
-	import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
-	import type { ContentPillar } from '$lib/api/generated/models/ContentPillar';
+	import { useBrandEditorStore } from './BrandEditorStore.svelte';
 	import { createDefaultContentPillar } from './form-data';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
@@ -9,19 +8,20 @@
 	import ContentPillarEditDialog from '$lib/components/brand_settings/content-pillar/ContentPillarEditDialog.svelte';
 
 	interface Props {
-		contentPillars: ContentPillar[];
-		audiences: BrandAudience[];
 		readonly?: boolean;
 	}
 
-	let { contentPillars = $bindable(), audiences, readonly = false }: Props = $props();
+	let { readonly = false }: Props = $props();
+
+	const store = useBrandEditorStore();
+
 	let showPillarModal = $state(false);
 	let editingPillarIndex = $state<number | null>(null);
 
 	function addPillar() {
 		if (readonly) return;
-		contentPillars = [...contentPillars, createDefaultContentPillar()];
-		editingPillarIndex = contentPillars.length - 1;
+		store.contentPillars = [...store.contentPillars, createDefaultContentPillar()];
+		editingPillarIndex = store.contentPillars.length - 1;
 		showPillarModal = true;
 	}
 
@@ -33,7 +33,7 @@
 
 	function removePillar(index: number) {
 		if (readonly) return;
-		contentPillars = contentPillars.filter((_, i) => i !== index);
+		store.contentPillars = store.contentPillars.filter((_, i) => i !== index);
 		editingPillarIndex = null;
 	}
 </script>
@@ -50,13 +50,13 @@
 				Add pillar
 			</Button>
 		</div>
-		{#if contentPillars.length > 0}
+		{#if store.contentPillars.length > 0}
 			<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-				{#each contentPillars as pillar, index (pillar.id)}
+				{#each store.contentPillars as pillar, index (pillar.id)}
 					<div class="min-w-[260px]">
 						<ContentPillarCard
 							{pillar}
-							{audiences}
+							audiences={store.audiences}
 							{readonly}
 							onEditRequested={() => editPillar(index)}
 						/>
@@ -71,11 +71,11 @@
 	</CardContent>
 </Card>
 
-{#if showPillarModal && editingPillarIndex !== null && contentPillars[editingPillarIndex]}
+{#if showPillarModal && editingPillarIndex !== null && store.contentPillars[editingPillarIndex]}
 	<ContentPillarEditDialog
 		bind:open={showPillarModal}
-		bind:pillar={contentPillars[editingPillarIndex]}
-		{audiences}
+		bind:pillar={store.contentPillars[editingPillarIndex]}
+		audiences={store.audiences}
 		{readonly}
 		onDelete={() => {
 			if (editingPillarIndex === null) return;

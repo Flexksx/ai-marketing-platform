@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PositioningBrandData } from '$lib/api/generated/models/PositioningBrandData';
+	import { useBrandEditorStore } from './BrandEditorStore.svelte';
 	import ContentPillarItemMarketingSetting from '$lib/components/brand_settings/ContentPillarItemMarketingSetting.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent } from '$lib/components/ui/card';
@@ -8,48 +8,49 @@
 	import { Plus, Truck } from 'lucide-svelte';
 
 	interface Props {
-		positioning: PositioningBrandData;
 		readonly?: boolean;
 	}
 
-	let { positioning = $bindable(), readonly = false }: Props = $props();
+	let { readonly = false }: Props = $props();
+
+	const store = useBrandEditorStore();
 	let editingParityIndex = $state<number | null>(null);
 	let editingDifferenceIndex = $state<number | null>(null);
 
 	function addParity() {
-		positioning.pointsOfParity = [...(positioning.pointsOfParity ?? []), ''];
-		editingParityIndex = (positioning.pointsOfParity ?? []).length - 1;
+		store.positioning.pointsOfParity = [...(store.positioning.pointsOfParity ?? []), ''];
+		editingParityIndex = (store.positioning.pointsOfParity ?? []).length - 1;
 	}
 
 	function saveParityAt(index: number, newValue: string) {
-		const updated = [...(positioning.pointsOfParity ?? [])];
+		const updated = [...(store.positioning.pointsOfParity ?? [])];
 		if (newValue) updated[index] = newValue;
 		else updated.splice(index, 1);
-		positioning.pointsOfParity = updated;
+		store.positioning.pointsOfParity = updated;
 		editingParityIndex = null;
 	}
 
 	function removeParity(index: number) {
-		positioning.pointsOfParity = (positioning.pointsOfParity ?? []).filter((_, i) => i !== index);
+		store.positioning.pointsOfParity = (store.positioning.pointsOfParity ?? []).filter((_, i) => i !== index);
 		if (editingParityIndex === index) editingParityIndex = null;
 		else if (editingParityIndex !== null && editingParityIndex > index) editingParityIndex--;
 	}
 
 	function addDifference() {
-		positioning.pointsOfDifference = [...(positioning.pointsOfDifference ?? []), ''];
-		editingDifferenceIndex = (positioning.pointsOfDifference ?? []).length - 1;
+		store.positioning.pointsOfDifference = [...(store.positioning.pointsOfDifference ?? []), ''];
+		editingDifferenceIndex = (store.positioning.pointsOfDifference ?? []).length - 1;
 	}
 
 	function saveDifferenceAt(index: number, newValue: string) {
-		const updated = [...(positioning.pointsOfDifference ?? [])];
+		const updated = [...(store.positioning.pointsOfDifference ?? [])];
 		if (newValue) updated[index] = newValue;
 		else updated.splice(index, 1);
-		positioning.pointsOfDifference = updated;
+		store.positioning.pointsOfDifference = updated;
 		editingDifferenceIndex = null;
 	}
 
 	function removeDifference(index: number) {
-		positioning.pointsOfDifference = (positioning.pointsOfDifference ?? []).filter(
+		store.positioning.pointsOfDifference = (store.positioning.pointsOfDifference ?? []).filter(
 			(_, i) => i !== index
 		);
 		if (editingDifferenceIndex === index) editingDifferenceIndex = null;
@@ -58,10 +59,10 @@
 	}
 
 	const hasPositioning = $derived(
-		(positioning.pointsOfParity ?? []).length > 0 || (positioning.pointsOfDifference ?? []).length > 0
+		(store.positioning.pointsOfParity ?? []).length > 0 || (store.positioning.pointsOfDifference ?? []).length > 0
 	);
-	const parity = $derived(positioning.pointsOfParity ?? []);
-	const difference = $derived(positioning.pointsOfDifference ?? []);
+	const parity = $derived(store.positioning.pointsOfParity ?? []);
+	const difference = $derived(store.positioning.pointsOfDifference ?? []);
 </script>
 
 {#if hasPositioning}

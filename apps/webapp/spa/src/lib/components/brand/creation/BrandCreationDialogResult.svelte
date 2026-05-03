@@ -9,11 +9,9 @@
 		BrandImagesSection,
 		GeneralSettingsSection,
 		MarketingSettingsSection,
-		ToneOfVoiceSection,
-		createEmptyBrandSettingsFormData,
-		defaultToneOfVoice,
-		type BrandSettingsFormData
+		ToneOfVoiceSection
 	} from '$lib/components/brand_settings';
+	import { setBrandEditorStore } from '$lib/components/brand_settings/BrandEditorStore.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { CheckCircle2, Loader2 } from 'lucide-svelte';
 	import { fade } from 'svelte/transition';
@@ -29,41 +27,16 @@
 
 	const acceptJobMutation = useAcceptBrandGenerationJob();
 
-	let formData = $state<BrandSettingsFormData>(createEmptyBrandSettingsFormData());
+	const store = setBrandEditorStore();
 
-	$effect(() => {
-		if (!brandData) return;
-
-		formData = {
-			name: brandData.name ?? '',
-			data: {
-				logoUrl: brandData.data?.logoUrl ?? null,
-				websiteUrl: brandData.data?.websiteUrl ?? null,
-				brandMission: brandData.data?.brandMission ?? null,
-				locale: brandData.data?.locale ?? null,
-				colors: brandData.data?.colors ?? [],
-				mediaUrls: brandData.data?.mediaUrls ?? [],
-				audiences: brandData.data?.audiences ?? [],
-				contentPillars: brandData.data?.contentPillars ? [...brandData.data.contentPillars] : [],
-				toneOfVoice: brandData.data?.toneOfVoice ?? { ...defaultToneOfVoice },
-				positioning: {
-					description: brandData.data?.positioning?.description ?? '',
-					pointsOfParity: brandData.data?.positioning?.pointsOfParity ?? [],
-					pointsOfDifference: brandData.data?.positioning?.pointsOfDifference ?? [],
-					productDescription: brandData.data?.positioning?.productDescription ?? ''
-				}
-			},
-			pendingLogoFile: null
-		};
-	});
+	// Component only renders when brandData is non-null (mode === 'form' in parent)
+	if (brandData) store.initFromBrand(brandData);
 
 	function handleSave() {
 		if (!jobId) return;
 
-		const body: BrandGenerationJobAcceptRequest = {
-			name: formData.name,
-			data: formData.data
-		};
+		const { name, data } = store.buildSavePayload();
+		const body: BrandGenerationJobAcceptRequest = { name, data };
 
 		acceptJobMutation.mutate(
 			{ jobId, body },
@@ -95,38 +68,29 @@
 	>
 		<div class="grid grid-cols-2 gap-4 auto-rows-min pb-4">
 			<div>
-				<GeneralSettingsSection
-					bind:name={formData.name}
-					bind:brandData={formData.data}
-					bind:pendingLogoFile={formData.pendingLogoFile}
-					readonly={false}
-				/>
+				<GeneralSettingsSection readonly={false} />
 			</div>
 
-			{#if (formData.data.mediaUrls ?? []).length > 0}
+			{#if store.mediaUrls.length > 0}
 				<div class="row-span-2">
-					<BrandImagesSection mediaUrls={formData.data.mediaUrls ?? []} readonly={false} />
+					<BrandImagesSection readonly={false} />
 				</div>
 			{/if}
 
 			<div>
-				<BrandColorsSection bind:colors={formData.data.colors!} readonly={false} />
+				<BrandColorsSection readonly={false} />
 			</div>
 
 			<div class="col-span-2">
-				<MarketingSettingsSection
-					bind:contentPillars={formData.data.contentPillars!}
-					audiences={formData.data.audiences ?? []}
-					readonly={false}
-				/>
+				<MarketingSettingsSection readonly={false} />
 			</div>
 
 			<div class="col-span-2">
-				<AudienceSettingsSection bind:audiences={formData.data.audiences!} readonly={false} />
+				<AudienceSettingsSection readonly={false} />
 			</div>
 
 			<div class="col-span-2">
-				<ToneOfVoiceSection bind:toneOfVoice={formData.data.toneOfVoice} readonly={false} />
+				<ToneOfVoiceSection readonly={false} />
 			</div>
 		</div>
 	</div>
