@@ -1,19 +1,24 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { Eye, EyeOff } from '@lucide/svelte';
+	import { loginWithEmailPassword, signupWithEmailPassword } from '$lib/supabase/browser-auth';
 
-	let { form } = $props();
 	let isSignup = $state(false);
 	let showPassword = $state(false);
 	let showConfirmPassword = $state(false);
 
+	let email = $state('');
 	let passwordValue = $state('');
 	let confirmPasswordValue = $state('');
+
+	let errorMessage = $state<string | null>(null);
+	let successMessage = $state<string | null>(null);
+	let isPending = $state(false);
 
 	function toggleMode() {
 		isSignup = !isSignup;
@@ -21,6 +26,8 @@
 		showConfirmPassword = false;
 		passwordValue = '';
 		confirmPasswordValue = '';
+		errorMessage = null;
+		successMessage = null;
 	}
 
 	function togglePasswordVisibility() {
@@ -29,6 +36,33 @@
 
 	function toggleConfirmPasswordVisibility() {
 		showConfirmPassword = !showConfirmPassword;
+	}
+
+	async function handleSubmit(event: SubmitEvent) {
+		event.preventDefault();
+		errorMessage = null;
+		successMessage = null;
+		isPending = true;
+
+		try {
+			const result = isSignup
+				? await signupWithEmailPassword(email, passwordValue, confirmPasswordValue)
+				: await loginWithEmailPassword(email, passwordValue);
+
+			if (!result.ok) {
+				errorMessage = result.error;
+				return;
+			}
+
+			if ('message' in result && result.message) {
+				successMessage = result.message;
+				return;
+			}
+
+			await goto('/');
+		} finally {
+			isPending = false;
+		}
 	}
 </script>
 
@@ -57,27 +91,27 @@
 			</CardHeader>
 
 			<CardContent class="space-y-6">
-				{#if form?.error}
+				{#if errorMessage}
 					<div
 						class="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20"
 					>
 						<p class="text-sm font-medium text-red-800 dark:text-red-200">
-							{form.error}
+							{errorMessage}
 						</p>
 					</div>
 				{/if}
 
-				{#if form?.success && form?.message}
+				{#if successMessage}
 					<div
 						class="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20"
 					>
 						<p class="text-sm font-medium text-green-800 dark:text-green-200">
-							{form.message}
+							{successMessage}
 						</p>
 					</div>
 				{/if}
 
-				<form method="POST" action={isSignup ? '?/signup' : '?/login'} use:enhance>
+				<form onsubmit={handleSubmit}>
 					<div class="space-y-4">
 						<!-- Email Field -->
 						<div class="space-y-2">
@@ -87,6 +121,7 @@
 								name="email"
 								type="email"
 								placeholder="Enter your email"
+								bind:value={email}
 								required
 								class="h-11"
 							/>
@@ -161,8 +196,17 @@
 						{/if}
 
 						<!-- Submit Button -->
-						<Button type="submit" class="h-11 w-full text-base font-medium" variant="default">
-							{isSignup ? 'Create Account' : 'Sign In'}
+						<Button
+							type="submit"
+							class="h-11 w-full text-base font-medium"
+							variant="default"
+							disabled={isPending}
+						>
+							{#if isPending}
+								{isSignup ? 'Creating account...' : 'Signing in...'}
+							{:else}
+								{isSignup ? 'Create Account' : 'Sign In'}
+							{/if}
 						</Button>
 					</div>
 				</form>

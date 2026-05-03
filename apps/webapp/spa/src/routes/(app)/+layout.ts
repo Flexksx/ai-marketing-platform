@@ -1,5 +1,6 @@
 export const ssr = false;
 
+import { redirect } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase/client';
 
 const SESSION_GET_MS = 3000;
@@ -21,5 +22,8 @@ export const load = async ({ depends }) => {
 	depends('supabase:auth');
 
 	const session = await getSessionSafe();
-	return { session, user: session?.user ?? null };
+	if (!session) {
+		throw redirect(303, '/login');
+	}
+	return { session, user: session.user };
 };

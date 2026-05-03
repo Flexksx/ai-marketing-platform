@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BrandSettingsFormData } from './form-data';
+	import type { PositioningBrandData } from '$lib/api/generated/models/PositioningBrandData';
 	import StringItemSetting from '$lib/components/brand_settings/StringItemSetting.svelte';
 	import * as Item from '$lib/components/ui/item';
 	import { Button } from '$lib/components/ui/button';
@@ -7,49 +7,49 @@
 	import { Plus } from 'lucide-svelte';
 
 	interface Props {
-		data: BrandSettingsFormData;
+		positioning: PositioningBrandData;
 		readonly?: boolean;
 	}
 
-	let { data = $bindable(), readonly = false }: Props = $props();
+	let { positioning = $bindable(), readonly = false }: Props = $props();
 
 	let editingParityIndex = $state<number | null>(null);
 	let editingDifferenceIndex = $state<number | null>(null);
 
 	function addParity() {
-		data.positioningPointsOfParity = [...data.positioningPointsOfParity, ''];
-		editingParityIndex = data.positioningPointsOfParity.length - 1;
+		positioning.pointsOfParity = [...(positioning.pointsOfParity ?? []), ''];
+		editingParityIndex = (positioning.pointsOfParity ?? []).length - 1;
 	}
 
 	function saveParityAt(index: number, newValue: string) {
-		const updated = [...data.positioningPointsOfParity];
+		const updated = [...(positioning.pointsOfParity ?? [])];
 		if (newValue) updated[index] = newValue;
 		else updated.splice(index, 1);
-		data.positioningPointsOfParity = updated;
+		positioning.pointsOfParity = updated;
 		editingParityIndex = null;
 	}
 
 	function removeParity(index: number) {
-		data.positioningPointsOfParity = data.positioningPointsOfParity.filter((_, i) => i !== index);
+		positioning.pointsOfParity = (positioning.pointsOfParity ?? []).filter((_, i) => i !== index);
 		if (editingParityIndex === index) editingParityIndex = null;
 		else if (editingParityIndex !== null && editingParityIndex > index) editingParityIndex--;
 	}
 
 	function addDifference() {
-		data.positioningPointsOfDifference = [...data.positioningPointsOfDifference, ''];
-		editingDifferenceIndex = data.positioningPointsOfDifference.length - 1;
+		positioning.pointsOfDifference = [...(positioning.pointsOfDifference ?? []), ''];
+		editingDifferenceIndex = (positioning.pointsOfDifference ?? []).length - 1;
 	}
 
 	function saveDifferenceAt(index: number, newValue: string) {
-		const updated = [...data.positioningPointsOfDifference];
+		const updated = [...(positioning.pointsOfDifference ?? [])];
 		if (newValue) updated[index] = newValue;
 		else updated.splice(index, 1);
-		data.positioningPointsOfDifference = updated;
+		positioning.pointsOfDifference = updated;
 		editingDifferenceIndex = null;
 	}
 
 	function removeDifference(index: number) {
-		data.positioningPointsOfDifference = data.positioningPointsOfDifference.filter(
+		positioning.pointsOfDifference = (positioning.pointsOfDifference ?? []).filter(
 			(_, i) => i !== index
 		);
 		if (editingDifferenceIndex === index) editingDifferenceIndex = null;
@@ -57,8 +57,8 @@
 			editingDifferenceIndex--;
 	}
 
-	const parity = $derived(data.positioningPointsOfParity);
-	const difference = $derived(data.positioningPointsOfDifference);
+	const parity = $derived(positioning.pointsOfParity ?? []);
+	const difference = $derived(positioning.pointsOfDifference ?? []);
 </script>
 
 <div class="mt-4 border-t border-border pt-4">
@@ -71,8 +71,8 @@
 		</div>
 		{#if readonly}
 			<p class="text-xs">
-				{#if data.productDescription}
-					{data.productDescription}
+				{#if positioning.productDescription}
+					{positioning.productDescription}
 				{:else}
 					<span class="text-muted-foreground italic">No product description yet.</span>
 				{/if}
@@ -81,7 +81,7 @@
 			<input
 				type="text"
 				class="w-full h-8 rounded-md border border-input bg-background px-2 text-xs"
-				bind:value={data.productDescription}
+				bind:value={positioning.productDescription}
 				placeholder="e.g. Premium residential brokerage"
 			/>
 		{/if}
@@ -163,4 +163,3 @@
 		</div>
 	</div>
 </div>
-

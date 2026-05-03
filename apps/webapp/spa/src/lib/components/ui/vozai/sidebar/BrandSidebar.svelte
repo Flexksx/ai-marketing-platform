@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import { supabase } from '$lib/supabase/client';
 	import { useBrand, useBrands } from '$lib/resources/brands/queries';
 	import { Avatar, AvatarFallback } from '$lib/components/ui/avatar';
 	import {
@@ -241,12 +243,9 @@
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
 							variant="destructive"
-							onSelect={() => {
-								const form = document.createElement('form');
-								form.method = 'POST';
-								form.action = '/login/logout';
-								document.body.appendChild(form);
-								form.submit();
+							onSelect={async () => {
+								await supabase.auth.signOut();
+								await goto('/login');
 							}}
 						>
 							<LogOut class="h-4 w-4" />

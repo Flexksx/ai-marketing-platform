@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { BrandColor } from '$lib/api/generated/models/BrandColor';
-	import type { BrandSettingsFormData } from './form-data';
 	import { getColor } from '$lib/components/brand_settings/utils';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import {
@@ -13,12 +12,12 @@
 	import { Palette } from 'lucide-svelte';
 
 	interface Props {
-		data: BrandSettingsFormData;
+		colors: BrandColor[];
 		readonly?: boolean;
 		variant?: 'card' | 'inline';
 	}
 
-	let { data = $bindable(), readonly = false, variant = 'card' }: Props = $props();
+	let { colors = $bindable(), readonly = false, variant = 'card' }: Props = $props();
 
 	let lastEditSource = $state<Array<'hex' | 'name' | null>>([]);
 
@@ -128,24 +127,24 @@
 			name: '#3B82F6',
 			hexValue: '#3B82F6'
 		};
-		data.colors = [...data.colors, defaultColor];
-		const index = data.colors.length - 1;
+		colors = [...colors, defaultColor];
+		const index = colors.length - 1;
 		lastEditSource[index] = 'hex';
 		activeHsv[index] = hexToHsv(defaultColor.hexValue);
 	}
 
 	function removeColor(index: number) {
-		if (index < 0 || index >= data.colors.length) return;
-		data.colors = [...data.colors.slice(0, index), ...data.colors.slice(index + 1)];
+		if (index < 0 || index >= colors.length) return;
+		colors = [...colors.slice(0, index), ...colors.slice(index + 1)];
 		delete activeHsv[index];
 		lastEditSource = lastEditSource.filter((_, i) => i !== index);
 	}
 	function updateColorAtIndex(index: number, updates: { hexValue?: string; name?: string }) {
-		const color = data.colors[index];
+		const color = colors[index];
 		if (!color) return;
 
 		const updated = { ...color, ...updates };
-		data.colors = [...data.colors.slice(0, index), updated, ...data.colors.slice(index + 1)];
+		colors = [...colors.slice(0, index), updated, ...colors.slice(index + 1)];
 	}
 
 	function normalizeHex(value: string | null) {
@@ -159,7 +158,7 @@
 		const hexValue = normalizeHex(rawValue);
 		if (!hexValue) return;
 
-		const color = data.colors[index];
+		const color = colors[index];
 		if (!color) return;
 
 		// Sync local HSV state if typed manually in the input
@@ -179,7 +178,7 @@
 	}
 
 	function handleNameChange(index: number, value: string) {
-		const color = data.colors[index];
+		const color = colors[index];
 		if (!color) return;
 
 		lastEditSource[index] = 'name';
@@ -197,7 +196,7 @@
 		const target = e.currentTarget as HTMLElement;
 		const rect = target.getBoundingClientRect();
 
-		syncInitialHsv(index, data.colors[index]?.hexValue || '#000000');
+		syncInitialHsv(index, colors[index]?.hexValue || '#000000');
 
 		function update(clientX: number, clientY: number) {
 			const x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
@@ -242,10 +241,10 @@
 			</CardTitle>
 		</CardHeader>
 		<CardContent class="flex-1 flex flex-col items-center justify-center gap-4">
-			{#if data.colors.length > 0}
+			{#if colors.length > 0}
 				{#if readonly}
 					<div class="flex items-center justify-center gap-3 w-full flex-wrap">
-						{#each data.colors as color (color.name)}
+						{#each colors as color (color.name)}
 							<div class="group flex flex-col items-center gap-1.5">
 								<div
 									class="relative h-14 w-14 rounded-full border-2 border-white shadow-md dark:border-slate-700"
@@ -261,7 +260,7 @@
 					</div>
 				{:else}
 					<div class="flex items-center justify-center gap-3 w-full flex-wrap">
-						{#each data.colors as color, index (index)}
+						{#each colors as color, index (index)}
 							<div class="group flex flex-col items-center gap-1.5">
 								<DropdownMenu
 									onOpenChange={(open) => {
@@ -392,9 +391,9 @@
 	</Card>
 {:else}
 	<div class="flex flex-wrap items-center gap-2">
-		{#if data.colors.length > 0}
+		{#if colors.length > 0}
 			{#if readonly}
-				{#each data.colors as color (color.name)}
+				{#each colors as color (color.name)}
 					<div class="flex w-16 flex-col items-center gap-1.5 px-1">
 						<div
 							class="h-10 w-10 rounded-full border-2 border-white shadow-md dark:border-slate-700"
@@ -408,7 +407,7 @@
 					</div>
 				{/each}
 			{:else}
-				{#each data.colors as color, index (index)}
+				{#each colors as color, index (index)}
 					<div class="group flex w-16 flex-col items-center gap-1.5 px-1">
 						<DropdownMenu
 							onOpenChange={(open) => {

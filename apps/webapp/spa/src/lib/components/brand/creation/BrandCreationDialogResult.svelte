@@ -11,6 +11,7 @@
 		MarketingSettingsSection,
 		ToneOfVoiceSection,
 		createEmptyBrandSettingsFormData,
+		defaultToneOfVoice,
 		type BrandSettingsFormData
 	} from '$lib/components/brand_settings';
 	import { Button } from '$lib/components/ui/button';
@@ -35,24 +36,23 @@
 
 		formData = {
 			name: brandData.name ?? '',
-			logoUrl: brandData.data?.logoUrl ?? '',
-			description: brandData.data?.positioning?.description ?? '',
-			brandMission: brandData.data?.brandMission ?? '',
-			locale: brandData.data?.locale ?? null,
-			colors: brandData.data?.colors ?? [],
-			mediaUrls: brandData.data?.mediaUrls ?? [],
-			audiences: brandData.data?.audiences ?? [],
-			contentPillars: brandData.data?.contentPillars ? [...brandData.data.contentPillars] : [],
-			toneOfVoice: brandData.data?.toneOfVoice ?? {
-				archetype: null,
-				jargonDensity: 1,
-				visualDensity: 1,
-				mustUseWords: [],
-				forbiddenWords: []
+			data: {
+				logoUrl: brandData.data?.logoUrl ?? null,
+				websiteUrl: brandData.data?.websiteUrl ?? null,
+				brandMission: brandData.data?.brandMission ?? null,
+				locale: brandData.data?.locale ?? null,
+				colors: brandData.data?.colors ?? [],
+				mediaUrls: brandData.data?.mediaUrls ?? [],
+				audiences: brandData.data?.audiences ?? [],
+				contentPillars: brandData.data?.contentPillars ? [...brandData.data.contentPillars] : [],
+				toneOfVoice: brandData.data?.toneOfVoice ?? { ...defaultToneOfVoice },
+				positioning: {
+					description: brandData.data?.positioning?.description ?? '',
+					pointsOfParity: brandData.data?.positioning?.pointsOfParity ?? [],
+					pointsOfDifference: brandData.data?.positioning?.pointsOfDifference ?? [],
+					productDescription: brandData.data?.positioning?.productDescription ?? ''
+				}
 			},
-			positioningPointsOfParity: brandData.data?.positioning?.pointsOfParity ?? [],
-			positioningPointsOfDifference: brandData.data?.positioning?.pointsOfDifference ?? [],
-			productDescription: brandData.data?.positioning?.productDescription ?? '',
 			pendingLogoFile: null
 		};
 	});
@@ -62,22 +62,7 @@
 
 		const body: BrandGenerationJobAcceptRequest = {
 			name: formData.name,
-			data: {
-				logoUrl: formData.logoUrl || null,
-				mediaUrls: formData.mediaUrls,
-				colors: formData.colors,
-				brandMission: formData.brandMission || null,
-				locale: formData.locale,
-				audiences: formData.audiences,
-				contentPillars: formData.contentPillars,
-				toneOfVoice: formData.toneOfVoice,
-				positioning: {
-					description: formData.description,
-					pointsOfParity: formData.positioningPointsOfParity,
-					pointsOfDifference: formData.positioningPointsOfDifference,
-					productDescription: formData.productDescription
-				}
-			}
+			data: formData.data
 		};
 
 		acceptJobMutation.mutate(
@@ -110,29 +95,38 @@
 	>
 		<div class="grid grid-cols-2 gap-4 auto-rows-min pb-4">
 			<div>
-				<GeneralSettingsSection data={formData} readonly={false} />
+				<GeneralSettingsSection
+					bind:name={formData.name}
+					bind:brandData={formData.data}
+					bind:pendingLogoFile={formData.pendingLogoFile}
+					readonly={false}
+				/>
 			</div>
 
-			{#if formData.mediaUrls.length > 0}
+			{#if (formData.data.mediaUrls ?? []).length > 0}
 				<div class="row-span-2">
-					<BrandImagesSection data={formData} readonly={false} />
+					<BrandImagesSection mediaUrls={formData.data.mediaUrls ?? []} readonly={false} />
 				</div>
 			{/if}
 
 			<div>
-				<BrandColorsSection data={formData} readonly={false} />
+				<BrandColorsSection bind:colors={formData.data.colors!} readonly={false} />
 			</div>
 
 			<div class="col-span-2">
-				<MarketingSettingsSection data={formData} readonly={false} />
+				<MarketingSettingsSection
+					bind:contentPillars={formData.data.contentPillars!}
+					audiences={formData.data.audiences ?? []}
+					readonly={false}
+				/>
 			</div>
 
 			<div class="col-span-2">
-				<AudienceSettingsSection data={formData} readonly={false} />
+				<AudienceSettingsSection bind:audiences={formData.data.audiences!} readonly={false} />
 			</div>
 
 			<div class="col-span-2">
-				<ToneOfVoiceSection data={formData} readonly={false} />
+				<ToneOfVoiceSection bind:toneOfVoice={formData.data.toneOfVoice} readonly={false} />
 			</div>
 		</div>
 	</div>

@@ -1,16 +1,14 @@
 <script lang="ts">
-	import type { BrandSettingsFormData } from './form-data';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Image as ImageIcon } from 'lucide-svelte';
 
 	interface Props {
-		data: BrandSettingsFormData;
+		mediaUrls: string[];
 		readonly?: boolean;
 	}
 
-	let { data = $bindable(), readonly = false }: Props = $props();
+	let { mediaUrls, readonly = false }: Props = $props();
 
-	const mediaUrls = $derived(data.mediaUrls ?? []);
 	const hasImages = $derived(mediaUrls.length > 0);
 </script>
 

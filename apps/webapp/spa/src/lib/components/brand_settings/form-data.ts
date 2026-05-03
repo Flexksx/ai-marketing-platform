@@ -1,22 +1,10 @@
-import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
-import type { BrandColor } from '$lib/api/generated/models/BrandColor';
+import type { BrandData } from '$lib/api/generated/models/BrandData';
 import type { BrandToneOfVoice } from '$lib/api/generated/models/BrandToneOfVoice';
 import type { ContentPillar } from '$lib/api/generated/models/ContentPillar';
 
 export interface BrandSettingsFormData {
 	name: string;
-	logoUrl: string;
-	description: string;
-	brandMission: string;
-	locale: string | null;
-	colors: BrandColor[];
-	mediaUrls: string[];
-	audiences: BrandAudience[];
-	contentPillars: ContentPillar[];
-	toneOfVoice: BrandToneOfVoice;
-	positioningPointsOfParity: string[];
-	positioningPointsOfDifference: string[];
-	productDescription: string;
+	data: BrandData;
 	pendingLogoFile: File | null;
 }
 
@@ -31,18 +19,22 @@ export const defaultToneOfVoice: BrandToneOfVoice = {
 export function createEmptyBrandSettingsFormData(): BrandSettingsFormData {
 	return {
 		name: '',
-		logoUrl: '',
-		description: '',
-		brandMission: '',
-		locale: null,
-		colors: [],
-		mediaUrls: [],
-		audiences: [],
-		contentPillars: [],
-		toneOfVoice: { ...defaultToneOfVoice },
-		positioningPointsOfParity: [],
-		positioningPointsOfDifference: [],
-		productDescription: '',
+		data: {
+			logoUrl: null,
+			brandMission: null,
+			locale: null,
+			colors: [],
+			mediaUrls: [],
+			audiences: [],
+			contentPillars: [],
+			toneOfVoice: { ...defaultToneOfVoice },
+			positioning: {
+				description: '',
+				pointsOfParity: [],
+				pointsOfDifference: [],
+				productDescription: ''
+			}
+		},
 		pendingLogoFile: null
 	};
 }

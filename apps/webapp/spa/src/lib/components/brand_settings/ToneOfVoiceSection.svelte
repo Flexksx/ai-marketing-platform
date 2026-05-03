@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { defaultToneOfVoice, type BrandSettingsFormData } from './form-data';
+	import type { BrandToneOfVoice } from '$lib/api/generated/models/BrandToneOfVoice';
+	import { defaultToneOfVoice } from './form-data';
 	import ToneDimensionSlider from '$lib/components/brand_settings/ToneDimensionSlider.svelte';
 	import ToneWordList from '$lib/components/brand_settings/ToneWordList.svelte';
 	import { Card, CardContent } from '$lib/components/ui/card';
@@ -9,23 +10,23 @@
 	import { Mic2 } from 'lucide-svelte';
 
 	interface Props {
-		data: BrandSettingsFormData;
+		toneOfVoice?: BrandToneOfVoice;
 		readonly?: boolean;
 	}
 
-	let { data = $bindable(), readonly = false }: Props = $props();
+	let { toneOfVoice = $bindable(), readonly = false }: Props = $props();
 
 	const NONE_VALUE = '';
 
 	let selectedArchetype = $state('');
 
 	$effect(() => {
-		selectedArchetype = data.toneOfVoice?.archetype ?? NONE_VALUE;
+		selectedArchetype = toneOfVoice?.archetype ?? NONE_VALUE;
 	});
 	$effect(() => {
-		if (!readonly && data.toneOfVoice) {
-			data.toneOfVoice = {
-				...data.toneOfVoice,
+		if (!readonly && toneOfVoice) {
+			toneOfVoice = {
+				...toneOfVoice,
 				archetype: selectedArchetype === NONE_VALUE ? null : (selectedArchetype as BrandArchetypeName)
 			};
 		}
@@ -44,8 +45,8 @@
 	);
 
 	function ensureToneOfVoice() {
-		if (!data.toneOfVoice) {
-			data.toneOfVoice = { ...defaultToneOfVoice };
+		if (!toneOfVoice) {
+			toneOfVoice = { ...defaultToneOfVoice };
 		}
 	}
 
@@ -62,14 +63,14 @@
 				Brand Voice
 			</h3>
 		</div>
-		{#if data.toneOfVoice}
+		{#if toneOfVoice}
 			<div class="space-y-6">
 				<div>
 					<p class="text-sm text-muted-foreground mb-2">Archetype</p>
 					{#if readonly}
-						{#if data.toneOfVoice.archetype}
+						{#if toneOfVoice.archetype}
 							<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-								{getArchetypeLabel(data.toneOfVoice.archetype as BrandArchetypeName)}
+								{getArchetypeLabel(toneOfVoice.archetype as BrandArchetypeName)}
 							</span>
 							{#if archetypeDescription}
 								<p class="mt-2 text-sm text-muted-foreground italic">{archetypeDescription}</p>
@@ -100,25 +101,25 @@
 				<div class="space-y-4">
 					<ToneDimensionSlider
 						dimensionKey="jargon_density"
-						bind:value={data.toneOfVoice.jargonDensity!}
+						bind:value={toneOfVoice.jargonDensity!}
 						{readonly}
 					/>
 					<ToneDimensionSlider
 						dimensionKey="visual_density"
-						bind:value={data.toneOfVoice.visualDensity!}
+						bind:value={toneOfVoice.visualDensity!}
 						{readonly}
 					/>
 				</div>
 
 				<ToneWordList
 					title="Must-Use Words"
-					bind:words={data.toneOfVoice.mustUseWords!}
+					bind:words={toneOfVoice.mustUseWords!}
 					variant="must_use"
 					{readonly}
 				/>
 				<ToneWordList
 					title="Forbidden Words"
-					bind:words={data.toneOfVoice.forbiddenWords!}
+					bind:words={toneOfVoice.forbiddenWords!}
 					variant="forbidden"
 					{readonly}
 				/>

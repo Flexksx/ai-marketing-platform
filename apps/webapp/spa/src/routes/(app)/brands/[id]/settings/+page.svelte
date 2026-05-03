@@ -2,10 +2,6 @@
 	import { page } from '$app/state';
 	import { useBrand, } from '$lib/resources/brands/queries';
 	import { useDeleteBrand, useUpdateBrand } from '$lib/resources/brands/mutations';
-	import { useQueryClient } from '@tanstack/svelte-query';
-	import type { BrandData } from '$lib/api/generated/models/BrandData';
-	import type { BrandAudience } from '$lib/api/generated/models/BrandAudience';
-	import type { ContentPillar } from '$lib/api/generated/models/ContentPillar';
 	import {
 		AudienceSettingsSection,
 		BrandImagesSection,
@@ -13,6 +9,7 @@
 		MarketingSettingsSection,
 		ToneOfVoiceSection,
 		createEmptyBrandSettingsFormData,
+		defaultToneOfVoice,
 		type BrandSettingsFormData
 	} from '$lib/components/brand_settings';
 	import { Button } from '$lib/components/ui/button';
@@ -23,7 +20,6 @@
 	const brandId = $derived(page.params.id);
 	const brandQuery = useBrand(() => brandId);
 
-	const queryClient = useQueryClient();
 	const updateBrandMutation = useUpdateBrand();
 	const deleteBrandMutation = useDeleteBrand();
 
@@ -38,24 +34,23 @@
 		if (brand) {
 			const next: BrandSettingsFormData = {
 				name: brand.name ?? '',
-				logoUrl: brand.data?.logoUrl ?? '',
-				description: brand.data?.positioning?.description ?? '',
-				brandMission: brand.data?.brandMission ?? '',
-				locale: brand.data?.locale ?? null,
-				colors: brand.data?.colors ? [...brand.data.colors] : [],
-				mediaUrls: brand.data?.mediaUrls ? [...brand.data.mediaUrls] : [],
-				audiences: brand.data?.audiences ? [...brand.data.audiences] : [],
-				contentPillars: brand.data?.contentPillars ? [...brand.data.contentPillars] : [],
-				toneOfVoice: brand.data?.toneOfVoice ?? {
-					archetype: null,
-					jargonDensity: 1,
-					visualDensity: 1,
-					mustUseWords: [],
-					forbiddenWords: []
+				data: {
+					logoUrl: brand.data?.logoUrl ?? null,
+					websiteUrl: brand.data?.websiteUrl ?? null,
+					brandMission: brand.data?.brandMission ?? null,
+					locale: brand.data?.locale ?? null,
+					colors: brand.data?.colors ? [...brand.data.colors] : [],
+					mediaUrls: brand.data?.mediaUrls ? [...brand.data.mediaUrls] : [],
+					audiences: brand.data?.audiences ? [...brand.data.audiences] : [],
+					contentPillars: brand.data?.contentPillars ? [...brand.data.contentPillars] : [],
+					toneOfVoice: brand.data?.toneOfVoice ?? { ...defaultToneOfVoice },
+					positioning: {
+						description: brand.data?.positioning?.description ?? '',
+						pointsOfParity: brand.data?.positioning?.pointsOfParity ?? [],
+						pointsOfDifference: brand.data?.positioning?.pointsOfDifference ?? [],
+						productDescription: brand.data?.positioning?.productDescription ?? ''
+					}
 				},
-				positioningPointsOfParity: brand.data?.positioning?.pointsOfParity ?? [],
-				positioningPointsOfDifference: brand.data?.positioning?.pointsOfDifference ?? [],
-				productDescription: brand.data?.positioning?.productDescription ?? '',
 				pendingLogoFile: null
 			};
 			formData = next;
@@ -75,27 +70,10 @@
 	let showDeleteModal = $state(false);
 
 	const handleUpdate = async () => {
-		const data: BrandData = {
-			logoUrl: formData.logoUrl || null,
-			mediaUrls: formData.mediaUrls,
-			colors: formData.colors,
-			brandMission: formData.brandMission || null,
-			locale: formData.locale,
-			audiences: formData.audiences as BrandAudience[],
-			contentPillars: formData.contentPillars as ContentPillar[],
-			toneOfVoice: formData.toneOfVoice,
-			positioning: {
-				description: formData.description,
-				pointsOfParity: formData.positioningPointsOfParity,
-				pointsOfDifference: formData.positioningPointsOfDifference,
-				productDescription: formData.productDescription
-			}
-		};
-
 		await updateBrandMutation.mutateAsync({
 			brandId,
 			name: formData.name,
-			data,
+			data: formData.data,
 			logoFile: formData.pendingLogoFile ?? undefined
 		});
 	};
@@ -144,25 +122,34 @@
 				>
 				<div class="grid grid-cols-2 gap-4 auto-rows-min pb-4">
 					<div>
-						<GeneralSettingsSection bind:data={formData} readonly={false} />
+						<GeneralSettingsSection
+							bind:name={formData.name}
+							bind:brandData={formData.data}
+							bind:pendingLogoFile={formData.pendingLogoFile}
+							readonly={false}
+						/>
 					</div>
 
-					{#if formData.mediaUrls.length > 0}
+					{#if (formData.data.mediaUrls ?? []).length > 0}
 						<div class="row-span-2">
-							<BrandImagesSection bind:data={formData} readonly={false} />
+							<BrandImagesSection mediaUrls={formData.data.mediaUrls ?? []} readonly={false} />
 						</div>
 					{/if}
 
 					<div class="col-span-2">
-						<MarketingSettingsSection bind:data={formData} readonly={false} />
+						<MarketingSettingsSection
+							bind:contentPillars={formData.data.contentPillars!}
+							audiences={formData.data.audiences ?? []}
+							readonly={false}
+						/>
 					</div>
 
 					<div class="col-span-2">
-						<AudienceSettingsSection bind:data={formData} readonly={false} />
+						<AudienceSettingsSection bind:audiences={formData.data.audiences!} readonly={false} />
 					</div>
 
 					<div class="col-span-2">
-						<ToneOfVoiceSection bind:data={formData} readonly={false} />
+						<ToneOfVoiceSection bind:toneOfVoice={formData.data.toneOfVoice} readonly={false} />
 					</div>
 				</div>
 				</div>

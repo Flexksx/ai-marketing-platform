@@ -16,7 +16,7 @@
 
 	let { data, onEditClick, onFileSelected, readonly = false }: Props = $props();
 
-	const archetype = $derived(data.toneOfVoice?.archetype ?? null);
+	const archetype = $derived(data.data?.toneOfVoice?.archetype ?? null);
 </script>
 
 <Card
@@ -30,7 +30,7 @@
 		<div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
 			<div class="flex items-start gap-4">
 				<BrandLogoUpload
-					logoUrl={data.logoUrl}
+					logoUrl={data.data?.logoUrl ?? null}
 					brandName={data.name}
 					pendingFile={data.pendingLogoFile}
 					onFileSelected={(file) => onFileSelected?.(file)}
@@ -43,12 +43,12 @@
 			</div>
 
 			<div class="flex flex-wrap items-center justify-start gap-3 md:justify-end">
-				<BrandColorsSection bind:data={data} readonly={readonly} variant="inline" />
+				<BrandColorsSection bind:colors={data.data.colors!} readonly={readonly} variant="inline" />
 			</div>
 		</div>
 
 		<div class="max-w-5xl text-left">
-			<MarkdownRenderer content={data.description || 'No description yet...'} />
+			<MarkdownRenderer content={data.data?.positioning?.description || 'No description yet...'} />
 		</div>
 
 		{#if archetype}
