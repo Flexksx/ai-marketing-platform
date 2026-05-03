@@ -11,11 +11,8 @@ from lib.prompts.model import (
     PromptLibraries,
     PromptTemplateName,
 )
-from webapp_api_contract.brand.archetype import (
-    BrandArchetype,
-    BrandArchetypeData,
-    BrandArchetypeName,
-)
+from src.brand.archetype.model import BrandArchetype, BrandArchetypeData
+from webapp_api_contract.brand.archetype import BrandArchetypeName
 from webapp_api_contract.brand.content_type import ContentType, ContentTypeName
 
 

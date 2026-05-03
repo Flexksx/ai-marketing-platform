@@ -2,7 +2,8 @@ import public
 from pydantic import BaseModel, ConfigDict
 from strenum import StrEnum
 
-from webapp_api_contract.brand.archetype import BrandArchetype, BrandArchetypeName
+from src.brand.archetype.model import BrandArchetype
+from webapp_api_contract.brand.archetype import BrandArchetypeName
 from webapp_api_contract.brand.content_type import ContentType, ContentTypeName
 
 

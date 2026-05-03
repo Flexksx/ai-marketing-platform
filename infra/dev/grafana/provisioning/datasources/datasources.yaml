@@ -6,29 +6,7 @@ datasources:
     uid: prometheus
     access: proxy
     url: http://prometheus:9090
-    isDefault: false
-
-  - name: Tempo
-    type: tempo
-    uid: tempo
-    access: proxy
-    url: http://tempo:3200
     isDefault: true
-    jsonData:
-      httpMethod: GET
-      tracesToLogsV2:
-        datasourceUid: loki
-        spanStartTimeShift: "-1m"
-        spanEndTimeShift: "1m"
-        filterByTraceID: true
-        filterBySpanID: false
-        customQuery: false
-      tracesToMetrics:
-        datasourceUid: prometheus
-      serviceMap:
-        datasourceUid: prometheus
-      nodeGraph:
-        enabled: true
 
   - name: Loki
     type: loki
@@ -40,9 +18,3 @@ datasources:
       defaultQuery:
         expr: '{service=~"webapp-api|scraper-api"}'
         queryType: range
-      derivedFields:
-        - datasourceUid: tempo
-          matcherRegex: '"trace_id":"(\w+)"'
-          name: TraceID
-          url: "$${__value.raw}"
-          urlDisplayLabel: "View trace"

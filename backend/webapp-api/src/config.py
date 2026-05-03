@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=("../../.env", ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
         populate_by_name=True,
@@ -23,10 +23,6 @@ class Settings(BaseSettings):
     )
     public_supabase_publishable_key: str = Field(
         default="", alias="PUBLIC_SUPABASE_PUBLISHABLE_KEY"
-    )
-    openai_api_key: str = ""
-    google_cloud_services_api_key: str = Field(
-        default="", alias="GOOGLE_CLOUD_SERVICES_API_KEY"
     )
     gemini_api_key: str = Field(default="", alias="GEMINI_API_KEY")
     scraper_service_url: str = Field(

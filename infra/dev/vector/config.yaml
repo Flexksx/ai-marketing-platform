@@ -1,0 +1,63 @@
+sources:
+  docker_logs:
+    type: docker_logs
+    exclude_containers:
+      - vector
+      - loki
+      - prometheus
+      - grafana
+
+  otlp:
+    type: opentelemetry
+    grpc:
+      address: 0.0.0.0:4317
+    http:
+      address: 0.0.0.0:4318
+
+  internal_metrics:
+    type: internal_metrics
+    scrape_interval_secs: 5
+
+transforms:
+  docker_logs_normalized:
+    type: remap
+    inputs:
+      - docker_logs
+    source: |
+      if exists(.label."com.docker.compose.service") {
+        .service = .label."com.docker.compose.service"
+      } else {
+        .service = .container_name
+      }
+      if exists(.label."com.docker.compose.project") {
+        .project = .label."com.docker.compose.project"
+      } else {
+        .project = ""
+      }
+      .container = .container_name
+      .logstream = .stream
+
+sinks:
+  loki:
+    type: loki
+    inputs:
+      - docker_logs_normalized
+    endpoint: http://loki:3100
+    encoding:
+      codec: raw_message
+    labels:
+      service: "{{ service }}"
+      project: "{{ project }}"
+      container: "{{ container }}"
+      stream: "{{ logstream }}"
+    remove_timestamp: true
+    out_of_order_action: accept
+
+  prometheus_exporter:
+    type: prometheus_exporter
+    inputs:
+      - otlp.metrics
+      - internal_metrics
+    address: 0.0.0.0:9598
+    default_namespace: vozai
+    suppress_timestamp: true
