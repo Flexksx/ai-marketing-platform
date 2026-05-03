@@ -28,6 +28,8 @@ services:
       JWT_EXP: 3600
     volumes:
       - supabase_db_data:/var/lib/postgresql/data
+      # Required: image creates roles but does not set passwords without this (matches upstream docker/volumes/db/roles.sql).
+      - ./infra/dev/supabase/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:ro
     ports:
       - "5432:5432"
     healthcheck:
