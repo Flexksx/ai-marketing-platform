@@ -22,7 +22,7 @@ from src.campaign_generation.model import (
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
 from src.shared.model import JobStatus
-from src.shared.text_with_single_image import TextWithSingleImageContentGenerator
+from src.shared.text_with_single_image import TextWithSingleImageDeps
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 async def run(
     job: CampaignGenerationJob,
     session_factory: DbSessionFactory,
-    content_generator: TextWithSingleImageContentGenerator,
+    content_deps: TextWithSingleImageDeps,
 ) -> None:
     job_id = job.id
     try:
@@ -54,7 +54,7 @@ async def run(
         )
 
         generation_result = await _run_content_generation_step(
-            job, session_factory, content_generator
+            job, session_factory, content_deps
         )
         await _update_job(
             session_factory, job_id, generation_result, status=JobStatus.COMPLETED
@@ -96,17 +96,15 @@ async def _run_content_plan_step(
 async def _run_content_generation_step(
     job: CampaignGenerationJob,
     session_factory: DbSessionFactory,
-    content_generator: TextWithSingleImageContentGenerator,
+    content_deps: TextWithSingleImageDeps,
 ) -> CampaignGenerationJobResult:
     if job.workflow_type == CampaignGenerationJobWorkflowType.AI_GENERATED:
-        return await generate_ai_content(job, session_factory, content_generator)
+        return await generate_ai_content(job, session_factory, content_deps)
     if job.workflow_type == CampaignGenerationJobWorkflowType.USER_MEDIA_ONLY:
-        return await generate_user_media_content(
-            job, session_factory, content_generator
-        )
+        return await generate_user_media_content(job, session_factory, content_deps)
     if job.workflow_type == CampaignGenerationJobWorkflowType.PRODUCT_LIFESTYLE:
         return await generate_product_lifestyle_content(
-            job, session_factory, content_generator
+            job, session_factory, content_deps
         )
     raise ValueError(
         f"No content generation step for workflow type: {job.workflow_type}"

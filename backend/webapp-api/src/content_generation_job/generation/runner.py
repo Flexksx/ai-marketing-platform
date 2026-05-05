@@ -15,7 +15,7 @@ from src.shared.model import JobStatus
 logger = logging.getLogger(__name__)
 
 
-async def run_content_generation_job(
+async def run(
     session_factory: DbSessionFactory,
     job_id: str,
     generate: Callable[[ContentGenerationJob], Awaitable[ContentGenerationJobResult]],

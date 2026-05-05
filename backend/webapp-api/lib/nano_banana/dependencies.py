@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+import httpx
 from google import genai
 
 from src.config import get_settings
@@ -17,3 +18,8 @@ def get_genai_client() -> genai.Client:
         api_key=api_key,
         vertexai=False,
     )
+
+
+@lru_cache
+def get_http_client() -> httpx.AsyncClient:
+    return httpx.AsyncClient(timeout=60.0)

@@ -23,7 +23,10 @@ from src.campaign_generation.model import (
     CampaignGenerationJobResponse,
 )
 from src.campaigns.model import CampaignResponse
-from src.shared.text_with_single_image import TextWithSingleImageContentGenerator
+from src.shared.text_with_single_image import (
+    TextWithSingleImageDeps,
+    get_text_with_single_image_deps,
+)
 
 
 router = APIRouter(tags=["Brand Campaign Creation"])
@@ -44,7 +47,7 @@ async def start(
     request_files: list[UploadFile] = File(default=[]),  # noqa: B008
     session_factory: DbSessionFactory = Depends(),
     supabase_storage_service: SupabaseStorageService = Depends(),
-    content_generator: TextWithSingleImageContentGenerator = Depends(),
+    content_deps: TextWithSingleImageDeps = Depends(get_text_with_single_image_deps),
 ):
     request = await get_from_request_form(
         brand_id, request_data, request_files, supabase_storage_service
@@ -57,7 +60,7 @@ async def start(
         extra={"job_id": job.id},
     )
     background_tasks.add_task(
-        campaign_generation_runner.run, job, session_factory, content_generator
+        campaign_generation_runner.run, job, session_factory, content_deps
     )
 
     return CampaignGenerationJobResponse.model_validate(job)

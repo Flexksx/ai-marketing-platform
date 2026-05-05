@@ -15,8 +15,9 @@ from src.campaign_generation.model import (
 )
 from src.content.model import TextWithSingleImageContentData
 from src.content_plan_item.model import ContentPlanItemUpdateRequest
+from src.shared import text_with_single_image
 from src.shared.model import JobStatus
-from src.shared.text_with_single_image import TextWithSingleImageContentGenerator
+from src.shared.text_with_single_image import TextWithSingleImageDeps
 
 
 logger = logging.getLogger(__name__)
@@ -25,7 +26,7 @@ logger = logging.getLogger(__name__)
 async def generate_ai_content(
     job: CampaignGenerationJob,
     session_factory: DbSessionFactory,
-    content_generator: TextWithSingleImageContentGenerator,
+    content_deps: TextWithSingleImageDeps,
 ) -> CampaignGenerationJobResult:
     plan_items = _get_plan_items_or_raise(job)
     await asyncio.gather(
@@ -34,9 +35,7 @@ async def generate_ai_content(
                 session_factory,
                 job.id,
                 item,
-                _build_ai_generated_update_request(
-                    job.brand_id, item, content_generator
-                ),
+                _build_ai_generated_update_request(job.brand_id, item, content_deps),
             )
             for item in plan_items
         ]
@@ -47,7 +46,7 @@ async def generate_ai_content(
 async def generate_user_media_content(
     job: CampaignGenerationJob,
     session_factory: DbSessionFactory,
-    content_generator: TextWithSingleImageContentGenerator,
+    content_deps: TextWithSingleImageDeps,
 ) -> CampaignGenerationJobResult:
     brand = await brand_service.get(session_factory, job.brand_id)
     plan_items = _get_plan_items_or_raise(job)
@@ -57,7 +56,7 @@ async def generate_user_media_content(
                 session_factory,
                 job.id,
                 item,
-                _build_user_media_update_request(brand.id, item, content_generator),
+                _build_user_media_update_request(brand.id, item, content_deps),
             )
             for item in plan_items
         ]
@@ -68,7 +67,7 @@ async def generate_user_media_content(
 async def generate_product_lifestyle_content(
     job: CampaignGenerationJob,
     session_factory: DbSessionFactory,
-    content_generator: TextWithSingleImageContentGenerator,
+    content_deps: TextWithSingleImageDeps,
 ) -> CampaignGenerationJobResult:
     plan_items = _get_plan_items_or_raise(job)
     product_image_urls: list[str] = getattr(job.user_input, "image_urls", []) or []
@@ -79,7 +78,7 @@ async def generate_product_lifestyle_content(
                 job.id,
                 item,
                 _build_product_lifestyle_update_request(
-                    index, item, job.brand_id, content_generator, product_image_urls
+                    index, item, job.brand_id, content_deps, product_image_urls
                 ),
             )
             for index, item in enumerate(plan_items)
@@ -123,9 +122,10 @@ async def _collect_final_result(
 async def _build_ai_generated_update_request(
     brand_id: str,
     item: ContentPlanItem,
-    content_generator: TextWithSingleImageContentGenerator,
+    content_deps: TextWithSingleImageDeps,
 ) -> ContentPlanItemUpdateRequest:
-    result = await content_generator.generate_full(
+    result = await text_with_single_image.generate_full(
+        content_deps,
         brand_id=brand_id,
         channel=item.channel,
         image_prompt_template_name=PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_AI_GENERATED_IMAGE,
@@ -146,12 +146,13 @@ async def _build_ai_generated_update_request(
 async def _build_user_media_update_request(
     brand_id: str,
     item: ContentPlanItem,
-    content_generator: TextWithSingleImageContentGenerator,
+    content_deps: TextWithSingleImageDeps,
 ) -> ContentPlanItemUpdateRequest:
     image_url = item.image_urls[0] if item.image_urls else None
     if not image_url:
         raise ValueError(f"No image URL for item {item.id}")
-    caption = await content_generator.generate_caption_for_image(
+    caption = await text_with_single_image.generate_caption_for_image(
+        content_deps,
         brand_id=brand_id,
         channel=item.channel,
         caption_prompt_template_name=PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_CAPTION,
@@ -172,7 +173,7 @@ async def _build_product_lifestyle_update_request(
     index: int,
     item: ContentPlanItem,
     brand_id: str,
-    content_generator: TextWithSingleImageContentGenerator,
+    content_deps: TextWithSingleImageDeps,
     product_image_urls: list[str],
 ) -> ContentPlanItemUpdateRequest:
     product_image_url = (
@@ -180,7 +181,8 @@ async def _build_product_lifestyle_update_request(
         if product_image_urls
         else None
     )
-    result = await content_generator.generate_full(
+    result = await text_with_single_image.generate_full(
+        content_deps,
         brand_id=brand_id,
         channel=item.channel,
         image_prompt_template_name=PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE_IMAGE,
