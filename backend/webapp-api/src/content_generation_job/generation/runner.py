@@ -3,13 +3,13 @@ from collections.abc import Awaitable, Callable
 
 import src.content_generation_job.service as content_generation_job_service
 from lib.db.session_factory import DbSessionFactory
+from lib.model import JobStatus
 from src.content_generation_job.errors import ContentGenerationJobRuntimeException
 from src.content_generation_job.model import (
     ContentGenerationJob,
     ContentGenerationJobResult,
     ContentGenerationJobUpdateRequest,
 )
-from src.shared.model import JobStatus
 
 
 logger = logging.getLogger(__name__)

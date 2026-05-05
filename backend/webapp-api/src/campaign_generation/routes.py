@@ -10,12 +10,16 @@ from fastapi import (
     Path,
     UploadFile,
 )
+from supabase import AsyncClient
 
 import src.campaign_generation.generation.runner as campaign_generation_runner
 import src.campaign_generation.service as campaign_generation_job_service
+from lib.content_generation.text_with_single_image import (
+    TextWithSingleImageDeps,
+    get_text_with_single_image_deps,
+)
 from lib.db.session_factory import DbSessionFactory
-from lib.supabase_client import SupabaseStorageService
-from src.auth import get_current_user_id
+from src.auth import get_async_supabase_service_client, get_current_user_id
 from src.auth_access import validate_brand_access
 from src.campaign_generation.factory import get_from_request_form
 from src.campaign_generation.model import (
@@ -23,10 +27,6 @@ from src.campaign_generation.model import (
     CampaignGenerationJobResponse,
 )
 from src.campaigns.model import CampaignResponse
-from src.shared.text_with_single_image import (
-    TextWithSingleImageDeps,
-    get_text_with_single_image_deps,
-)
 
 
 router = APIRouter(tags=["Brand Campaign Creation"])
@@ -46,11 +46,11 @@ async def start(
     request_data: str = Form(...),
     request_files: list[UploadFile] = File(default=[]),  # noqa: B008
     session_factory: DbSessionFactory = Depends(),
-    supabase_storage_service: SupabaseStorageService = Depends(),
+    supabase_client: AsyncClient = Depends(get_async_supabase_service_client),
     content_deps: TextWithSingleImageDeps = Depends(get_text_with_single_image_deps),
 ):
     request = await get_from_request_form(
-        brand_id, request_data, request_files, supabase_storage_service
+        brand_id, request_data, request_files, supabase_client
     )
     job = await campaign_generation_job_service.create(session_factory, request)
 

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Enum, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, TIMESTAMP
 
 from lib.db import Base
-from src.shared.model import ContentChannelName, ContentFormat, JobStatus
+from lib.model import ContentChannelName, ContentFormat, JobStatus
 
 
 class ContentPlanItemRecord(Base):

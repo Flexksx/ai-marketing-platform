@@ -2,9 +2,9 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from lib.model import JobStatus
 from lib.scraper.model import ScrapeResult
 from src.brand.model import BrandCreateRequest, BrandData
-from src.shared.model import JobStatus
 
 
 class BrandGenerationJobCreateRequestBody(BaseModel):

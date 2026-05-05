@@ -8,24 +8,22 @@ from dataclasses import dataclass
 import httpx
 import public
 from fastapi import Depends
-from google import genai
 from pydantic import BaseModel
 from pydantic_ai import Agent, ImageUrl, RunContext
+from supabase import AsyncClient
 
 import src.brand.service as brand_service
 import src.content_channel.service as content_channel_service
-from lib import nano_banana
+from lib import nano_banana, prompts
+from lib import supabase_client as supabase_storage
 from lib.ai_agents import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
-from lib.nano_banana import NanoBananaRequest, NanoBananaResponse, get_genai_client
-from lib.prompts import PromptService, PromptTemplateName
-from lib.supabase_client import (
-    StorageBucket,
-    StorageUploadRequest,
-    SupabaseStorageService,
-)
+from lib.model import ContentChannelName, ContentFormat
+from lib.nano_banana import NanoBananaRequest, NanoBananaResponse
+from lib.prompts import PromptTemplateName
+from lib.supabase_client import StorageBucket, StorageUploadRequest
+from src.auth import get_async_supabase_service_client
 from src.brand.model import Brand
-from src.shared.model import ContentChannelName, ContentFormat
 
 
 logger = logging.getLogger(__name__)
@@ -43,8 +41,7 @@ class TextWithSingleImageContent(BaseModel):
 @dataclass(frozen=True)
 class TextWithSingleImageDeps:
     session_factory: DbSessionFactory
-    supabase_storage_service: SupabaseStorageService
-    genai_client: genai.Client
+    supabase_client: AsyncClient
 
 
 class _ImageGenerationContext(BaseModel):
@@ -62,8 +59,6 @@ class _CaptionAgentDependencies(BaseModel):
     caption_prompt_template_name: PromptTemplateName
 
 
-_prompt_service = PromptService()
-
 _caption_agent: Agent[_CaptionAgentDependencies, str] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LATEST,
     deps_type=_CaptionAgentDependencies,
@@ -73,7 +68,7 @@ _caption_agent: Agent[_CaptionAgentDependencies, str] = Agent(
 
 @_caption_agent.system_prompt
 def _get_caption_system_prompt(context: RunContext[_CaptionAgentDependencies]) -> str:
-    return _prompt_service.render(
+    return prompts.render(
         context.deps.caption_prompt_template_name,
         context.deps.model_dump(),
     )
@@ -82,13 +77,11 @@ def _get_caption_system_prompt(context: RunContext[_CaptionAgentDependencies]) -
 @public.add
 def get_text_with_single_image_deps(
     session_factory: DbSessionFactory = Depends(),
-    supabase_storage_service: SupabaseStorageService = Depends(),
-    genai_client: genai.Client = Depends(get_genai_client),
+    supabase_client: AsyncClient = Depends(get_async_supabase_service_client),
 ) -> TextWithSingleImageDeps:
     return TextWithSingleImageDeps(
         session_factory=session_factory,
-        supabase_storage_service=supabase_storage_service,
-        genai_client=genai_client,
+        supabase_client=supabase_client,
     )
 
 
@@ -173,14 +166,11 @@ async def _generate_full_once(
             image_urls=image_urls_to_send,
             aspect_ratio=content_channel.image_specification.aspect_ratio,
             image_size=content_channel.image_specification.resolution,
-            prompt=_prompt_service.render(
-                image_prompt_template_name, context.model_dump()
-            ),
+            prompt=prompts.render(image_prompt_template_name, context.model_dump()),
         ),
-        deps.genai_client,
     )
     generated_image_url = await _upload_image(
-        supabase_storage_service=deps.supabase_storage_service,
+        supabase_client=deps.supabase_client,
         brand_id=brand_id,
         nano_banana_response=image_result,
     )
@@ -225,7 +215,7 @@ async def _generate_caption(
 
 async def _upload_image(
     *,
-    supabase_storage_service: SupabaseStorageService,
+    supabase_client: AsyncClient,
     brand_id: str,
     nano_banana_response: NanoBananaResponse,
 ) -> str:
@@ -233,13 +223,14 @@ async def _upload_image(
     extension = mime_type.split("/")[-1] if "/" in mime_type else "png"
     filename = f"{brand_id}/{uuid.uuid4().hex[:8]}.{extension}"
     image_bytes = base64.b64decode(nano_banana_response.image_data_base64)
-    upload_result = await supabase_storage_service.upload_public(
+    upload_result = await supabase_storage.upload_public(
+        supabase_client,
         StorageUploadRequest(
             bucket=StorageBucket.CONTENT_GENERATION_AI_IMAGES,
             path=filename,
             content=image_bytes,
             content_type=mime_type,
-        )
+        ),
     )
     return upload_result.public_url
 

@@ -3,13 +3,11 @@ import logging
 import html2text
 import public
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
+from supabase import AsyncClient
 
+import lib.supabase_client as supabase_storage
 from lib.scraper.model import ScrapeResult
-from lib.supabase_client.storage.schema import (
-    StorageBucket,
-    StorageUploadRequest,
-)
-from lib.supabase_client.storage.service import SupabaseStorageService
+from lib.supabase_client import StorageBucket, StorageUploadRequest
 from lib.utils import new_id
 
 
@@ -18,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 @public.add
 class PlaywrightScraper:
-    def __init__(self, storage_service: SupabaseStorageService):
+    def __init__(self, supabase_client: AsyncClient):
         self._playwright = None
         self._browser: Browser | None = None
         self._context: BrowserContext | None = None
@@ -26,7 +24,7 @@ class PlaywrightScraper:
         self._html_converter.ignore_links = False
         self._html_converter.ignore_images = False
         self._html_converter.body_width = 0
-        self._storage_service = storage_service
+        self._supabase_client = supabase_client
 
     async def start(self) -> None:
         if self._context:
@@ -279,10 +277,6 @@ class PlaywrightScraper:
         return None
 
     async def _capture_screenshot(self, page: Page) -> str | None:
-        if not self._storage_service:
-            logger.warning("Storage service not available, skipping screenshot upload")
-            return None
-
         try:
             viewport_size = page.viewport_size
             if not viewport_size:
@@ -330,7 +324,9 @@ class PlaywrightScraper:
                 content_type="image/png",
             )
 
-            upload_result = await self._storage_service.upload_public(upload_request)
+            upload_result = await supabase_storage.upload_public(
+                self._supabase_client, upload_request
+            )
             logger.info(f"Screenshot uploaded to Supabase: {upload_result.public_url}")
             return upload_result.public_url
         except Exception as e:

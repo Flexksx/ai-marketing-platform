@@ -2,6 +2,7 @@ import logging
 
 import src.brand_generation_job.service as brand_generation_job_service
 from lib.db.session_factory import DbSessionFactory
+from lib.model import JobStatus
 from lib.scraper.playwright_scraper import PlaywrightScraper
 from src.brand_generation_job.generation.steps.data_extraction import extract_brand_data
 from src.brand_generation_job.generation.steps.scraping import scrape_brand
@@ -10,7 +11,6 @@ from src.brand_generation_job.model import (
     BrandGenerationJobUpdateRequest,
     BrandGenerationResult,
 )
-from src.shared.model import JobStatus
 
 
 logger = logging.getLogger(__name__)

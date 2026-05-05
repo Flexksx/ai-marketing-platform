@@ -1,13 +1,10 @@
 import asyncio
 
 from fastapi import UploadFile
+from supabase import AsyncClient
 
-from lib.supabase_client import (
-    StorageBucket,
-    StorageUploadRequest,
-    StorageUploadResult,
-    SupabaseStorageService,
-)
+import lib.supabase_client as supabase_storage
+from lib.supabase_client import StorageBucket, StorageUploadRequest, StorageUploadResult
 from src.campaign_generation.model import (
     CampaignGenerationJobCreateRequest,
     ProductLifestyleCampaignGenerationJobUserInput,
@@ -19,7 +16,7 @@ async def get_from_request_form(
     brand_id: str,
     request_data: str,
     request_files: list[UploadFile],
-    supabase_storage_service: SupabaseStorageService,
+    supabase_client: AsyncClient,
 ) -> CampaignGenerationJobCreateRequest:
     request = CampaignGenerationJobCreateRequest.model_validate_json(request_data)
     request.brand_id = brand_id
@@ -32,9 +29,7 @@ async def get_from_request_form(
             ProductLifestyleCampaignGenerationJobUserInput,
         ),
     ):
-        media_urls = await __upload_user_media(
-            brand_id, request_files, supabase_storage_service
-        )
+        media_urls = await __upload_user_media(brand_id, request_files, supabase_client)
         user_input.image_urls = media_urls
 
     request.user_input = user_input
@@ -45,17 +40,18 @@ async def get_from_request_form(
 async def __upload_user_media(
     brand_id: str,
     request_files: list[UploadFile],
-    supabase_storage_service: SupabaseStorageService,
+    supabase_client: AsyncClient,
 ) -> list[str]:
     upload_tasks = []
     for image_file in request_files:
-        task = supabase_storage_service.upload_public(
+        task = supabase_storage.upload_public(
+            supabase_client,
             StorageUploadRequest(
                 bucket=StorageBucket.CAMPAIGN_USER_MEDIA,
                 path=f"campaigns_generation_jobs/{brand_id}/{image_file.filename}",
                 content=await image_file.read(),
                 content_type=image_file.content_type,
-            )
+            ),
         )
         upload_tasks.append(task)
     upload_results: list[StorageUploadResult] = await asyncio.gather(*upload_tasks)

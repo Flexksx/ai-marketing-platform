@@ -6,7 +6,10 @@ from pydantic_ai import format_as_xml
 
 import src.brand.service as brand_service
 import src.campaign_generation.service as campaign_generation_job_service
+from lib.content_generation import text_with_single_image
+from lib.content_generation.text_with_single_image import TextWithSingleImageDeps
 from lib.db.session_factory import DbSessionFactory
+from lib.model import JobStatus
 from lib.prompts import PromptTemplateName
 from src.campaign_generation.model import (
     CampaignGenerationJob,
@@ -15,9 +18,6 @@ from src.campaign_generation.model import (
 )
 from src.content.model import TextWithSingleImageContentData
 from src.content_plan_item.model import ContentPlanItemUpdateRequest
-from src.shared import text_with_single_image
-from src.shared.model import JobStatus
-from src.shared.text_with_single_image import TextWithSingleImageDeps
 
 
 logger = logging.getLogger(__name__)

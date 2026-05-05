@@ -2,15 +2,16 @@ from pathlib import Path
 
 import pytest
 
+from lib import prompts
+from lib.model import ContentTypeName
 from lib.prompts.model import PromptConfigError
-from lib.prompts.service import PromptService
+from lib.prompts.service import _load_libraries
 from src.brand.archetype.model import BrandArchetypeName
-from src.brand.model import ContentTypeName, ToneOfVoiceDimensionName
+from src.brand.model import ToneOfVoiceDimensionName
 
 
 def test_prompt_service_loads_libraries_from_repo_prompts() -> None:
-    service = PromptService()
-    libraries = service.get_libraries()
+    libraries = prompts.get_libraries()
 
     assert ToneOfVoiceDimensionName.FORMALITY in libraries.tone_library
     assert BrandArchetypeName.INNOCENT in libraries.archetype_library
@@ -52,4 +53,4 @@ def test_prompt_service_raises_for_invalid_tone_config(tmp_path: Path) -> None:
     )
 
     with pytest.raises(PromptConfigError):
-        PromptService(prompts_dir=prompts_dir)
+        _load_libraries(prompts_dir)

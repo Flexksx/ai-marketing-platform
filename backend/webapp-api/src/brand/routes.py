@@ -1,15 +1,11 @@
 from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
+from supabase import AsyncClient
 
+import lib.supabase_client as supabase_storage
 import src.brand.service as brand_service
 from lib.db.session_factory import DbSessionFactory
-from lib.supabase_client import (
-    SupabaseStorageService,
-)
-from lib.supabase_client.storage.schema import (
-    StorageBucket,
-    StorageUploadRequest,
-)
-from src.auth import get_current_user_id
+from lib.supabase_client import StorageBucket, StorageUploadRequest
+from src.auth import get_async_supabase_service_client, get_current_user_id
 from src.auth_access import validate_brand_access
 from src.brand.model import (
     BrandCreateRequest,
@@ -96,7 +92,7 @@ async def update(
     request_data: str | None = Form(default=None),
     logo_file: UploadFile | None = File(default=None),  # noqa: B008
     session_factory: DbSessionFactory = Depends(),
-    supabase_storage_service: SupabaseStorageService = Depends(),
+    supabase_client: AsyncClient = Depends(get_async_supabase_service_client),
 ):
     if request_data is None:
         request = BrandUpdateRequest()
@@ -105,13 +101,14 @@ async def update(
 
     if logo_file is not None:
         logo_content = await logo_file.read()
-        upload_result = await supabase_storage_service.upload_public(
+        upload_result = await supabase_storage.upload_public(
+            supabase_client,
             StorageUploadRequest(
                 bucket=StorageBucket.BRAND_LOGOS,
                 path=f"{brand_id}/{logo_file.filename}",
                 content=logo_content,
                 content_type=logo_file.content_type,
-            )
+            ),
         )
         if request.data is None:
             request.data = BrandData(logo_url=upload_result.public_url)

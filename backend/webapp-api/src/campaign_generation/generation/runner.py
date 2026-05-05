@@ -3,7 +3,9 @@ import logging
 from pydantic_ai import ImageUrl
 
 import src.campaign_generation.service as campaign_generation_job_service
+from lib.content_generation.text_with_single_image import TextWithSingleImageDeps
 from lib.db.session_factory import DbSessionFactory
+from lib.model import JobStatus
 from src.campaign_generation.generation.content_brief import generate_content_brief
 from src.campaign_generation.generation.content_generation import (
     generate_ai_content,
@@ -21,8 +23,6 @@ from src.campaign_generation.model import (
     CampaignGenerationJobWorkflowType,
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
-from src.shared.model import JobStatus
-from src.shared.text_with_single_image import TextWithSingleImageDeps
 
 
 logger = logging.getLogger(__name__)

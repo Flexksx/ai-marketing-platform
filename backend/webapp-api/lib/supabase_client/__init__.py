@@ -1,2 +1,7 @@
-from lib.supabase_client.storage.schema import *
-from lib.supabase_client.storage.service import *
+from lib.supabase_client.model import (
+    ImageByUrlStorageUploadRequest,
+    StorageBucket,
+    StorageUploadRequest,
+    StorageUploadResult,
+)
+from lib.supabase_client.service import get_public_url, upload_from_url, upload_public

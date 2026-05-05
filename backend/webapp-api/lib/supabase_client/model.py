@@ -1,10 +1,8 @@
 from enum import Enum
 
-import public
 from pydantic import BaseModel
 
 
-@public.add
 class StorageBucket(str, Enum):
     POSTS = "posts"
     BRAND_EXTRACTION = "brand-extraction"
@@ -14,7 +12,6 @@ class StorageBucket(str, Enum):
     CONTENT_GENERATION_AI_IMAGES = "content_generation_ai_images"
 
 
-@public.add
 class StorageUploadRequest(BaseModel):
     bucket: StorageBucket
     path: str
@@ -22,14 +19,12 @@ class StorageUploadRequest(BaseModel):
     content_type: str | None = None
 
 
-@public.add
 class ImageByUrlStorageUploadRequest(BaseModel):
     bucket: StorageBucket
     image_url: str
     path_prefix: str = ""
 
 
-@public.add
 class StorageUploadResult(BaseModel):
     path: str
     public_url: str

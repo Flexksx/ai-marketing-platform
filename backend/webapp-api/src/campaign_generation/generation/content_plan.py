@@ -7,10 +7,12 @@ from pydantic_ai import Agent, ImageUrl, RunContext, format_as_xml
 import src.brand.service as brand_service
 import src.content_channel.service as content_channel_service
 import src.content_plan_item.service as content_plan_item_service
+from lib import prompts
 from lib.ai_agents import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
-from lib.prompts import PromptService, PromptTemplateName
-from src.brand.model import Brand, ContentPillarType, ContentTypeName
+from lib.model import ContentChannelName, ContentFormat, ContentTypeName
+from lib.prompts import PromptTemplateName
+from src.brand.model import Brand, ContentPillarType
 from src.campaign_generation.errors import (
     CampaignGenerationJobResultElementNotFoundException,
     CampaignGenerationJobResultNotFoundException,
@@ -24,8 +26,8 @@ from src.campaign_generation.model import (
     ContentBriefCampaignGenerationJobResult,
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
+from src.content_channel.model import ContentChannel
 from src.content_plan_item.model import ContentPlanItemCreateRequest
-from src.shared.model import ContentChannel, ContentChannelName, ContentFormat
 
 
 logger = logging.getLogger(__name__)
@@ -69,8 +71,6 @@ class _UserMediaAgentDeps(BaseModel):
     available_channels: list[ContentChannel]
 
 
-_prompt_service = PromptService()
-
 _ai_generated_agent: Agent[_AiGeneratedAgentDeps, _PostingPlanResult] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LATEST,
     deps_type=_AiGeneratedAgentDeps,
@@ -86,7 +86,7 @@ _user_media_agent: Agent[_UserMediaAgentDeps, _UserMediaPlanResult] = Agent(
 
 @_ai_generated_agent.system_prompt
 def _ai_generated_system_prompt(context: RunContext[_AiGeneratedAgentDeps]) -> str:
-    return _prompt_service.render(
+    return prompts.render(
         PromptTemplateName.CAMPAIGN_GENERATION_CONTENT_PLAN_STEP,
         context.deps.model_dump(),
     )
@@ -94,7 +94,7 @@ def _ai_generated_system_prompt(context: RunContext[_AiGeneratedAgentDeps]) -> s
 
 @_user_media_agent.system_prompt
 def _user_media_system_prompt(context: RunContext[_UserMediaAgentDeps]) -> str:
-    return _prompt_service.render(
+    return prompts.render(
         PromptTemplateName.CAMPAIGN_GENERATION_CONTENT_PLAN_STEP_FROM_USER_MEDIA,
         context.deps.model_dump(),
     )

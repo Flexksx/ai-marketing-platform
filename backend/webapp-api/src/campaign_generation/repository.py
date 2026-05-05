@@ -5,6 +5,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lib.db.session_factory import DbSessionFactory
+from lib.model import JobStatus
 from lib.utils import new_id
 from src.campaign_generation.entity import CampaignGenerationJobRecord
 from src.campaign_generation.errors import (
@@ -19,7 +20,6 @@ from src.campaign_generation.model import (
     CampaignGenerationJobResult,
     ContentPlanItem,
 )
-from src.shared.model import JobStatus
 
 
 logger = logging.getLogger(__name__)

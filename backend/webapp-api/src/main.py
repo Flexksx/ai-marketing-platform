@@ -12,7 +12,7 @@ from sqlalchemy import text
 import lib.db.schema_registry  # noqa: F401 - Ensures all SQLAlchemy models are registered
 from lib.db.database import engine
 from lib.scraper.playwright_scraper import PlaywrightScraper
-from lib.supabase_client.storage.service import SupabaseStorageService
+from src.auth import get_async_supabase_service_client
 from src.brand.routes import router as brand_router
 from src.brand_generation_job.routes import router as brand_generation_router
 from src.config import get_settings
@@ -36,8 +36,8 @@ configure_logging(
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     logger.info("Starting Playwright browser")
-    storage_service = SupabaseStorageService()
-    scraper = PlaywrightScraper(storage_service=storage_service)
+    supabase_client = await get_async_supabase_service_client()
+    scraper = PlaywrightScraper(supabase_client=supabase_client)
     await scraper.start()
     application.state.playwright_scraper = scraper
     logger.info("Playwright browser ready")

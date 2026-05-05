@@ -1,15 +1,24 @@
 from datetime import datetime
+from enum import StrEnum
 from typing import Annotated, Literal
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
-from src.content.model import TextOnlyContentData, TextWithSingleImageContentData
-from src.shared.model import (
+from lib.model import (
     ContentChannelName,
     ContentFormat,
-    ContentGenerationJobWorkflowType,
     JobStatus,
 )
+from src.content.model import TextOnlyContentData, TextWithSingleImageContentData
+
+
+class ContentGenerationJobWorkflowType(StrEnum):
+    TEXT_ONLY = "TEXT_ONLY"
+    TEXT_WITH_SINGLE_IMAGE_FROM_USER_MEDIA = "TEXT_WITH_SINGLE_IMAGE_FROM_USER_MEDIA"
+    TEXT_WITH_SINGLE_IMAGE_AI_GENERATED = "TEXT_WITH_SINGLE_IMAGE_AI_GENERATED"
+    TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE = (
+        "TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE"
+    )
 
 
 class BaseContentGenerationJobUserInput(BaseModel):

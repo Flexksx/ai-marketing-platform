@@ -1,15 +1,21 @@
 from datetime import datetime
+from enum import StrEnum
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.brand.model import ContentPillarBusinessGoal
-from src.content_plan_item.model import ContentPlanItem
-from src.shared.model import (
-    CampaignGenerationJobWorkflowType,
+from lib.model import (
     ContentChannelName,
     JobStatus,
 )
+from src.brand.model import ContentPillarBusinessGoal
+from src.content_plan_item.model import ContentPlanItem
+
+
+class CampaignGenerationJobWorkflowType(StrEnum):
+    USER_MEDIA_ONLY = "USER_MEDIA_ONLY"
+    AI_GENERATED = "AI_GENERATED"
+    PRODUCT_LIFESTYLE = "PRODUCT_LIFESTYLE"
 
 
 class BaseCampaignGenerationJobUserInput(BaseModel):

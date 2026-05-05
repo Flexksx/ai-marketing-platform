@@ -1,10 +1,9 @@
 import base64
 import logging
 
-from google import genai
 from google.genai import types
 
-from lib.nano_banana.dependencies import get_http_client
+from lib.nano_banana.dependencies import get_genai_client, get_http_client
 from lib.nano_banana.model import NanoBananaRequest, NanoBananaResponse
 
 
@@ -32,10 +31,9 @@ _SAFETY_SETTINGS = [
 ]
 
 
-async def generate(
-    request: NanoBananaRequest, client: genai.Client
-) -> NanoBananaResponse:
+async def generate(request: NanoBananaRequest) -> NanoBananaResponse:
     logger.info("Starting image generation with Nano Banana")
+    client = get_genai_client()
     parts = [await _fetch_as_image_part(url) for url in request.image_urls]
     parts.append(types.Part.from_text(text=request.prompt))
     contents = [types.Content(role="user", parts=parts)]

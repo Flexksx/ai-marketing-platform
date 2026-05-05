@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.shared.model import ContentChannelName, ContentFormat
+from lib.model import ContentChannelName, ContentFormat
 
 
 class TextWithSingleImageContentData(BaseModel):

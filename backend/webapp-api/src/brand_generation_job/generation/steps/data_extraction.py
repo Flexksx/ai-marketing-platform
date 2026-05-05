@@ -4,8 +4,9 @@ import re
 
 from pydantic_ai import Agent, ImageUrl
 
+from lib import prompts
 from lib.ai_agents.schema import PydanticAiModel
-from lib.prompts import PromptService, PromptTemplateName
+from lib.prompts import PromptTemplateName
 from lib.scraper.model import ScrapeResult
 from src.brand.model import (
     BrandCreateRequest,
@@ -29,39 +30,37 @@ from src.brand_generation_job.model import BrandGenerationJob, BrandGenerationRe
 
 logger = logging.getLogger(__name__)
 
-_prompt_service = PromptService()
-
 _core_identity_agent: Agent[None, BrandGenerationJobTextualDescriptionResult] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LATEST,
-    system_prompt=_prompt_service.render(
+    system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_TEXTUAL_DESCRIPTION, {}
     ),
     output_type=BrandGenerationJobTextualDescriptionResult,
 )
 _strategy_agent: Agent[None, PositioningBrandDataResult] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
-    system_prompt=_prompt_service.render(
+    system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_STRATEGIC_PROFILING, {}
     ),
     output_type=PositioningBrandDataResult,
 )
 _tone_of_voice_agent: Agent[None, BrandGenerationJobToneOfVoiceProfilingResult] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
-    system_prompt=_prompt_service.render(
+    system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_TONE_OF_VOICE_PROFILING, {}
     ),
     output_type=BrandGenerationJobToneOfVoiceProfilingResult,
 )
 _audience_agent: Agent[None, BrandGenerationJobAudienceProfilingResult] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
-    system_prompt=_prompt_service.render(
+    system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_AUDIENCE_PROFILING, {}
     ),
     output_type=BrandGenerationJobAudienceProfilingResult,
 )
 _marketing_agent: Agent[None, BrandGenerationContentPillarResult] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
-    system_prompt=_prompt_service.render(
+    system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_MARKETING_PROFILING, {}
     ),
     output_type=BrandGenerationContentPillarResult,

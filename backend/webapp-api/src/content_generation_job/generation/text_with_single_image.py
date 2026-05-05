@@ -2,9 +2,13 @@ from pydantic import BaseModel, ConfigDict
 from pydantic_ai import Agent, ImageUrl, RunContext
 
 import src.brand.service as brand_service
+from lib import prompts
 from lib.ai_agents.schema import PydanticAiModel
+from lib.content_generation import text_with_single_image
+from lib.content_generation.text_with_single_image import TextWithSingleImageDeps
 from lib.db.session_factory import DbSessionFactory
-from lib.prompts import PromptService, PromptTemplateName
+from lib.model import ContentChannelName
+from lib.prompts import PromptTemplateName
 from src.brand.model import Brand
 from src.content.model import TextWithSingleImageContentData
 from src.content_generation_job.errors import (
@@ -17,9 +21,6 @@ from src.content_generation_job.model import (
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
-from src.shared import text_with_single_image
-from src.shared.model import ContentChannelName
-from src.shared.text_with_single_image import TextWithSingleImageDeps
 
 
 class _FromUserMediaAgentDependencies(BaseModel):
@@ -32,8 +33,6 @@ class _FromUserMediaAgentOutput(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-
-_prompt_service = PromptService()
 
 _from_user_media_agent: Agent[
     _FromUserMediaAgentDependencies, _FromUserMediaAgentOutput
@@ -48,7 +47,7 @@ _from_user_media_agent: Agent[
 def _get_from_user_media_system_prompt(
     context: RunContext[_FromUserMediaAgentDependencies],
 ) -> str:
-    return _prompt_service.render(
+    return prompts.render(
         PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_CAPTION,
         context.deps.model_dump(),
     )

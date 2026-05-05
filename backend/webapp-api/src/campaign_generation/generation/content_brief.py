@@ -4,16 +4,18 @@ from pydantic_ai import Agent, ImageUrl, RunContext
 import src.brand.service as brand_service
 import src.campaign_generation.service as campaign_generation_job_service
 import src.content_channel.service as content_channel_service
+from lib import prompts
 from lib.ai_agents import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
-from lib.prompts import PromptService, PromptTemplateName
+from lib.model import ContentChannelName
+from lib.prompts import PromptTemplateName
 from src.brand.model import Brand, ContentPillarBusinessGoal
 from src.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResult,
     ContentBriefCampaignGenerationJobResult,
 )
-from src.shared.model import ContentChannel, ContentChannelName
+from src.content_channel.model import ContentChannel
 
 
 class _CampaignContentBriefAgentResult(BaseModel):
@@ -34,8 +36,6 @@ class _AgentDependencies(BaseModel):
     content_channels: list[ContentChannel]
 
 
-_prompt_service = PromptService()
-
 _agent: Agent[_AgentDependencies, _CampaignContentBriefAgentResult] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
     deps_type=_AgentDependencies,
@@ -45,7 +45,7 @@ _agent: Agent[_AgentDependencies, _CampaignContentBriefAgentResult] = Agent(
 
 @_agent.system_prompt
 def _get_system_prompt(context: RunContext[_AgentDependencies]) -> str:
-    return _prompt_service.render(
+    return prompts.render(
         PromptTemplateName.CAMPAIGN_GENERATION_DESCRIPTION_STEP,
         context.deps.model_dump(),
     )

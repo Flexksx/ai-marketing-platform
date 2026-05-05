@@ -1,8 +1,7 @@
-from src.shared.model import (
+from lib.model import ContentChannelName, ContentFormat
+from src.content_channel.model import (
     ContentChannel,
     ContentChannelImageSpecification,
-    ContentChannelName,
-    ContentFormat,
     ImageAspectRatio,
     ImageResolution,
 )

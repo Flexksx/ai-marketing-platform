@@ -2,10 +2,10 @@ import public
 from pydantic import BaseModel, ConfigDict
 from strenum import StrEnum
 
+from lib.model import ContentTypeName
 from src.brand.archetype.model import BrandArchetype, BrandArchetypeName
 from src.brand.model import (
     ContentType,
-    ContentTypeName,
     ToneOfVoiceDimension,
     ToneOfVoiceDimensionName,
 )
