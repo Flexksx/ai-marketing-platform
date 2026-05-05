@@ -31,10 +31,10 @@ from lib.supabase_client import (
     SupabaseStorageService,
 )
 from src.brand.model import Brand
+from src.shared.model import ContentChannelName, ContentFormat
 from src.shared.text_with_single_image.model import (
     TextWithSingleImageContent,
 )
-from webapp_api_contract.shared import ContentChannelName, ContentFormat
 
 
 logger = logging.getLogger(__name__)

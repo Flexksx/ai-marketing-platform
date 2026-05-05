@@ -2,10 +2,8 @@ import public
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_extra_types.language_code import LanguageAlpha2
 
-from webapp_api_contract.brand import BrandColor
-from webapp_api_contract.brand.archetype import BrandArchetypeName
-from webapp_api_contract.brand.audience import BrandAudience
-from webapp_api_contract.brand.content_pillar import ContentPillar
+from src.brand.archetype.model import BrandArchetypeName
+from src.brand.model import BrandAudience, BrandColor, ContentPillar
 
 
 @public.add

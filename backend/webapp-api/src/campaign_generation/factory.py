@@ -8,7 +8,7 @@ from lib.supabase_client import (
     StorageUploadResult,
     SupabaseStorageService,
 )
-from webapp_api_contract.campaign_generation import (
+from src.campaign_generation.model import (
     CampaignGenerationJobCreateRequest,
     ProductLifestyleCampaignGenerationJobUserInput,
     UserMediaOnlyCampaignGenerationJobUserInput,

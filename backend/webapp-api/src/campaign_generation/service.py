@@ -11,22 +11,21 @@ from src.campaign_generation.errors import (
     CampaignGenerationJobWorkflowTypeMismatchException,
     ContentPlanItemMissingContentDataException,
 )
-from src.campaign_generation.model import CampaignGenerationJob
-from src.campaigns.model import Campaign
-from webapp_api_contract.campaign_generation import (
+from src.campaign_generation.model import (
     CampaignCreationAcceptRequest,
     CampaignCreationJobUpdateInput,
+    CampaignGenerationJob,
     CampaignGenerationJobCreateRequest,
     CampaignGenerationJobWorkflowType,
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
-from webapp_api_contract.campaigns import CampaignCreateRequest, CampaignData
-from webapp_api_contract.content import (
+from src.campaigns.model import Campaign, CampaignCreateRequest, CampaignData
+from src.content.model import (
     ContentCreateRequest,
     TextOnlyContentData,
     TextWithSingleImageContentData,
 )
-from webapp_api_contract.content_plan_items import ContentPlanItemUpdateRequest
+from src.content_plan_item.model import ContentPlanItemUpdateRequest
 
 
 logger = logging.getLogger(__name__)

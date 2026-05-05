@@ -1,1 +1,11 @@
-from webapp_api_contract.shared import *
+from src.shared.model import (
+    CampaignGenerationJobWorkflowType,
+    ContentChannel,
+    ContentChannelImageSpecification,
+    ContentChannelName,
+    ContentFormat,
+    ContentGenerationJobWorkflowType,
+    ImageAspectRatio,
+    ImageResolution,
+    JobStatus,
+)

@@ -1,6 +1,21 @@
+from enum import StrEnum
+
 from pydantic import BaseModel, ConfigDict
 
-from webapp_api_contract.brand.archetype import BrandArchetypeName
+
+class BrandArchetypeName(StrEnum):
+    INNOCENT = "INNOCENT"
+    EVERYMAN = "EVERYMAN"
+    HERO = "HERO"
+    OUTLAW = "OUTLAW"
+    EXPLORER = "EXPLORER"
+    CREATOR = "CREATOR"
+    RULER = "RULER"
+    MAGICIAN = "MAGICIAN"
+    LOVER = "LOVER"
+    CAREGIVER = "CAREGIVER"
+    JESTER = "JESTER"
+    SAGE = "SAGE"
 
 
 class BrandArchetypeData(BaseModel):

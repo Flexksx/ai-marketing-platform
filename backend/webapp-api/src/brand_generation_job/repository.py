@@ -7,10 +7,10 @@ from src.brand_generation_job.entity import BrandGenerationJobRecord
 from src.brand_generation_job.errors import BrandGenerationJobNotFoundError
 from src.brand_generation_job.model import (
     BrandGenerationJob,
+    BrandGenerationJobCreateRequest,
     BrandGenerationJobUpdateRequest,
 )
-from webapp_api_contract.brand_generation_job import BrandGenerationJobCreateRequest
-from webapp_api_contract.shared import JobStatus
+from src.shared.model import JobStatus
 
 
 async def create(

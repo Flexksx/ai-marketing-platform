@@ -13,7 +13,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from lib.db.database import Base
-from webapp_api_contract.campaigns import CampaignState
+from src.campaigns.model import CampaignState
 
 
 class CampaignRecord(Base):

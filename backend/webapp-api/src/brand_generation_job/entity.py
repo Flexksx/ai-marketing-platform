@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import ARRAY, DateTime
 
 from lib.db import Base
-from webapp_api_contract.shared import JobStatus
+from src.shared.model import JobStatus
 
 
 @public.add

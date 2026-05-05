@@ -25,13 +25,6 @@ class Settings(BaseSettings):
         default="", alias="PUBLIC_SUPABASE_PUBLISHABLE_KEY"
     )
     gemini_api_key: str = Field(default="", alias="GEMINI_API_KEY")
-    scraper_service_url: str = Field(
-        default="http://localhost:8081", alias="SCRAPER_SERVICE_URL"
-    )
-    api_base_url: str = Field(default="http://localhost:8000", alias="API_BASE_URL")
-    scraper_callback_secret: str = Field(
-        default="dev-secret", alias="SCRAPER_CALLBACK_SECRET"
-    )
     environment: str = "development"
     log_level: str = "INFO"
 

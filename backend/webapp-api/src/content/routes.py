@@ -5,11 +5,11 @@ from fastapi import APIRouter, Depends, Query
 import src.content.service as content_service
 from lib.db.session_factory import DbSessionFactory
 from src.auth_access import validate_brand_access
-from webapp_api_contract.content import (
+from src.content.model import (
     ContentListRequest,
     ContentResponse,
 )
-from webapp_api_contract.shared import ContentChannelName
+from src.shared.model import ContentChannelName
 
 
 router = APIRouter(tags=["Brand Content"])

@@ -22,9 +22,8 @@
         infra = import ./nix/infra.nix {inherit pkgs;};
         typescript = import ./apps/webapp/nix/typescript.nix {inherit pkgs;};
         python = import ./backend/webapp-api/nix/python.nix {inherit pkgs;};
-        scraper = import ./backend/scraper-api/nix/python.nix {inherit pkgs;};
 
-        modules = [devtools infra typescript python scraper];
+        modules = [devtools infra typescript python];
 
         allPackages = builtins.concatLists (map (m: m.packages) modules);
         allShellHooks = builtins.concatStringsSep "\n" (map (m: m.shellHook) modules);

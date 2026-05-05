@@ -1,5 +1,6 @@
 import logging
 import re
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
@@ -10,6 +11,8 @@ from sqlalchemy import text
 
 import lib.db.schema_registry  # noqa: F401 - Ensures all SQLAlchemy models are registered
 from lib.db.database import engine
+from lib.scraper.playwright_scraper import PlaywrightScraper
+from lib.supabase_client.storage.service import SupabaseStorageService
 from src.brand.routes import router as brand_router
 from src.brand_generation_job.routes import router as brand_generation_router
 from src.config import get_settings
@@ -30,6 +33,19 @@ configure_logging(
 )
 
 
+@asynccontextmanager
+async def lifespan(application: FastAPI):
+    logger.info("Starting Playwright browser")
+    storage_service = SupabaseStorageService()
+    scraper = PlaywrightScraper(storage_service=storage_service)
+    await scraper.start()
+    application.state.playwright_scraper = scraper
+    logger.info("Playwright browser ready")
+    yield
+    logger.info("Shutting down Playwright browser")
+    await scraper.stop()
+
+
 def _operation_id(route: APIRoute) -> str:
     tag = route.tags[0] if route.tags else "default"
     tag_slug = re.sub(r"[\s\-]+", "_", tag).lower()
@@ -44,6 +60,7 @@ app = FastAPI(
     redoc_url=None,
     redirect_slashes=False,
     generate_unique_id_function=_operation_id,
+    lifespan=lifespan,
 )
 
 app.middleware("http")(http_logging_middleware)

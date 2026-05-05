@@ -4,7 +4,7 @@ import public
 from httpx import AsyncClient
 
 from src.brand.errors import BrandNotFoundError
-from webapp_api_contract.brand import (
+from src.brand.model import (
     BrandCreateRequest,
     BrandResponse,
     BrandSearchRequest,

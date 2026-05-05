@@ -3,7 +3,7 @@ from fastapi import APIRouter, Body, Depends, Path
 import src.content_plan_item.service as content_plan_item_service
 from lib.db.session_factory import DbSessionFactory
 from src.auth_access import validate_brand_access
-from webapp_api_contract.content_plan_items import (
+from src.content_plan_item.model import (
     ContentPlanItem,
     ContentPlanItemUpdateRequest,
     RestContentPlanItemUpdateRequest,

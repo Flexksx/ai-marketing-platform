@@ -2,11 +2,9 @@ import logging
 
 import html2text
 import public
-from fastapi import Depends
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
-from scraper_api_contract.scraper import ScrapeResult
 
-from lib.scraper.scraper import WebsiteScraper
+from lib.scraper.model import ScrapeResult
 from lib.supabase_client.storage.schema import (
     StorageBucket,
     StorageUploadRequest,
@@ -19,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 @public.add
-class PlaywrightScraper(WebsiteScraper):
-    def __init__(self, storage_service: SupabaseStorageService = Depends()):
+class PlaywrightScraper:
+    def __init__(self, storage_service: SupabaseStorageService):
         self._playwright = None
         self._browser: Browser | None = None
         self._context: BrowserContext | None = None
@@ -30,34 +28,31 @@ class PlaywrightScraper(WebsiteScraper):
         self._html_converter.body_width = 0
         self._storage_service = storage_service
 
-    async def _ensure_browser(self):
-        if not self._context:
-            if not self._playwright:
-                logger.debug("Starting Playwright")
-                self._playwright = await async_playwright().start()
-            if not self._browser:
-                import shutil
+    async def start(self) -> None:
+        if self._context:
+            return
+        if not self._playwright:
+            logger.debug("Starting Playwright")
+            self._playwright = await async_playwright().start()
+        if not self._browser:
+            import shutil
 
-                chromium_path = shutil.which("chromium") or shutil.which(
-                    "chromium-browser"
+            chromium_path = shutil.which("chromium") or shutil.which("chromium-browser")
+            if chromium_path:
+                logger.info(f"Launching Chromium from system path: {chromium_path}")
+                self._browser = await self._playwright.chromium.launch(
+                    headless=True, executable_path=chromium_path
                 )
-                if chromium_path:
-                    logger.info(f"Launching Chromium from system path: {chromium_path}")
-                    self._browser = await self._playwright.chromium.launch(
-                        headless=True, executable_path=chromium_path
-                    )
-                else:
-                    logger.info("Launching Chromium using default Playwright browser")
-                    self._browser = await self._playwright.chromium.launch(
-                        headless=True
-                    )
-            logger.debug("Creating browser context")
-            self._context = await self._browser.new_context(
-                viewport={"width": 1920, "height": 1080},
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            )
+            else:
+                logger.info("Launching Chromium using default Playwright browser")
+                self._browser = await self._playwright.chromium.launch(headless=True)
+        logger.debug("Creating browser context")
+        self._context = await self._browser.new_context(
+            viewport={"width": 1920, "height": 1080},
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        )
 
-    async def _cleanup(self):
+    async def stop(self) -> None:
         if self._context:
             logger.debug("Closing browser context")
             await self._context.close()
@@ -72,26 +67,20 @@ class PlaywrightScraper(WebsiteScraper):
             self._playwright = None
 
     async def __aenter__(self):
-        await self._ensure_browser()
+        await self.start()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self._cleanup()
+        await self.stop()
 
-    def scrape(self, url: str) -> ScrapeResult:
-        import asyncio
-
-        return asyncio.run(self.scrape_async(url))
-
-    async def scrape_async(self, url: str) -> ScrapeResult:
+    async def scrape(self, url: str) -> ScrapeResult:
         logger.info(f"Starting scrape for URL: {url}")
-        await self._ensure_browser()
+        await self.start()
         assert self._context is not None
 
         page = await self._context.new_page()
         try:
             logger.debug(f"Navigating to {url}")
-            # Use 'load' strategy - more stable than networkidle for pages with continuous requests
             await page.goto(url, wait_until="load", timeout=60000)
             logger.debug("Page loaded, extracting content")
 
@@ -137,136 +126,24 @@ class PlaywrightScraper(WebsiteScraper):
         finally:
             await page.close()
 
-    def get_text(self, url: str) -> str:
-        import asyncio
-
-        return asyncio.run(self.get_text_async(url))
-
-    async def get_text_async(self, url: str) -> str:
-        await self._ensure_browser()
-        assert self._context is not None
-
-        page = await self._context.new_page()
-        try:
-            await page.goto(url, wait_until="load", timeout=60000)
-            html_content = await page.content()
-            return self._html_converter.handle(html_content)
-        finally:
-            await page.close()
-
-    def get_image_urls(self, url: str) -> list[str]:
-        import asyncio
-
-        return asyncio.run(self.get_image_urls_async(url))
-
-    async def get_image_urls_async(self, url: str) -> list[str]:
-        await self._ensure_browser()
-        assert self._context is not None
-
-        page = await self._context.new_page()
-        try:
-            await page.goto(url, wait_until="load", timeout=60000)
-            return await self._extract_image_urls(page, url)
-        finally:
-            await page.close()
-
-    def get_video_urls(self, url: str) -> list[str]:
-        import asyncio
-
-        return asyncio.run(self.get_video_urls_async(url))
-
-    async def get_video_urls_async(self, url: str) -> list[str]:
-        await self._ensure_browser()
-        assert self._context is not None
-
-        page = await self._context.new_page()
-        try:
-            await page.goto(url, wait_until="load", timeout=60000)
-            return await self._extract_video_urls(page, url)
-        finally:
-            await page.close()
-
-    def get_logo_url(self, url: str) -> str | None:
-        import asyncio
-
-        return asyncio.run(self.get_logo_url_async(url))
-
-    async def get_logo_url_async(self, url: str) -> str | None:
-        await self._ensure_browser()
-        assert self._context is not None
-
-        page = await self._context.new_page()
-        try:
-            await page.goto(url, wait_until="load", timeout=60000)
-            return await self._extract_logo_url(page, url)
-        finally:
-            await page.close()
-
-    def get_screenshot(self, url: str) -> str | None:
-        import asyncio
-
-        return asyncio.run(self.get_screenshot_async(url))
-
-    async def get_screenshot_async(self, url: str) -> str | None:
-        logger.debug(f"Getting screenshot for URL: {url}")
-        await self._ensure_browser()
-        assert self._context is not None
-
-        page = await self._context.new_page()
-        try:
-            await page.goto(url, wait_until="load", timeout=60000)
-            screenshot_url = await self._capture_screenshot(page)
-            if screenshot_url:
-                logger.debug(f"Screenshot uploaded: {screenshot_url}")
-            else:
-                logger.debug("No screenshot captured")
-            return screenshot_url
-        except Exception as e:
-            logger.error(f"Error getting screenshot for {url}: {e}", exc_info=True)
-            raise
-        finally:
-            await page.close()
-
-    def get_page_urls(self, url: str) -> list[str]:
-        import asyncio
-
-        return asyncio.run(self.get_page_urls_async(url))
-
-    async def get_page_urls_async(self, url: str) -> list[str]:
-        await self._ensure_browser()
-        assert self._context is not None
-
-        page = await self._context.new_page()
-        try:
-            await page.goto(url, wait_until="load", timeout=60000)
-            return await self._extract_page_urls(page, url)
-        finally:
-            await page.close()
-
     def _is_supported_image_format(self, url: str) -> bool:
-        """Check if the URL points to a supported image format (jpeg, png, gif, webp)."""
         if not url:
             return False
 
-        # Check file extension
         url_lower = url.lower()
         supported_extensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"]
         if any(url_lower.endswith(ext) for ext in supported_extensions):
             return True
 
-        # Check if URL contains format hint in path
         if any(
             f"/{ext[1:]}" in url_lower or f".{ext[1:]}" in url_lower
             for ext in supported_extensions
         ):
             return True
 
-        # Exclude SVG explicitly
         if ".svg" in url_lower:
             return False
 
-        # If no clear format, allow it (might be a dynamic URL that serves images)
-        # We'll let OpenAI validate it
         return True
 
     async def _extract_image_urls(self, page: Page, base_url: str) -> list[str]:
@@ -281,7 +158,6 @@ class PlaywrightScraper(WebsiteScraper):
             if not src:
                 continue
 
-            # Filter out unsupported formats early
             if not self._is_supported_image_format(src):
                 unsupported_format_count += 1
                 logger.debug(f"Skipping unsupported image format: {src}")
@@ -302,7 +178,6 @@ class PlaywrightScraper(WebsiteScraper):
                 if width > 300 and height > 300:
                     absolute_url = self._resolve_url(base_url, src)
                     if absolute_url and absolute_url not in image_urls:
-                        # Double-check format after resolving URL
                         if self._is_supported_image_format(absolute_url):
                             image_urls.append(absolute_url)
                             logger.debug(
@@ -329,7 +204,6 @@ class PlaywrightScraper(WebsiteScraper):
                         if width > 300 and height > 300:
                             absolute_url = self._resolve_url(base_url, src)
                             if absolute_url and absolute_url not in image_urls:
-                                # Double-check format after resolving URL
                                 if self._is_supported_image_format(absolute_url):
                                     image_urls.append(absolute_url)
                                     logger.debug(
@@ -405,22 +279,11 @@ class PlaywrightScraper(WebsiteScraper):
         return None
 
     async def _capture_screenshot(self, page: Page) -> str | None:
-        """
-        Capture a screenshot and upload it to Supabase storage.
-        Limits screenshot height to viewport size or at most 2x viewport height
-        to avoid very tall images that are unsuitable for analysis.
-        Returns the public URL of the uploaded screenshot, or None if upload fails.
-
-        Note: Screenshot upload requires SUPABASE_SERVICE_ROLE_KEY to be set
-        in the environment to bypass RLS policies. If not set, upload will fail
-        gracefully and brand extraction will continue without the screenshot.
-        """
         if not self._storage_service:
             logger.warning("Storage service not available, skipping screenshot upload")
             return None
 
         try:
-            # Get viewport dimensions
             viewport_size = page.viewport_size
             if not viewport_size:
                 logger.warning("Could not get viewport size, using default")
@@ -430,7 +293,6 @@ class PlaywrightScraper(WebsiteScraper):
                 viewport_height = viewport_size.get("height", 1080)
                 viewport_width = viewport_size.get("width", 1920)
 
-            # Get page content height
             content_height = await page.evaluate(
                 "() => document.documentElement.scrollHeight"
             )
@@ -438,7 +300,6 @@ class PlaywrightScraper(WebsiteScraper):
                 "() => document.documentElement.scrollWidth"
             )
 
-            # Limit screenshot height to viewport or 2x viewport height (whichever is smaller)
             max_screenshot_height = min(content_height, viewport_height * 2)
 
             logger.debug(
@@ -447,7 +308,6 @@ class PlaywrightScraper(WebsiteScraper):
                 f"capturing={viewport_width}x{max_screenshot_height}"
             )
 
-            # Take screenshot with limited height
             screenshot_bytes = await page.screenshot(
                 clip={
                     "x": 0,
@@ -460,11 +320,9 @@ class PlaywrightScraper(WebsiteScraper):
                 logger.debug("Screenshot capture returned empty bytes")
                 return None
 
-            # Generate a unique path for the screenshot
             screenshot_id = new_id()
             screenshot_path = f"screenshots/{screenshot_id}.png"
 
-            # Upload to Supabase storage
             upload_request = StorageUploadRequest(
                 bucket=StorageBucket.BRAND_EXTRACTION,
                 path=screenshot_path,
@@ -506,7 +364,6 @@ class PlaywrightScraper(WebsiteScraper):
         if not relative_url:
             return None
 
-        # Filter out data URLs, blob URLs, and other non-http URLs
         if relative_url.startswith(
             ("data:", "blob:", "javascript:", "mailto:", "tel:")
         ):

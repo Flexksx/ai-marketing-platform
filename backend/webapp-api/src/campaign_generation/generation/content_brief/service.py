@@ -1,5 +1,3 @@
-import public
-from fastapi import Depends
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, ImageUrl, RunContext
 
@@ -9,16 +7,14 @@ import src.content_channel.service as content_channel_service
 from lib.ai_agents import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
 from lib.prompts import PromptService, PromptTemplateName
-from src.brand.model import Brand
-from webapp_api_contract.brand.content_pillar import ContentPillarBusinessGoal
-from webapp_api_contract.campaign_generation import (
+from src.brand.model import Brand, ContentPillarBusinessGoal
+from src.campaign_generation.model import (
     CampaignGenerationJobResult,
     ContentBriefCampaignGenerationJobResult,
 )
-from webapp_api_contract.shared import ContentChannel, ContentChannelName
+from src.shared.model import ContentChannel, ContentChannelName
 
 
-@public.add
 class CampaignContentBriefAgentResult(BaseModel):
     name: str
     description: str
@@ -32,78 +28,68 @@ class CampaignContentBriefAgentResult(BaseModel):
     channels: list[ContentChannelName] = Field(default_factory=list)
 
 
-@public.add
-class CampaignContentBriefAgentDependencies(BaseModel):
+class _AgentDependencies(BaseModel):
     brand: Brand
     content_channels: list[ContentChannel]
     description_prompt_name: PromptTemplateName
 
 
-@public.add
-class CampaignContentBriefGenerator:
-    def __init__(
-        self,
-        prompt_service: PromptService = Depends(),
-        session_factory: DbSessionFactory = Depends(),
-    ):
-        self.prompt_service = prompt_service
-        self.session_factory = session_factory
+_prompt_service = PromptService()
 
-        self.__agent = Agent(
-            model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
-            deps_type=CampaignContentBriefAgentDependencies,
-            output_type=CampaignContentBriefAgentResult,
-        )
+_agent: Agent[_AgentDependencies, CampaignContentBriefAgentResult] = Agent(
+    model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
+    deps_type=_AgentDependencies,
+    output_type=CampaignContentBriefAgentResult,
+)
 
-        @self.__agent.system_prompt
-        def __set_system_prompt(
-            context: RunContext[CampaignContentBriefAgentDependencies],
-        ):
-            return self.prompt_service.render(
-                context.deps.description_prompt_name, context.deps.model_dump()
-            )
 
-    async def generate(
-        self,
-        job_id: str,
-        brand_id: str,
-        user_prompt: str,
-        image_urls: list[ImageUrl],
-        description_prompt_name: PromptTemplateName,
-    ) -> CampaignGenerationJobResult:
-        brand = await brand_service.get(self.session_factory, brand_id)
-        content_channels = content_channel_service.search()
-        deps = CampaignContentBriefAgentDependencies(
-            brand=brand,
-            content_channels=content_channels,
-            description_prompt_name=description_prompt_name,
-        )
+@_agent.system_prompt
+def _get_system_prompt(context: RunContext[_AgentDependencies]) -> str:
+    return _prompt_service.render(
+        context.deps.description_prompt_name, context.deps.model_dump()
+    )
 
-        run_result = await self.__agent.run(
-            user_prompt=[user_prompt, *image_urls],
-            deps=deps,
-        )
-        brief_result: CampaignContentBriefAgentResult = run_result.output  # ty:ignore[invalid-assignment]
 
-        return await self.__merge_campaign_result(job_id, brief_result)
+async def generate_campaign_content_brief(
+    session_factory: DbSessionFactory,
+    job_id: str,
+    brand_id: str,
+    user_prompt: str,
+    image_urls: list[ImageUrl],
+    description_prompt_name: PromptTemplateName,
+) -> CampaignGenerationJobResult:
+    brand = await brand_service.get(session_factory, brand_id)
+    content_channels = content_channel_service.search()
+    deps = _AgentDependencies(
+        brand=brand,
+        content_channels=content_channels,
+        description_prompt_name=description_prompt_name,
+    )
+    run_result = await _agent.run(
+        user_prompt=[user_prompt, *image_urls],
+        deps=deps,
+    )
+    brief_result: CampaignContentBriefAgentResult = run_result.output
+    return await _merge_campaign_result(session_factory, job_id, brief_result)
 
-    async def __merge_campaign_result(
-        self,
-        job_id: str,
-        agent_result: CampaignContentBriefAgentResult,
-    ) -> CampaignGenerationJobResult:
-        job = await campaign_generation_job_service.get(self.session_factory, job_id)
-        current_result = job.get_result()
-        if current_result is None:
-            current_result = CampaignGenerationJobResult()
-        current_result.content_brief = ContentBriefCampaignGenerationJobResult(
-            name=agent_result.name,
-            goal=agent_result.goal,
-            description=agent_result.description,
-            target_audience_ids=agent_result.target_audience_ids,
-            content_pillar_ids=agent_result.content_pillar_ids,
-            channels=agent_result.channels,
-            start_date=job.user_input.start_date,
-            end_date=job.user_input.end_date,
-        )
-        return current_result
+
+async def _merge_campaign_result(
+    session_factory: DbSessionFactory,
+    job_id: str,
+    agent_result: CampaignContentBriefAgentResult,
+) -> CampaignGenerationJobResult:
+    job = await campaign_generation_job_service.get(session_factory, job_id)
+    current_result = job.get_result()
+    if current_result is None:
+        current_result = CampaignGenerationJobResult()
+    current_result.content_brief = ContentBriefCampaignGenerationJobResult(
+        name=agent_result.name,
+        goal=agent_result.goal,
+        description=agent_result.description,
+        target_audience_ids=agent_result.target_audience_ids,
+        content_pillar_ids=agent_result.content_pillar_ids,
+        channels=agent_result.channels,
+        start_date=job.user_input.start_date,
+        end_date=job.user_input.end_date,
+    )
+    return current_result

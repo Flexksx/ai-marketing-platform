@@ -4,10 +4,7 @@ requires-python = ">=3.14"
 
 [manifest]
 members = [
-    "scraper-api",
-    "scraper-api-contract",
     "webapp-api",
-    "webapp-api-contract",
 ]
 
 [[package]]
@@ -2636,76 +2633,6 @@ wheels = [
 ]
 
 [[package]]
-name = "scraper-api"
-version = "0.1.0"
-source = { editable = "scraper-api" }
-dependencies = [
-    { name = "fastapi" },
-    { name = "html2text" },
-    { name = "httpx" },
-    { name = "playwright" },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "python-dotenv" },
-    { name = "python-ulid" },
-    { name = "scraper-api-contract" },
-    { name = "supabase" },
-    { name = "uvicorn", extra = ["standard"] },
-    { name = "webapp-api-contract" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ruff" },
-    { name = "ty" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi", specifier = ">=0.131.0" },
-    { name = "html2text", specifier = ">=2025.4.15" },
-    { name = "httpx", specifier = ">=0.28.1" },
-    { name = "playwright", specifier = ">=1.56.0" },
-    { name = "pydantic", specifier = ">=2.12.5" },
-    { name = "pydantic-settings", specifier = ">=2.6.0" },
-    { name = "python-dotenv", specifier = ">=1.0.1" },
-    { name = "python-ulid", specifier = ">=3.1.0" },
-    { name = "scraper-api-contract", editable = "scraper-api-contract" },
-    { name = "supabase", specifier = ">=2.24.0" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.32.0" },
-    { name = "webapp-api-contract", editable = "webapp-api-contract" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "ruff", specifier = ">=0.15.10" },
-    { name = "ty", specifier = ">=0.0.29" },
-]
-
-[[package]]
-name = "scraper-api-contract"
-version = "0.1.0"
-source = { editable = "scraper-api-contract" }
-dependencies = [
-    { name = "pydantic" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ruff" },
-    { name = "ty" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "pydantic", specifier = ">=2.12.5" }]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "ruff", specifier = ">=0.15.10" },
-    { name = "ty", specifier = ">=0.0.29" },
-]
-
-[[package]]
 name = "secretstorage"
 version = "3.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3223,12 +3150,10 @@ dependencies = [
     { name = "python-multipart" },
     { name = "python-ulid" },
     { name = "scalar-fastapi" },
-    { name = "scraper-api-contract" },
     { name = "sqlalchemy" },
     { name = "supabase" },
     { name = "tenacity" },
     { name = "uvicorn", extra = ["standard"] },
-    { name = "webapp-api-contract" },
 ]
 
 [package.dev-dependencies]
@@ -3271,12 +3196,10 @@ requires-dist = [
     { name = "python-multipart", specifier = ">=0.0.20" },
     { name = "python-ulid", specifier = ">=3.1.0" },
     { name = "scalar-fastapi", specifier = ">=1.6.1" },
-    { name = "scraper-api-contract", editable = "scraper-api-contract" },
     { name = "sqlalchemy", specifier = ">=2.0.44" },
     { name = "supabase", specifier = ">=2.24.0" },
     { name = "tenacity", specifier = ">=8.0.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32.0" },
-    { name = "webapp-api-contract", editable = "webapp-api-contract" },
 ]
 
 [package.metadata.requires-dev]
@@ -3288,37 +3211,6 @@ dev = [
     { name = "pytest-xdist", specifier = ">=3.8.0" },
     { name = "ruff", specifier = ">=0.15.10" },
     { name = "testcontainers", extras = ["postgres"], specifier = ">=4.0.0" },
-    { name = "ty", specifier = ">=0.0.29" },
-]
-
-[[package]]
-name = "webapp-api-contract"
-version = "0.1.0"
-source = { editable = "webapp-api-contract" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "pydantic-extra-types" },
-    { name = "python-ulid" },
-    { name = "scraper-api-contract" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ruff" },
-    { name = "ty" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "pydantic", specifier = ">=2.12.5" },
-    { name = "pydantic-extra-types", specifier = ">=2.11.0" },
-    { name = "python-ulid", specifier = ">=3.1.0" },
-    { name = "scraper-api-contract", editable = "scraper-api-contract" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "ruff", specifier = ">=0.15.10" },
     { name = "ty", specifier = ">=0.0.29" },
 ]
 

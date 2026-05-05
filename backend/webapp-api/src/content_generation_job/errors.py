@@ -1,7 +1,7 @@
 import public
 from fastapi import HTTPException, status
 
-from webapp_api_contract.shared import ContentGenerationJobWorkflowType
+from src.shared.model import ContentGenerationJobWorkflowType
 
 
 @public.add

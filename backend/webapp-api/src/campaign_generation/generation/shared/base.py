@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
-from src.campaign_generation.model import CampaignGenerationJob
-from webapp_api_contract.campaign_generation import CampaignGenerationJobResult
+from src.campaign_generation.model import (
+    CampaignGenerationJob,
+    CampaignGenerationJobResult,
+)
 
 
 class BaseCampaignGenerationJobStep(ABC):

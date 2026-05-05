@@ -2,9 +2,24 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from webapp_api_contract.brand.content_type import ContentTypeName
-from webapp_api_contract.content import ContentData
-from webapp_api_contract.shared import ContentChannelName, ContentFormat, JobStatus
+from src.brand.model import ContentTypeName
+from src.content.model import ContentData
+from src.shared.model import ContentChannelName, ContentFormat, JobStatus
+
+
+class ContentPlanItem(BaseModel):
+    id: str
+    job_id: str
+    description: str
+    channel: ContentChannelName
+    content_type: ContentTypeName
+    content_format: ContentFormat
+    image_urls: list[str] = []
+    scheduled_at: datetime
+    content_data: ContentData | None = None
+    status: JobStatus = JobStatus.PENDING
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ContentPlanItemCreateRequest(BaseModel):
@@ -37,5 +52,3 @@ class ContentPlanItemUpdateRequest(BaseModel):
 class RestContentPlanItemUpdateRequest(BaseModel):
     scheduled_at: datetime | None = None
     content_data: ContentData | None = None
-
-    model_config = ConfigDict(from_attributes=True)

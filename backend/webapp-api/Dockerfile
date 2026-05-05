@@ -17,22 +17,12 @@ ENV PATH="/usr/local/bin:$PATH"
 
 # Build context must be set to backend/ directory
 # docker build -t webapp-api -f webapp-api/Dockerfile .
-#
-# Mirror the uv workspace structure under /backend/ so { workspace = true }
-# sources resolve correctly and contracts are installed as editable packages.
 
 # Workspace root
 COPY pyproject.toml uv.lock /backend/
 
-# All workspace member pyproject.toml files (uv needs these for workspace discovery)
+# Workspace member pyproject.toml (uv needs this for workspace discovery)
 COPY webapp-api/pyproject.toml /backend/webapp-api/pyproject.toml
-COPY scraper-api-contract/pyproject.toml /backend/scraper-api-contract/pyproject.toml
-COPY webapp-api-contract/pyproject.toml /backend/webapp-api-contract/pyproject.toml
-COPY scraper-api/pyproject.toml /backend/scraper-api/pyproject.toml
-
-# Contract source (editable installs — live changes visible without reinstalling)
-COPY scraper-api-contract/scraper_api_contract/ /backend/scraper-api-contract/scraper_api_contract/
-COPY webapp-api-contract/webapp_api_contract/ /backend/webapp-api-contract/webapp_api_contract/
 
 # Service source
 COPY webapp-api/src/ /backend/webapp-api/src/

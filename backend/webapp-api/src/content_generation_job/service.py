@@ -1,13 +1,13 @@
 import src.content.service as content_service
 import src.content_generation_job.repository as content_generation_job_repository
 from lib.db.session_factory import DbSessionFactory
+from src.content.model import ContentCreateRequest, TextOnlyContentData
 from src.content_generation_job.errors import (
     ContentGenerationJobNoResultException,
     ContentGenerationJobUnsupportedWorkflowTypeException,
 )
-from src.content_generation_job.model import ContentGenerationJob
-from webapp_api_contract.content import ContentCreateRequest, TextOnlyContentData
-from webapp_api_contract.content_generation import (
+from src.content_generation_job.model import (
+    ContentGenerationJob,
     ContentGenerationJobCreateRequest,
     ContentGenerationJobSearchRequest,
     ContentGenerationJobUpdateRequest,

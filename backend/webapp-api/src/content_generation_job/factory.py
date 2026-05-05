@@ -9,7 +9,7 @@ from lib.supabase_client import (
     StorageUploadResult,
     SupabaseStorageService,
 )
-from webapp_api_contract.content_generation import (
+from src.content_generation_job.model import (
     ContentGenerationJobCreateRequest,
     FromUserMediaTextWithSingleImageContentGenerationJobUserInput,
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,

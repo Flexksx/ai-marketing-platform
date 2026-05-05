@@ -214,9 +214,6 @@ services:
       PUBLIC_SUPABASE_URL: http://kong:8000
       PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
-      SCRAPER_SERVICE_URL: http://scraper-api:8081
-      API_BASE_URL: http://webapp-api:8080
-      SCRAPER_CALLBACK_SECRET: ${WEBAPP_API_SCRAPER_CALLBACK_SECRET}
       GEMINI_API_KEY: ${WEBAPP_API_GEMINI_API_KEY}
       ENVIRONMENT: development
       LOG_LEVEL: DEBUG
@@ -227,8 +224,6 @@ services:
     volumes:
       - ./backend/webapp-api/src:/backend/webapp-api/src
       - ./backend/webapp-api/lib:/backend/webapp-api/lib
-      - ./backend/webapp-api-contract:/backend/webapp-api-contract
-      - ./backend/scraper-api-contract:/backend/scraper-api-contract
     ports:
       - "8080:8080"
     depends_on:
@@ -240,47 +235,6 @@ services:
         condition: service_started
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
-      interval: 30s
-      timeout: 10s
-      start_period: 30s
-      retries: 3
-
-  scraper-api:
-    build:
-      context: ./backend
-      dockerfile: scraper-api/Dockerfile
-    command: [
-      "/backend/.venv/bin/uvicorn", "src.main:app",
-      "--host", "0.0.0.0", "--port", "8081",
-      "--reload", "--reload-dir", "/backend/scraper-api/src"
-    ]
-    env_file:
-      - path: ./.env
-        required: false
-    environment:
-      PORT: "8081"
-      SUPABASE_URL: http://kong:8000
-      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
-      WEBAPP_API_URL: http://webapp-api:8080
-      ENVIRONMENT: development
-      LOG_LEVEL: DEBUG
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://vector:4317
-      OTEL_SERVICE_NAME: scraper-api
-      LOGFIRE_SEND_TO_LOGFIRE: "false"
-      LOGFIRE_OTLP_ENDPOINT: http://vector:4318
-    volumes:
-      - ./backend/scraper-api/src:/backend/scraper-api/src
-      - ./backend/scraper-api-contract:/backend/scraper-api-contract
-      - ./backend/webapp-api-contract:/backend/webapp-api-contract
-    ports:
-      - "8081:8081"
-    depends_on:
-      vector:
-        condition: service_started
-      webapp-api:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8081/health')"]
       interval: 30s
       timeout: 10s
       start_period: 30s

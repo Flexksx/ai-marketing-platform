@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import DateTime
 
 from lib.db import Base
-from webapp_api_contract.shared import ContentFormat, JobStatus
+from src.shared.model import ContentFormat, JobStatus
 
 
 class ContentGenerationJobRecord(Base):

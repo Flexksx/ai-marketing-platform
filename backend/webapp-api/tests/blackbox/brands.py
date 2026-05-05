@@ -2,15 +2,14 @@ import public
 from faker import Faker
 from pydantic_extra_types.language_code import LanguageAlpha2
 
-from webapp_api_contract.brand import BrandColor, BrandData
-from webapp_api_contract.brand.archetype import BrandArchetypeName
-from webapp_api_contract.brand.audience import (
+from src.brand.archetype.model import BrandArchetypeName
+from src.brand.model import (
     BrandAudience,
     BrandAudienceAgeRange,
     BrandAudienceGender,
     BrandAudienceIncomeRange,
-)
-from webapp_api_contract.brand.tone_of_voice import (
+    BrandColor,
+    BrandData,
     BrandToneOfVoice,
     SentenceLengthPreference,
 )

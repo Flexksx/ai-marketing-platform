@@ -40,9 +40,7 @@ in {
     export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
     export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
 
-    if [ -f "$REPO_ROOT/backend/webapp-api/pyproject.toml" ]; then
-      echo "Syncing Python dependencies..."
-      (cd "$REPO_ROOT/backend/webapp-api" && uv sync)
-    fi
+    echo "Syncing Python dependencies..."
+    (cd "$REPO_ROOT/backend" && uv sync)
   '';
 }

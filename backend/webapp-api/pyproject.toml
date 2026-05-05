@@ -33,13 +33,7 @@ dependencies = [
   "fastapi-utils>=0.8.0",
   "python-ulid>=3.1.0",
   "faker>=40.5.1",
-  "webapp-api-contract",
-  "scraper-api-contract",
 ]
-
-[tool.uv.sources]
-webapp-api-contract = { workspace = true }
-scraper-api-contract = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
@@ -68,7 +62,7 @@ dev = [
 extend = "../ruff.toml"
 
 [tool.ruff.lint.isort]
-known-first-party = ["src", "lib", "webapp_api_contract", "test"]
+known-first-party = ["src", "lib", "test"]
 
 [tool.ty.environment]
 python = "../.venv/bin/python"

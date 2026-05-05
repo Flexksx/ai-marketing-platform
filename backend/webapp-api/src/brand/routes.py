@@ -11,6 +11,13 @@ from lib.supabase_client.storage.schema import (
 )
 from src.auth import get_current_user_id
 from src.auth_access import validate_brand_access
+from src.brand.model import (
+    BrandCreateRequest,
+    BrandData,
+    BrandResponse,
+    BrandSearchRequest,
+    BrandUpdateRequest,
+)
 from src.campaign_generation.routes import (
     router as campaign_creation_router,
 )
@@ -25,13 +32,6 @@ from src.content_generation_job.routes import (
 )
 from src.content_plan_item.routes import (
     router as content_plan_items_router,
-)
-from webapp_api_contract.brand import (
-    BrandCreateRequest,
-    BrandData,
-    BrandResponse,
-    BrandSearchRequest,
-    BrandUpdateRequest,
 )
 
 

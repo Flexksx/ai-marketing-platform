@@ -12,14 +12,14 @@ from src.campaign_generation.errors import (
     OptimisticLockError,
     PostingPlanItemNotFoundException,
 )
-from src.campaign_generation.model import CampaignGenerationJob
-from webapp_api_contract.campaign_generation import (
+from src.campaign_generation.model import (
     CampaignCreationJobUpdateInput,
+    CampaignGenerationJob,
     CampaignGenerationJobCreateRequest,
     CampaignGenerationJobResult,
     ContentPlanItem,
 )
-from webapp_api_contract.shared import JobStatus
+from src.shared.model import JobStatus
 
 
 logger = logging.getLogger(__name__)

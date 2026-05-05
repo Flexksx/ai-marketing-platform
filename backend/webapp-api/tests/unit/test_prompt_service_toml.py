@@ -4,9 +4,8 @@ import pytest
 
 from lib.prompts.model import PromptConfigError
 from lib.prompts.service import PromptService
-from webapp_api_contract.brand.archetype import BrandArchetypeName
-from webapp_api_contract.brand.content_type import ContentTypeName
-from webapp_api_contract.brand.tone_of_voice import ToneOfVoiceDimensionName
+from src.brand.archetype.model import BrandArchetypeName
+from src.brand.model import ContentTypeName, ToneOfVoiceDimensionName
 
 
 def test_prompt_service_loads_libraries_from_repo_prompts() -> None:

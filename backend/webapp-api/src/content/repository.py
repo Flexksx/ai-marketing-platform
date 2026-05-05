@@ -5,8 +5,8 @@ from lib.db.session_factory import DbSessionFactory
 from lib.utils import new_id
 from src.content.entity import ContentRecord
 from src.content.errors import ContentNotFoundException
-from src.content.model import Content
-from webapp_api_contract.content import (
+from src.content.model import (
+    Content,
     ContentCreateRequest,
     ContentListRequest,
     ContentUpdateRequest,

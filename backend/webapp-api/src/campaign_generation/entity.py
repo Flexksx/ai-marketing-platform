@@ -4,10 +4,10 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import DateTime
 
 from lib.db import Base
-from webapp_api_contract.campaign_generation import (
+from src.campaign_generation.model import (
     CampaignGenerationJobWorkflowType,
 )
-from webapp_api_contract.shared import JobStatus
+from src.shared.model import JobStatus
 
 
 class CampaignGenerationJobRecord(Base):

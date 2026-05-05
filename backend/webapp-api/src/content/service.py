@@ -1,7 +1,7 @@
 import src.content.repository as content_repository
 from lib.db.session_factory import DbSessionFactory
-from src.content.model import Content
-from webapp_api_contract.content import (
+from src.content.model import (
+    Content,
     ContentCreateRequest,
     ContentListRequest,
     ContentUpdateRequest,

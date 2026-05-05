@@ -7,7 +7,7 @@ from lib.db.session_factory import DbSessionFactory
 from lib.utils import new_id
 from src.content_plan_item.entity import ContentPlanItemRecord
 from src.content_plan_item.errors import ContentPlanItemNotFoundException
-from webapp_api_contract.content_plan_items import (
+from src.content_plan_item.model import (
     ContentPlanItem,
     ContentPlanItemCreateRequest,
     ContentPlanItemUpdateRequest,

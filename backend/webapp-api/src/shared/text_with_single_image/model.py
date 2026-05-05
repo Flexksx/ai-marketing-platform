@@ -1,7 +1,7 @@
 import public
 from pydantic import BaseModel
 
-from webapp_api_contract.shared import ContentChannelName, ContentFormat
+from src.shared.model import ContentChannelName, ContentFormat
 
 
 @public.add

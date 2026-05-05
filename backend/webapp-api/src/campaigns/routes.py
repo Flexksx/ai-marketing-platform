@@ -4,7 +4,7 @@ import src.campaigns.service as campaign_service
 from lib.db.session_factory import DbSessionFactory
 from src.auth_access import validate_brand_access
 from src.campaigns.entity import CampaignState
-from webapp_api_contract.campaigns import CampaignListRequest, CampaignResponse
+from src.campaigns.model import CampaignListRequest, CampaignResponse
 
 
 router = APIRouter(tags=["Brand Campaigns"])

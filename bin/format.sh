@@ -13,9 +13,6 @@ repo_root="$(cd "${script_dir}/.." && pwd)"
 # Ruff resolves shared rules via `[tool.ruff] extend = \"../ruff.toml\"` in each package's pyproject.toml.
 backend_python_projects=(
     "${repo_root}/backend/webapp-api"
-    "${repo_root}/backend/scraper-api"
-    "${repo_root}/backend/webapp-api-contract"
-    "${repo_root}/backend/scraper-api-contract"
 )
 
 format_python_package() {

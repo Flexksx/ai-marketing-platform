@@ -7,13 +7,13 @@ from src.content_generation_job.entity import ContentGenerationJobRecord
 from src.content_generation_job.errors import (
     ContentGenerationJobNotFoundException,
 )
-from src.content_generation_job.model import ContentGenerationJob
-from webapp_api_contract.content_generation import (
+from src.content_generation_job.model import (
+    ContentGenerationJob,
     ContentGenerationJobCreateRequest,
     ContentGenerationJobSearchRequest,
     ContentGenerationJobUpdateRequest,
 )
-from webapp_api_contract.shared import JobStatus
+from src.shared.model import JobStatus
 
 
 async def create(

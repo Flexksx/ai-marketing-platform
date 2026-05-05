@@ -1,4 +1,4 @@
-from webapp_api_contract.shared import (
+from src.shared.model import (
     ContentChannel,
     ContentChannelImageSpecification,
     ContentChannelName,

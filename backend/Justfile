@@ -1,8 +1,5 @@
 sync:
-    cd webapp-api-contract && uv sync
-    cd scraper-api-contract && uv sync
-    cd webapp-api && uv sync
-    cd scraper-api && uv sync
+    uv sync
 
 format module:
     ../bin/format.sh {{module}}
