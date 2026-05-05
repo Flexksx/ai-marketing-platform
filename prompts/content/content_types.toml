@@ -1,0 +1,107 @@
+[TESTIMONIAL]
+description = "Highlight the specific 'before' state of doubt and the 'after' state of relief. Keep the language grounded and authentic, avoiding hyperbole."
+
+[REVIEW]
+description = "Focus on a specific detail that surprised the user. Use 'social validation' language to show why others in the same shoes should trust this."
+
+[CASE_STUDY]
+description = "Structure this as a Hero's Journey: The Challenge, The Pivot, and The Triumph. Use specific metrics to anchor the narrative."
+
+[CLIENT_STORY]
+description = "Focus on the human element. What was the internal doubt the client had before working with us, and how was that doubt resolved?"
+
+[RESULT]
+description = "Lead with the 'Punchline' (the outcome). Work backward to show the one or two critical moves that made that result inevitable."
+
+[SCREENSHOT]
+description = "Provide context for a visual 'receipt.' Explain exactly what the reader is looking at and why this specific data point or comment proves excellence."
+
+[TUTORIAL]
+description = "Break this down into a logical 1-2-3 sequence. Prioritize clarity over cleverness. Ensure the reader can achieve the result immediately after reading."
+
+[TIP]
+description = "Provide a single, high-impact 'micro-win.' It should be something the reader can implement in under 2 minutes to solve a specific friction point."
+
+[GUIDE]
+description = "Provide a comprehensive overview of a workflow. Structure with clear headings, a 'why it matters' section, and a 'how to get started' checklist."
+
+[FRAMEWORK]
+description = "Synthesize this concept into a repeatable system or mental model. Use an acronym or a visual metaphor to make the complex simple."
+
+[MYTH]
+description = "Identify a common industry 'sacred cow.' Deconstruct why it’s outdated or wrong, then provide the 'uncomfortable truth' that replaces it."
+
+[MISTAKE]
+description = "Focus on a high-stakes error. Describe the 'symptom' the audience feels, explain the root cause, and provide the corrective action."
+
+[INDUSTRY_INSIGHT]
+description = "Synthesize a recent macro-trend. Explain what it means for the individual practitioner and what specific shift in behavior is required to stay relevant."
+
+[DEMO]
+description = "Walk through the solution as if the user is holding the controls. Focus on the 'Aha!' moment where the primary pain point disappears."
+
+[FEATURE_HIGHLIGHT]
+description = "Do not list specs. Connect this specific feature to a specific human frustration it eliminates. Answer: 'Why does this matter at 2 AM?'"
+
+[PRODUCT_USE]
+description = "Show the product in a non-obvious context. Highlight a 'pro-tip' usage that separates power users from beginners."
+
+[BEFORE_AFTER]
+description = "Emphasize the emotional and functional 'gap' between the struggle and the solution. Use sensory language to describe the 'New Reality'."
+
+[BENEFIT]
+description = "Translate a technical capability into a lifestyle or business outcome. Focus on 'What’s in it for them' (Saved time, reduced stress, increased status)."
+
+[COMPARISON]
+description = "Create a 'Us vs. The Status Quo' narrative. Do not just compare features; compare the underlying philosophies and outcomes."
+
+[FOUNDER_STORY]
+description = "Share a moment of vulnerability or a 'pivotal realization.' Connect the founder's personal 'Why' to the company's current 'How.'"
+
+[TEAM_HIGHLIGHT]
+description = "Humanize the brand by showing the expertise and personality of a specific team member. Focus on their unique contribution to the user's success."
+
+[PROCESS]
+description = "Pull back the curtain on how the 'sausage is made.' Explain a high-standard or rigorous step in your workflow that the customer usually never sees."
+
+[PRODUCT_BUILDING]
+description = "Show a work-in-progress. Share a challenge you are currently solving to build anticipation and show commitment to quality."
+
+[DAILY_WORK]
+description = "Show the unvarnished reality of the trade. Focus on the discipline and 'boring' consistency required to produce world-class results."
+
+[MEME]
+description = "Use humor to call out a shared industry frustration. The goal is the 'it's funny because it's true' realization that builds tribal belonging."
+
+[TREND]
+description = "Jump on a current cultural moment, but pivot it immediately to your niche. The 'hook' is the trend; the 'value' is the relevant observation."
+
+[RELATABLE_POST]
+description = "Describe a specific, everyday situation that your audience faces. Use 'First-Person' language to say: 'I see you, and I experience this too.'"
+
+[HUMOR]
+description = "Use self-deprecating or observational wit to lower the reader's guard. The humor should serve as a bridge to a deeper, more serious point."
+
+[CULTURAL_COMMENTARY]
+description = "Observe a shift in how society or your industry behaves. Use a witty, sharp perspective to highlight the absurdity or the opportunity."
+
+[OPINION]
+description = "Share a 'Strong Opinion, Weakly Held.' Explain the logic behind your worldview and invite the audience to challenge your perspective."
+
+[PREDICTION]
+description = "Look 12–24 months ahead. Connect two seemingly unrelated industry shifts to forecast a new 'Normal'. Explain how to prepare now."
+
+[HOT_TAKE]
+description = "Take a polarizing stance on a current trend. Avoid being contrarian for the sake of it—base the take on a unique observation others are missing."
+
+[POLL]
+description = "Ask a question that forces a choice between two valid but opposing philosophies. The goal is to spark a debate in the comments."
+
+[QUESTION]
+description = "Ask an open-ended question that allows the audience to showcase their own expertise or share their personal 'wins'."
+
+[DISCUSSION]
+description = "Post a 'Thesis' and ask for counter-arguments. Facilitate the conversation by acknowledging diverse viewpoints."
+
+[CHALLENGE]
+description = "Issue a specific, time-bound call to action. Give the audience a simple task to complete and a way to report back their progress."

@@ -16,7 +16,7 @@ from src.campaign_generation.model import (
 from src.shared.model import ContentChannel, ContentChannelName
 
 
-class CampaignContentBriefAgentResult(BaseModel):
+class _CampaignContentBriefAgentResult(BaseModel):
     name: str
     description: str
     goal: ContentPillarBusinessGoal
@@ -32,22 +32,22 @@ class CampaignContentBriefAgentResult(BaseModel):
 class _AgentDependencies(BaseModel):
     brand: Brand
     content_channels: list[ContentChannel]
-    description_prompt_name: PromptTemplateName
 
 
 _prompt_service = PromptService()
 
-_agent: Agent[_AgentDependencies, CampaignContentBriefAgentResult] = Agent(
+_agent: Agent[_AgentDependencies, _CampaignContentBriefAgentResult] = Agent(
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
     deps_type=_AgentDependencies,
-    output_type=CampaignContentBriefAgentResult,
+    output_type=_CampaignContentBriefAgentResult,
 )
 
 
 @_agent.system_prompt
 def _get_system_prompt(context: RunContext[_AgentDependencies]) -> str:
     return _prompt_service.render(
-        context.deps.description_prompt_name, context.deps.model_dump()
+        PromptTemplateName.CAMPAIGN_GENERATION_DESCRIPTION_STEP,
+        context.deps.model_dump(),
     )
 
 
@@ -58,23 +58,18 @@ async def generate_content_brief(
 ) -> CampaignGenerationJobResult:
     brand = await brand_service.get(session_factory, job.brand_id)
     content_channels = content_channel_service.search()
-    deps = _AgentDependencies(
-        brand=brand,
-        content_channels=content_channels,
-        description_prompt_name=PromptTemplateName.CAMPAIGN_GENERATION_DESCRIPTION_STEP,
-    )
+    deps = _AgentDependencies(brand=brand, content_channels=content_channels)
     run_result = await _agent.run(
         user_prompt=[job.user_input.prompt, *(image_urls or [])],
         deps=deps,
     )
-    brief_result: CampaignContentBriefAgentResult = run_result.output
-    return await _merge_campaign_result(session_factory, job.id, brief_result)
+    return await _merge_campaign_result(session_factory, job.id, run_result.output)
 
 
 async def _merge_campaign_result(
     session_factory: DbSessionFactory,
     job_id: str,
-    agent_result: CampaignContentBriefAgentResult,
+    agent_result: _CampaignContentBriefAgentResult,
 ) -> CampaignGenerationJobResult:
     job = await campaign_generation_job_service.get(session_factory, job_id)
     current_result = job.get_result()

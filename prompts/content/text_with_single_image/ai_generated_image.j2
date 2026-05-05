@@ -1,0 +1,42 @@
+{% include 'image_generation/standard-image-generation.j2' %}
+
+{% include 'brand/identity.j2' %}
+
+{% if campaign %}
+Campaign context:
+Campaign goal: {{ campaign.goal }}
+Campaign description: {{ campaign.description }}
+Target audience: {{ campaign.target_audience }}
+Content pillar: {{ campaign.content_pillar }}
+{% if post_topic%}
+Post topic: {{ post_topic }}
+{% endif %}
+{% endif %}
+
+Platform: {{ channel }}
+{% if channel == 'INSTAGRAM' %}
+{% include 'instagram/visual-content.j2' %}
+{% elif channel == 'LINKEDIN' %}
+{% include 'linkedin/visual-content.j2' %}
+{% endif %}
+
+CONTENT_DIRECTION:
+{{ user_prompt }}
+
+## OUTPUT REQUIREMENTS:
+- Photorealistic, editorial quality
+- Natural lighting, authentic feel
+- No AI-looking artifacts
+- Clean composition with clear focal point
+- Ultra high resolution output
+- No text, watermark, logos, blurry, low resolution, warped features, extra limbs
+
+## ABSOLUTELY DO NOT:
+- Generate ANY text, letters, words, logos, watermarks, or branding elements
+- Generate ANY logo or brand mark — a real logo will be added separately
+- Use cluttered or busy compositions
+- Create images that look obviously AI-generated or synthetic
+- Ignore the brand color palette
+- Create abstract or unrelated imagery that does not connect to the business
+
+PROHIBITED: text, watermark, logos, blurry, low resolution, warped features, extra limbs

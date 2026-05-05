@@ -1,0 +1,25 @@
+## Brand visual identity:
+{% if brand.data.colors %}
+Primary Colors:
+{% for color in brand.data.colors[:3] %}
+{{ color.name }} ({{ color.hex_value }}) {% if not loop.last %}, {% endif %} {% endfor %} - USE THESE PROMINENTLY throughout the image
+
+{% if brand.data.colors|length > 3 %}
+Accent Colors: {% for color in brand.data.colors[3:] %}{{ color.name }} ({{ color.hex_value }}){% if not loop.last %}, {% endif %}{% endfor %} - USE AS ACCENTS and highlights
+{% endif %}
+{% endif %}
+
+{% if brand.data.archetype %}
+### Brand Archetype:
+{{ brand.data.archetype }}
+{% endif %}
+
+### Brand Description:
+{{ brand.data.description }}
+
+{% if brand.data.audiences %}
+### Brand Target Audience:
+{% for audience in brand.data.audiences %}**{{ audience.name }}**: {{ audience.description }}{% if not loop.last %}
+{% endif %}
+{% endfor %}
+{% endif %}

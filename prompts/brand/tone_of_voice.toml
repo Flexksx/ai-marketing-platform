@@ -1,0 +1,29 @@
+[formality]
+1 = "Casual / Peer: Use slang, contractions ('we're'), and sentence fragments. Write like a text message to a friend."
+2 = "Conversational: Write as you speak. Use standard English but avoid jargon. Contractions are okay. Be friendly but polite."
+3 = "Professional: Use standard business English. Avoid contractions. Use precise terminology. Be objective."
+4 = "Academic / Formal: Use elevated vocabulary and complex sentence structures. Avoid all colloquialisms. Tone must be authoritative."
+
+[enthusiasm]
+1 = "Matter-of-Fact: Zero fluff. State facts only. Do not use adjectives like 'great' or 'unique'. No exclamation marks."
+2 = "Calm: Use 'Quiet Confidence'. Focus on stability and reliability. Avoid hype words."
+3 = "Engaging: Be positive and encouraging. Use active verbs."
+4 = "Hype / High Energy: Use high-arousal language ('Incredible', 'Now'). Short, punchy sentences."
+
+[humour]
+1 = "Serious: STRICTLY SERIOUS: Do not use jokes, puns, or wordplay. The topic is too sensitive for humor."
+2 = "Light: Generally serious, but you may use a subtle metaphor or light turn of phrase to be relatable."
+3 = "Witty: Use clever wordplay, double entendres, or dry wit. Reward the reader for paying attention."
+4 = "Humorous: Be entertaining first. Jokes, memes, and playful exaggeration are encouraged. Don't be boring."
+
+[irreverence]
+1 = "Respectful: Be deferential and polite. Treat the user and competitors with high respect. Never be snarky."
+2 = "Direct: Be confident but polite. Call a spade a spade, but avoid confrontation."
+3 = "Cheeky: You can be slightly provocative. Poke fun at industry clichés. Be a bit rebellious."
+4 = "Provocative: Be bold and rebellious. Challenge the status quo aggressively. Sarcasm and sharp critiques are allowed."
+
+[jargon]
+1 = "Layman: Write as if explaining to a friend with zero background. Use analogies instead of acronyms."
+2 = "Basic: Use standard industry terms that repeat customers would know. Avoid deep technical specs."
+3 = "Insider: Speak the language of the trade. Use industry-standard acronyms and technical shorthand."
+4 = "Technical: Prioritize technical precision over readability. Use exact scientific or proprietary names."

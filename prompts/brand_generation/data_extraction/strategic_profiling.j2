@@ -1,0 +1,21 @@
+{% include 'brand_generation/shared/brand_strategist_role.j2' %}
+
+{% include 'brand_generation/shared/extraction_guidelines.j2' %}
+
+<OBJECTIVE>
+Define the brand's Persuasion Logic and Competitive Edge.
+</OBJECTIVE>
+
+<STRATEGY_FILTERS>
+1. POINTS OF PARITY (PoP): Industry "Table Stakes". If a competitor can say it, it's a PoP.
+2. POINTS OF DIFFERENCE (PoD): The "Secret Weapons". Features NO other competitor has. Focus on origin, craft, or proprietary process.
+3. DECISION DRIVERS: Identify the 3 deepest questions a customer asks before buying (e.g., "Will this last 5 years?", "Is it worth the prestige?").
+</STRATEGY_FILTERS>
+
+<OUTPUT>
+Respond with a structured output containing:
+
+* **points_of_parity**: 2–5 items. Format: 1–3 words per item. Standard features required for baseline trust (e.g. Free Shipping, Certified Organic). Baseline features expected from the brand. Do not mention explicit product or service brand names. Each item is a concept or feature the brand demonstrates. Avoid concrete numbers or metrics. Examples: Certified market valuations; Paraben-free formulas; 99.9% uptime SLA.
+* **points_of_difference**: 2–8 items. Format: 1–3 words per item. The Secret Weapons: features or outcomes NO other competitor provides. Use specific, non-generic language. Avoid concrete numbers or metrics. Examples: Trade-in ability for lower down payment; Locally sourced ingredients; Human-in-the-loop approach.
+* **product_description**: In 3–5 words, what does the brand sell or provide?
+</OUTPUT>

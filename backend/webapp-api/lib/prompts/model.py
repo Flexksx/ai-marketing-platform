@@ -3,7 +3,12 @@ from pydantic import BaseModel, ConfigDict
 from strenum import StrEnum
 
 from src.brand.archetype.model import BrandArchetype, BrandArchetypeName
-from src.brand.model import ContentType, ContentTypeName
+from src.brand.model import (
+    ContentType,
+    ContentTypeName,
+    ToneOfVoiceDimension,
+    ToneOfVoiceDimensionName,
+)
 
 
 @public.add
@@ -45,6 +50,7 @@ class PromptTemplateName(StrEnum):
 
 
 class PromptLibraries(BaseModel):
+    tone_library: dict[ToneOfVoiceDimensionName, ToneOfVoiceDimension]
     archetype_library: dict[BrandArchetypeName, BrandArchetype]
     content_type_library: dict[ContentTypeName, ContentType]
 

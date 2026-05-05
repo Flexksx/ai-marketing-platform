@@ -53,6 +53,27 @@ class ContentType(BaseModel):
     description: str = Field(default="")
 
 
+class ToneOfVoiceDimensionName(StrEnum):
+    FORMALITY = "FORMALITY"
+    HUMOUR = "HUMOUR"
+    IRREVERENCE = "IRREVERENCE"
+    ENTHUSIASM = "ENTHUSIASM"
+    JARGON = "JARGON"
+
+
+class ToneOfVoiceDimensionLevel(BaseModel):
+    scale_number: int
+    name: str
+    description: str
+
+
+class ToneOfVoiceDimension(BaseModel):
+    name: ToneOfVoiceDimensionName
+    levels: list[ToneOfVoiceDimensionLevel]
+
+    model_config = ConfigDict(frozen=True)
+
+
 class BrandAudienceAgeRange(StrEnum):
     TEENS = "TEENS"
     YOUNG_ADULTS = "YOUNG_ADULTS"

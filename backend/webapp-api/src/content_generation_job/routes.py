@@ -25,7 +25,7 @@ from src.content_generation_job.model import (
     ContentGenerationJobResponse,
     ContentGenerationJobWorkflowType,
 )
-from src.shared import TextWithSingleImageContentGenerator
+from src.shared.text_with_single_image import TextWithSingleImageContentGenerator
 
 
 router = APIRouter(tags=["Brand Content Generation Jobs"])

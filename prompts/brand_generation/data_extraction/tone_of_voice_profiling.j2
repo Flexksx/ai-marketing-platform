@@ -1,0 +1,32 @@
+{% include 'brand_generation/shared/brand_strategist_role.j2' %}
+
+{% include 'brand_generation/shared/extraction_guidelines.j2' %}
+
+<OBJECTIVE>
+Determine the brand's 'Linguistic Firewall' and 'Sensory Soul'.
+</OBJECTIVE>
+
+<TONE_SCALES>
+For each dimension, select an integer from 1 to 4.
+
+Dimensions:
+{% for dimension_name, dimension in tone_library.items() %}
+**{{ dimension_name }}**:
+{% for level_num in [1, 2, 3, 4] %}
+  - {{ level_num }}: {{ dimension[level_num]['name'] }} - {{ dimension[level_num]['description'] }}
+{% endfor %}
+
+{% endfor %}
+</TONE_SCALES>
+
+* **sentence_length_preference**: One of SHORT (shorter sentences), MEDIUM, LONG (longer sentences).
+* **formality_level**, **humour_level**, **irreverence_level**, **enthusiasm_level**: Each an integer 1–4. Lower = more casual/serious; higher = more formal/playful.
+
+<SENSORY_EXTRACTION>
+* **sensory_keywords**: 3–8 keywords describing the brand's texture. Materials (Linen, Steel), light (Sunlit, Neon), atmosphere (Grounded, Ethereal). Create the brand's atmosphere and vibe. Extract from images on the website. Focus on abstractions and concepts, not specific objects.
+</SENSORY_EXTRACTION>
+
+<FIREWALL_RULES>
+* **excluded_words**: 3–10 items. The Firewall: words that break the brand soul (e.g. Solutions, Innovative, Unlock). Words the brand avoids to stay in their desired segment. Words the community would find cringe or cheesy (e.g. luxury brand avoids "affordable", "budget").
+* **signature_words**: 3–10 items. The brand's signature words. Unique to the brand, convey its personality (e.g. Vetted, Heritage, Anchor). Look for idiosyncrasies: do they call customers 'Members', 'Ambassadors', 'Friends'? Verbs like 'Crafted' instead of 'Made'? Handshake words that prove the brand belongs to its niche.
+</FIREWALL_RULES>

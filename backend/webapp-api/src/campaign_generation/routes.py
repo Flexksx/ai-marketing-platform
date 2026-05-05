@@ -1,4 +1,3 @@
-import functools
 import logging
 
 from fastapi import (
@@ -11,111 +10,25 @@ from fastapi import (
     Path,
     UploadFile,
 )
-from pydantic_ai import ImageUrl
 
+import src.campaign_generation.generation.runner as campaign_generation_runner
 import src.campaign_generation.service as campaign_generation_job_service
 from lib.db.session_factory import DbSessionFactory
-from lib.prompts import PromptTemplateName
 from lib.supabase_client import SupabaseStorageService
 from src.auth import get_current_user_id
 from src.auth_access import validate_brand_access
-from src.campaign_generation.errors import (
-    CampaignGenerationJobWorkflowTypeMismatchException,
-)
 from src.campaign_generation.factory import get_from_request_form
-from src.campaign_generation.generation.content_brief.service import (
-    generate_content_brief,
-)
-from src.campaign_generation.generation.content_generation import (
-    ai_generated as ai_generated_content,
-)
-from src.campaign_generation.generation.content_generation import (
-    from_user_media as user_media_content,
-)
-from src.campaign_generation.generation.content_generation import (
-    product_lifestyle as product_lifestyle_content,
-)
-from src.campaign_generation.generation.content_plan import (
-    ai_generated as ai_generated_plan,
-)
-from src.campaign_generation.generation.content_plan import (
-    from_user_media as user_media_plan,
-)
-from src.campaign_generation.generation.shared.service import (
-    run_campaign_generation_job,
-)
 from src.campaign_generation.model import (
     CampaignCreationAcceptRequest,
-    CampaignGenerationJob,
     CampaignGenerationJobResponse,
-    CampaignGenerationJobWorkflowType,
-    UserMediaOnlyCampaignGenerationJobUserInput,
 )
 from src.campaigns.model import CampaignResponse
-from src.shared import TextWithSingleImageContentGenerator
+from src.shared.text_with_single_image import TextWithSingleImageContentGenerator
 
 
 router = APIRouter(tags=["Brand Campaign Creation"])
 
 logger = logging.getLogger(__name__)
-
-
-def _get_campaign_steps(
-    job: CampaignGenerationJob,
-    session_factory: DbSessionFactory,
-    content_generator: TextWithSingleImageContentGenerator,
-) -> tuple:
-    workflow_type = job.workflow_type
-
-    if workflow_type == CampaignGenerationJobWorkflowType.AI_GENERATED:
-        return (
-            functools.partial(generate_content_brief, session_factory=session_factory),
-            functools.partial(
-                ai_generated_plan.generate_content_plan,
-                session_factory=session_factory,
-                prompt_template_name=PromptTemplateName.CAMPAIGN_GENERATION_CONTENT_PLAN_STEP,
-            ),
-            functools.partial(
-                ai_generated_content.generate_content,
-                session_factory=session_factory,
-                content_generator=content_generator,
-            ),
-        )
-    if workflow_type == CampaignGenerationJobWorkflowType.USER_MEDIA_ONLY:
-        assert isinstance(job.user_input, UserMediaOnlyCampaignGenerationJobUserInput)
-        image_urls = [ImageUrl(url=u) for u in job.user_input.image_urls]
-        return (
-            functools.partial(
-                generate_content_brief,
-                session_factory=session_factory,
-                image_urls=image_urls,
-            ),
-            functools.partial(
-                user_media_plan.generate_content_plan, session_factory=session_factory
-            ),
-            functools.partial(
-                user_media_content.generate_content,
-                session_factory=session_factory,
-                content_generator=content_generator,
-            ),
-        )
-    if workflow_type == CampaignGenerationJobWorkflowType.PRODUCT_LIFESTYLE:
-        return (
-            functools.partial(generate_content_brief, session_factory=session_factory),
-            functools.partial(
-                ai_generated_plan.generate_content_plan,
-                session_factory=session_factory,
-                prompt_template_name=PromptTemplateName.CAMPAIGN_GENERATION_CONTENT_PLAN_STEP,
-            ),
-            functools.partial(
-                product_lifestyle_content.generate_content,
-                session_factory=session_factory,
-                content_generator=content_generator,
-            ),
-        )
-    raise CampaignGenerationJobWorkflowTypeMismatchException(
-        f"No steps defined for workflow type: {workflow_type}"
-    )
 
 
 @router.post(
@@ -136,23 +49,15 @@ async def start(
     request = await get_from_request_form(
         brand_id, request_data, request_files, supabase_storage_service
     )
-
     job = await campaign_generation_job_service.create(session_factory, request)
-    brief_fn, plan_fn, content_fn = _get_campaign_steps(
-        job, session_factory, content_generator
-    )
 
     logger.info(
-        f"Dispatching campaign generation job {job.id} for workflow {job.workflow_type}",
+        f"Dispatching campaign generation job {job.id} "
+        f"for workflow {job.workflow_type}",
         extra={"job_id": job.id},
     )
     background_tasks.add_task(
-        run_campaign_generation_job,
-        session_factory,
-        job.id,
-        brief_fn,
-        plan_fn,
-        content_fn,
+        campaign_generation_runner.run, job, session_factory, content_generator
     )
 
     return CampaignGenerationJobResponse.model_validate(job)

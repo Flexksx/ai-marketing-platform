@@ -1,0 +1,52 @@
+{% include 'brand/identity.j2' %}
+
+{% if campaign %}
+## Campaign context
+
+Campaign goal: {{ campaign.goal }}
+Campaign description: {{ campaign.description }}
+Target audience: {{ campaign.target_audience }}
+Content pillar: {{ campaign.content_pillar }}
+{% if post_topic%}
+Post topic: {{ post_topic }}
+{% endif %}
+{% endif %}
+
+## Guardrails
+
+{% include 'guardrails/visual-content.j2' %}
+
+## Per-Channel instructions
+
+You will find below instructions for {{ channel }}:
+
+{% if channel == 'INSTAGRAM' %}
+    {% include 'instagram/visual-content.j2' %}
+{% elif channel == 'LINKEDIN' %}
+    {% include 'linkedin/visual-content.j2' %}
+{% endif %}
+
+## Task
+
+Create a LIFESTYLE social media image that SELLS by showing the FEELING of using this product.
+
+THE VISION:
+
+Create a warm, aspirational lifestyle scene where the product is PART OF a moment — not the entire focus.
+The goal is to make viewers feel "I want that life."
+
+Transform the reference image into an aspirational lifestyle scene.
+The product or subject should be PART OF a moment — not the entire focus.
+
+Fill the entire canvas appropriately — no letterboxing or black bars.
+
+SETTING & ATMOSPHERE:
+- Natural, lived-in environment (home kitchen, living room, backyard, outdoor setting)
+- Warm, inviting lighting (natural light preferred)
+- NOT a sterile studio, e-commerce white background, or stock photo setting
+- The scene should feel real, candid, and aspirational
+
+EMOTIONAL HOOK:
+- The viewer should think "I want that feeling too"
+- Show the RESULT of using the product, not just the product itself
+- The beneficiary (person, pet, family) should be the HERO of this image

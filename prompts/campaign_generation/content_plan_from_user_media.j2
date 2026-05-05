@@ -1,0 +1,14 @@
+{% include "campaign_generation/content_plan_step.j2" %}
+
+* Besides the campaign description, you will also receive a few images
+* Plan as many posts as given images (if there are 3 images, then create 3 content items)
+* Do not use the same image more than once
+* Each content plan item uses a different image
+* Select an image and put its url in the image_url field of the content plan item
+* Do not describe the image itself in the content plan item description
+* Avoid phrases like "close-up" photo or "zoomed-in" or specific details about the image
+* Never recycle images
+
+## OVERRIDES ON CAMPAIGN STRUCTURE:
+* If the campaign is scheduled for more days than provided images (e.g. the user selected a 15 day period, but
+they put in only 3 images) just make the campaign shorter so that it efficiently uses the time provided.

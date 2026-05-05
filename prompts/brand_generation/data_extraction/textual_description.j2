@@ -1,0 +1,31 @@
+{% include 'brand_generation/shared/brand_strategist_role.j2' %}
+
+{% include 'brand_generation/shared/extraction_guidelines.j2' %}
+
+<OBJECTIVE>
+Extract the core narrative and identity anchors of the brand.
+</OBJECTIVE>
+
+<MISSION_RULES>
+* Must be ONE PUNCHY SENTENCE.
+* Do NOT start with "To" (e.g., no "To provide...").
+* Start with an active verb (e.g., "Equip...", "Restore...", "Protect...").
+* Focus on the impact on the human condition, not the product features.
+</MISSION_RULES>
+
+<DESCRIPTION_STRATEGY>
+* Identify the 'Industrial Enemy': What hollow status quo is the audience tired of?
+* Identify the 'Living Loaf' moment: What is the visceral transformation the brand provides?
+* Use sensory textures (materials, light, sound) in the prose.
+</DESCRIPTION_STRATEGY>
+
+<OUTPUT>
+Respond with a structured output containing:
+
+* **name**: The brand name.
+* **colors**: The brand colors (hex or semantic names as used by the brand).
+* **locale**: The primary locale of the brand in ISO 639-1 (e.g. en, de).
+* **brand_mission**: One sentence that describes the brand mission. Must not start with "to" (no "to provide", "to offer", "to sell"). Use active voice: "provide", "offer", "help", etc.
+* **description**: A paragraph that conveys the brand's story, core values, business, unique selling proposition, and where it was founded. Engaging and memorable. Max 1000 characters.
+* **archetype**: The primary archetype of the brand. Must be exactly one of the 12 archetypes. Choose based on the brand's MOTIVATION, not just keywords. Allowed values: {{ archetype_library.keys() | join(", ") }}.
+</OUTPUT>

@@ -1,0 +1,95 @@
+[INNOCENT]
+base_human_need = "Safety, simplicity, goodness; desire for a worry-free life and predictable happiness."
+description = "Promises peace of mind and a return to what feels pure and uncomplicated. Removes friction, reduces risk, and creates a sense of childlike optimism—'the world can be good, and we can trust it.' Often positioned as the ethical or 'clean' choice."
+core_values = "Simplicity, transparency, honesty, kindness, optimism, trustworthiness, responsibility to people and planet."
+target_audience = "Families; wellness/natural-living consumers; mainstream, risk-averse buyers; broad appeal."
+writing_style = "Plain-spoken, reassuring, gentle; short sentences and everyday words. 'We make good choices so you don't have to.' Avoids hype or confrontation."
+examples = "Innocent Drinks, The Honest Company, Ivory"
+
+[EVERYMAN]
+base_human_need = "Belonging, acceptance, fairness; comfort of fitting in without pretense."
+description = "Down-to-earth practicality and inclusivity. Rejects elitism and promises reliable value that works in real life; like a friendly neighbor."
+core_values = "Authenticity, humility, equality, practicality, reliability, value for money."
+target_audience = "Mass-market, value-conscious shoppers across ages; family/community-oriented."
+writing_style = "Conversational, friendly, unpretentious—'we've got your back.' Focus on usefulness, durability, fairness; no buzzwords."
+examples = "IKEA, Walmart, Levi's"
+
+[HERO]
+base_human_need = "Mastery, courage, achievement; desire to prove worth through brave action."
+description = "Inspires people to push limits and overcome obstacles. Customer is the protagonist; performance, endurance, excellence are central."
+core_values = "Courage, discipline, perseverance, achievement, impact, meritocracy."
+target_audience = "Athletes, high-performing professionals, ambitious students; competitive, goal-oriented."
+writing_style = "Motivational and challenging—'prove it,' 'rise to the occasion.' Clear outcomes, training frameworks, performance claims."
+examples = "Nike, Under Armour, U.S. Army"
+
+[OUTLAW]
+base_human_need = "Liberation, independence; rebellion against constraints and conformity."
+description = "Challenges the status quo, provokes, and attracts non-conformists. Taps into subcultures and turns tension with the mainstream into a badge of honor."
+core_values = "Freedom, authenticity, self-expression, disruption, loyalty to the tribe."
+target_audience = "Youthful/countercultural segments; early adopters; collectors; identity-driven subcultures."
+writing_style = "Provocative, witty, punchy; 'them vs. us.' Encourages rule-breaking; avoids corporate speak/long explanations."
+examples = "Harley-Davidson, Diesel, Supreme"
+
+[EXPLORER]
+base_human_need = "Freedom, discovery, self-direction; seeking meaning via new experiences."
+description = "Invites people to step beyond the familiar and find themselves. Celebrates autonomy, curiosity, and resilience in nature or life's open spaces."
+core_values = "Autonomy, authenticity, curiosity, respect for nature, resilience, self-reliance."
+target_audience = "Outdoor enthusiasts, travelers, digital nomads, self-directed professionals; higher spend on gear/experiences."
+writing_style = "Aspirational but grounded; sensory detail and concrete tips. Avoids prescriptive 'one right way.'"
+examples = "The North Face, Patagonia, Land Rover"
+
+[CREATOR]
+base_human_need = "Innovation, self-expression; building something of lasting value."
+description = "Empowers people to imagine, design, and ship their vision. Provides tools, frameworks, and communities that turn ideas into finished work."
+core_values = "Originality, craftsmanship, autonomy, curiosity, mastery of tools, iteration."
+target_audience = "Artists, designers, developers, content creators, prosumers/DIY; edu & prosumer B2B overlap."
+writing_style = "Inspiring yet precise; explains how to create great work and why choices matter. Step-by-step guides and pattern libraries."
+examples = "Adobe, LEGO, Canva"
+
+[RULER]
+base_human_need = "Control, order, stability, prosperity; reduce uncertainty by setting standards."
+description = "Projects authority and competence; promises world-class quality and continuity. Leads categories and defines benchmarks—choosing it is choosing the standard."
+core_values = "Excellence, responsibility, stewardship, legacy; status via mastery."
+target_audience = "Executives, luxury buyers, institutional/enterprise decision-makers; older/higher-income skew."
+writing_style = "Confident, refined, measured. Leads with provenance, standards, proof of quality; avoids slang/trend-chasing."
+examples = "Rolex, Mercedes-Benz, Louis Vuitton"
+
+[MAGICIAN]
+base_human_need = "Transformation, growth, wonder; making the impossible feel effortless."
+description = "Reframes reality via hidden levers—tech, insight, ritual—to create outsized outcomes. Visionary yet empathetic, guiding a seamless transformation."
+core_values = "Ingenuity, insight, optimism, empathy for the journey, elegance."
+target_audience = "Experience-driven buyers; wellness/transformation seekers; tech adopters and innovators (B2C + premium B2B)."
+writing_style = "Visionary and uplifting; paints a future state and bridges to it clearly. Keeps the 'how' elegant and reassuring."
+examples = "Disney, Apple, Dyson"
+
+[LOVER]
+base_human_need = "Intimacy, passion, connection, pleasure; desire to savor life and be desired."
+description = "Elevates the senses and celebrates relationships—romantic, self-care, or communal. Prioritizes aesthetic detail and emotional resonance over utility alone."
+core_values = "Passion, beauty, presence, devotion, self-expression, intentional indulgence."
+target_audience = "Fashion/beauty/luxury lifestyle; adults seeking premium experiences/gifts; urban/prosperous skew."
+writing_style = "Evocative, sensual, intimate; metaphor and rhythm; invites the reader to feel. Avoids dryness or cynicism."
+examples = "Chanel, Victoria's Secret, Godiva"
+
+[CAREGIVER]
+base_human_need = "Care, service, protection; desire to nurture and keep others safe."
+description = "Centers empathy and service—dependable in moments that matter. Reduces anxiety, builds community, and elevates wellbeing."
+core_values = "Compassion, trust, patience, responsibility, generosity, community."
+target_audience = "Parents/caregivers; educators; healthcare & social-impact audiences; vulnerable or risk-averse buyers."
+writing_style = "Warm, patient, calming. Clarifies next steps and support; focuses on relief/outcomes. Avoids urgency bait or guilt tactics."
+examples = "Johnson & Johnson, UNICEF, Red Cross"
+
+[JESTER]
+base_human_need = "Joy, play, spontaneity; live in the moment and lighten the mood."
+description = "Entertains and disarms, using humor to create memorability and community. Breaks tension, pokes fun at conventions, humanizes the brand."
+core_values = "Fun, authenticity, creativity, irreverence toward stuffy norms, shared laughter."
+target_audience = "Youthful, socially active audiences; entertainment-leaning segments; participatory culture fans."
+writing_style = "Witty, punchy, self-aware; one-liners, callbacks, comedic timing. Humor serves clarity (never punches down)."
+examples = "Old Spice, Skittles, Duolingo"
+
+[SAGE]
+base_human_need = "Understanding, truth, wisdom; make well-informed decisions."
+description = "Teaches and clarifies. Synthesizes complex information into frameworks so people can act with confidence."
+core_values = "Learning, objectivity, clarity, intellectual humility, long-term thinking, open inquiry."
+target_audience = "Researchers, students, professionals, B2B buyers who value proof/methodology; higher education/income skew."
+writing_style = "Clear, precise, instructive; defines terms, cites sources, avoids sensationalism. Leads with 'what we know and what it means.'"
+examples = "Google, The Economist, Wikipedia"

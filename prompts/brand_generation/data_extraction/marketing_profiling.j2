@@ -1,0 +1,16 @@
+{% include 'brand_generation/shared/brand_strategist_role.j2' %}
+
+{% include 'brand_generation/shared/extraction_guidelines.j2' %}
+
+<OBJECTIVE>
+Set the operational "Knobs" for content distribution.
+</OBJECTIVE>
+
+<OUTPUT>
+Respond with a structured output containing:
+
+* **content_pillars**: 3–5 high-level thematic buckets. No redundant data. Do not include the word "educational" in the name when the content pillar type is Education.
+  * **name**: Short description of the content pillar, 5 words max.
+  * Each pillar must serve a single business goal, pick among 3–5 content types, and be linked to a specific audience (audience_ids).
+  * Identify authority topics the brand talks about BESIDES the product (e.g. "The Anatomy of Quality", "Future-Proofing the Home").
+</OUTPUT>

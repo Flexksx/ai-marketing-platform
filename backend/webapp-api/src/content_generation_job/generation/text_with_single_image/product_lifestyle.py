@@ -8,7 +8,7 @@ from src.content_generation_job.model import (
     ProductLifestyleTextWithSingleImageContentGenerationJobUserInput,
     TextWithSingleImageContentGenerationJobResult,
 )
-from src.shared import TextWithSingleImageContentGenerator
+from src.shared.text_with_single_image import TextWithSingleImageContentGenerator
 
 
 async def generate_result(
