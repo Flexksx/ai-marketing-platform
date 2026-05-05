@@ -3,7 +3,6 @@ from supabase import AsyncClient
 
 import lib.supabase_client as supabase_storage
 import src.brand.service as brand_service
-from lib.db.session_factory import DbSessionFactory
 from lib.supabase_client import StorageBucket, StorageUploadRequest
 from src.auth import get_async_supabase_service_client, get_current_user_id
 from src.auth_access import validate_brand_access
@@ -54,25 +53,15 @@ async def search(
     name: str | None = Query(None),
     limit: int = Query(5, ge=1, le=1000),
     offset: int = Query(0, ge=0),
-    session_factory: DbSessionFactory = Depends(),
 ):
     return await brand_service.search(
-        session_factory,
-        BrandSearchRequest(
-            user_id=user_id,
-            name=name,
-            limit=limit,
-            offset=offset,
-        ),
+        BrandSearchRequest(user_id=user_id, name=name, limit=limit, offset=offset),
     )
 
 
 @router.get("/{brand_id}", response_model=BrandResponse, tags=["Brands"])
-async def get(
-    brand_id: str = Depends(validate_brand_access),
-    session_factory: DbSessionFactory = Depends(),
-):
-    brand = await brand_service.get(session_factory, brand_id)
+async def get(brand_id: str = Depends(validate_brand_access)):
+    brand = await brand_service.get(brand_id)
     return BrandResponse.model_validate(brand)
 
 
@@ -80,9 +69,8 @@ async def get(
 async def create(
     request: BrandCreateRequest,
     user_id: str = Depends(get_current_user_id),
-    session_factory: DbSessionFactory = Depends(),
 ):
-    brand = await brand_service.create(session_factory, user_id, request)
+    brand = await brand_service.create(user_id, request)
     return BrandResponse.model_validate(brand)
 
 
@@ -91,7 +79,6 @@ async def update(
     brand_id: str = Depends(validate_brand_access),
     request_data: str | None = Form(default=None),
     logo_file: UploadFile | None = File(default=None),  # noqa: B008
-    session_factory: DbSessionFactory = Depends(),
     supabase_client: AsyncClient = Depends(get_async_supabase_service_client),
 ):
     if request_data is None:
@@ -115,14 +102,11 @@ async def update(
         else:
             request.data.logo_url = upload_result.public_url
 
-    brand = await brand_service.update(session_factory, brand_id, request)
+    brand = await brand_service.update(brand_id, request)
     return BrandResponse.model_validate(brand)
 
 
 @router.delete("/{brand_id}", response_model=BrandResponse, tags=["Brands"])
-async def delete(
-    brand_id: str = Depends(validate_brand_access),
-    session_factory: DbSessionFactory = Depends(),
-):
-    brand = await brand_service.remove(session_factory, brand_id)
+async def delete(brand_id: str = Depends(validate_brand_access)):
+    brand = await brand_service.remove(brand_id)
     return BrandResponse.model_validate(brand)

@@ -3,7 +3,6 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, Query
 
 import src.content.service as content_service
-from lib.db.session_factory import DbSessionFactory
 from lib.model import ContentChannelName
 from src.auth_access import validate_brand_access
 from src.content.model import (
@@ -23,10 +22,8 @@ async def search(
     limit: int = Query(10, ge=1, le=1000),
     offset: int = Query(0, ge=0),
     channel: ContentChannelName | None = Query(None),  # noqa: B008
-    session_factory: DbSessionFactory = Depends(),
 ):
     return await content_service.search(
-        session_factory,
         ContentListRequest(
             brand_id=brand_id,
             scheduled_after=scheduled_after,

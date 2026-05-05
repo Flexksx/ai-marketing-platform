@@ -1,7 +1,7 @@
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from lib.db.session_factory import DbSessionFactory
+from lib.db.session_manager import get_session
 from lib.model import JobStatus
 from lib.utils import new_id
 from src.content_generation_job.entity import ContentGenerationJobRecord
@@ -17,10 +17,9 @@ from src.content_generation_job.model import (
 
 
 async def create(
-    session_factory: DbSessionFactory,
     request: ContentGenerationJobCreateRequest,
 ) -> ContentGenerationJob:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         user_input_dict = request.user_input.model_dump(mode="json")
         record = ContentGenerationJobRecord(
             id=new_id(),
@@ -37,11 +36,10 @@ async def create(
 
 
 async def update(
-    session_factory: DbSessionFactory,
     job_id: str,
     request: ContentGenerationJobUpdateRequest,
 ) -> ContentGenerationJob:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         record = await _get_by_id(session, job_id)
         if request.status is not None:
             record.status = request.status
@@ -52,20 +50,16 @@ async def update(
         return ContentGenerationJob.model_validate(record)
 
 
-async def get(
-    session_factory: DbSessionFactory,
-    job_id: str,
-) -> ContentGenerationJob:
-    async with session_factory.session() as session:
+async def get(job_id: str) -> ContentGenerationJob:
+    async with get_session() as session:
         record = await _get_by_id(session, job_id)
         return ContentGenerationJob.model_validate(record)
 
 
 async def search(
-    session_factory: DbSessionFactory,
     request: ContentGenerationJobSearchRequest,
 ) -> list[ContentGenerationJob]:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         query = select(ContentGenerationJobRecord)
         if request.brand_id is not None:
             query = query.where(ContentGenerationJobRecord.brand_id == request.brand_id)

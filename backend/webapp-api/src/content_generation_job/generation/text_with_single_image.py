@@ -5,8 +5,6 @@ import src.brand.service as brand_service
 from lib import prompts
 from lib.ai_agents.schema import PydanticAiModel
 from lib.content_generation import text_with_single_image
-from lib.content_generation.text_with_single_image import TextWithSingleImageDeps
-from lib.db.session_factory import DbSessionFactory
 from lib.model import ContentChannelName
 from lib.prompts import PromptTemplateName
 from src.brand.model import Brand
@@ -55,10 +53,9 @@ def _get_from_user_media_system_prompt(
 
 async def generate_from_user_media_result(
     job: ContentGenerationJob,
-    session_factory: DbSessionFactory,
 ) -> TextWithSingleImageContentGenerationJobResult:
     user_input = _get_from_user_media_input_or_raise(job)
-    brand: Brand = await brand_service.get(session_factory, job.brand_id)
+    brand: Brand = await brand_service.get(job.brand_id)
     agent_run = await _from_user_media_agent.run(
         user_prompt=[
             user_input.prompt,
@@ -79,11 +76,9 @@ async def generate_from_user_media_result(
 
 async def generate_ai_image_result(
     job: ContentGenerationJob,
-    content_deps: TextWithSingleImageDeps,
 ) -> TextWithSingleImageContentGenerationJobResult:
     user_input = _get_ai_generated_input_or_raise(job)
     result = await text_with_single_image.generate_full(
-        content_deps,
         brand_id=job.brand_id,
         channel=user_input.channel,
         image_url=None,
@@ -103,11 +98,9 @@ async def generate_ai_image_result(
 
 async def generate_product_lifestyle_result(
     job: ContentGenerationJob,
-    content_deps: TextWithSingleImageDeps,
 ) -> TextWithSingleImageContentGenerationJobResult:
     user_input = _get_product_lifestyle_input_or_raise(job)
     result = await text_with_single_image.generate_full(
-        content_deps,
         brand_id=job.brand_id,
         image_url=user_input.image_url,
         image_prompt_template_name=PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE_IMAGE,

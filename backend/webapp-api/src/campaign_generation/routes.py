@@ -14,11 +14,6 @@ from supabase import AsyncClient
 
 import src.campaign_generation.generation.runner as campaign_generation_runner
 import src.campaign_generation.service as campaign_generation_job_service
-from lib.content_generation.text_with_single_image import (
-    TextWithSingleImageDeps,
-    get_text_with_single_image_deps,
-)
-from lib.db.session_factory import DbSessionFactory
 from src.auth import get_async_supabase_service_client, get_current_user_id
 from src.auth_access import validate_brand_access
 from src.campaign_generation.factory import get_from_request_form
@@ -45,23 +40,19 @@ async def start(
     brand_id: str = Depends(validate_brand_access),
     request_data: str = Form(...),
     request_files: list[UploadFile] = File(default=[]),  # noqa: B008
-    session_factory: DbSessionFactory = Depends(),
     supabase_client: AsyncClient = Depends(get_async_supabase_service_client),
-    content_deps: TextWithSingleImageDeps = Depends(get_text_with_single_image_deps),
 ):
     request = await get_from_request_form(
         brand_id, request_data, request_files, supabase_client
     )
-    job = await campaign_generation_job_service.create(session_factory, request)
+    job = await campaign_generation_job_service.create(request)
 
     logger.info(
         f"Dispatching campaign generation job {job.id} "
         f"for workflow {job.workflow_type}",
         extra={"job_id": job.id},
     )
-    background_tasks.add_task(
-        campaign_generation_runner.run, job, session_factory, content_deps
-    )
+    background_tasks.add_task(campaign_generation_runner.run, job)
 
     return CampaignGenerationJobResponse.model_validate(job)
 
@@ -70,9 +61,8 @@ async def start(
 async def get(
     job_id: str = Path(...),
     brand_id: str = Depends(validate_brand_access),  # noqa: ARG001
-    session_factory: DbSessionFactory = Depends(),
 ):
-    job = await campaign_generation_job_service.get(session_factory, job_id)
+    job = await campaign_generation_job_service.get(job_id)
     return CampaignGenerationJobResponse.model_validate(job)
 
 
@@ -81,11 +71,6 @@ async def accept(
     job_id: str = Path(...),
     request: CampaignCreationAcceptRequest = Body(...),  # noqa: B008
     brand_id: str = Depends(validate_brand_access),  # noqa: ARG001
-    session_factory: DbSessionFactory = Depends(),
 ):
-    campaign = await campaign_generation_job_service.accept(
-        session_factory,
-        job_id,
-        request,
-    )
+    campaign = await campaign_generation_job_service.accept(job_id, request)
     return CampaignResponse.model_validate(campaign)

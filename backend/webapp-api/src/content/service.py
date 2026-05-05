@@ -1,5 +1,4 @@
 import src.content.repository as content_repository
-from lib.db.session_factory import DbSessionFactory
 from src.content.model import (
     Content,
     ContentCreateRequest,
@@ -8,27 +7,17 @@ from src.content.model import (
 )
 
 
-async def search(
-    session_factory: DbSessionFactory,
-    request: ContentListRequest,
-) -> list[Content]:
-    return await content_repository.search(session_factory, request)
+async def search(request: ContentListRequest) -> list[Content]:
+    return await content_repository.search(request)
 
 
-async def get(session_factory: DbSessionFactory, post_id: str) -> Content:
-    return await content_repository.get(session_factory, post_id)
+async def get(post_id: str) -> Content:
+    return await content_repository.get(post_id)
 
 
-async def create(
-    session_factory: DbSessionFactory,
-    request: ContentCreateRequest,
-) -> Content:
-    return await content_repository.create(session_factory, request)
+async def create(request: ContentCreateRequest) -> Content:
+    return await content_repository.create(request)
 
 
-async def update(
-    session_factory: DbSessionFactory,
-    post_id: str,
-    request: ContentUpdateRequest,
-) -> Content:
-    return await content_repository.update(session_factory, post_id, request)
+async def update(post_id: str, request: ContentUpdateRequest) -> Content:
+    return await content_repository.update(post_id, request)

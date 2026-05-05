@@ -3,7 +3,7 @@ import builtins
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from lib.db.session_factory import DbSessionFactory
+from lib.db.session_manager import get_session
 from lib.utils import new_id
 from src.brand.entity import BrandRecord
 from src.brand.errors import BrandNotFoundError
@@ -16,11 +16,10 @@ from src.brand.model import (
 
 
 async def create(
-    session_factory: DbSessionFactory,
     user_id: str,
     request: BrandCreateRequest,
 ) -> Brand:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         brand_record = BrandRecord(
             id=new_id(),
             user_id=user_id,
@@ -33,17 +32,16 @@ async def create(
         return Brand.model_validate(brand_record, from_attributes=True)
 
 
-async def get(session_factory: DbSessionFactory, brand_id: str) -> Brand:
-    async with session_factory.session() as session:
+async def get(brand_id: str) -> Brand:
+    async with get_session() as session:
         brand_record = await _record_by_id(session, brand_id)
         return Brand.model_validate(brand_record, from_attributes=True)
 
 
 async def search(
-    session_factory: DbSessionFactory,
     request: BrandSearchRequest,
 ) -> builtins.list[Brand]:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         statement = select(BrandRecord).filter(BrandRecord.user_id == request.user_id)
         if request.name:
             statement = statement.filter(BrandRecord.name.ilike(f"%{request.name}%"))
@@ -61,11 +59,10 @@ async def search(
 
 
 async def update(
-    session_factory: DbSessionFactory,
     brand_id: str,
     request: BrandUpdateRequest,
 ) -> Brand:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         brand_record = await _record_by_id(session, brand_id)
         brand_record_data = brand_record.data
         if brand_record_data is None:
@@ -83,8 +80,8 @@ async def update(
         return Brand.model_validate(brand_record, from_attributes=True)
 
 
-async def remove(session_factory: DbSessionFactory, brand_id: str) -> Brand:
-    async with session_factory.session() as session:
+async def remove(brand_id: str) -> Brand:
+    async with get_session() as session:
         brand_record = await _record_by_id(session, brand_id)
         await session.delete(brand_record)
         await session.commit()
@@ -92,11 +89,10 @@ async def remove(session_factory: DbSessionFactory, brand_id: str) -> Brand:
 
 
 async def exists_for_user(
-    session_factory: DbSessionFactory,
     brand_id: str,
     user_id: str,
 ) -> bool:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         statement = select(BrandRecord).filter(
             BrandRecord.id == brand_id,
             BrandRecord.user_id == user_id,

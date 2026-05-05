@@ -4,7 +4,7 @@ import logging
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from lib.db.session_factory import DbSessionFactory
+from lib.db.session_manager import get_session
 from lib.model import JobStatus
 from lib.utils import new_id
 from src.campaign_generation.entity import CampaignGenerationJobRecord
@@ -29,10 +29,9 @@ _POSTING_PLAN_LOCK = asyncio.Lock()
 
 
 async def create(
-    session_factory: DbSessionFactory,
     request: CampaignGenerationJobCreateRequest,
 ) -> CampaignGenerationJob:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         user_input_dict = request.user_input.model_dump(mode="json")
         user_input_dict["workflow_type"] = request.workflow_type
 
@@ -63,11 +62,10 @@ async def create(
 
 
 async def update(
-    session_factory: DbSessionFactory,
     job_id: str,
     request: CampaignCreationJobUpdateInput,
 ) -> CampaignGenerationJob:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         record = await _get_by_id(session, job_id)
         old_version = record.version
 
@@ -94,24 +92,20 @@ async def update(
 
         await session.commit()
 
-    return await get(session_factory, job_id)
+    return await get(job_id)
 
 
-async def get(
-    session_factory: DbSessionFactory,
-    job_id: str,
-) -> CampaignGenerationJob:
-    async with session_factory.session() as session:
+async def get(job_id: str) -> CampaignGenerationJob:
+    async with get_session() as session:
         record = await _get_by_id(session, job_id)
         return CampaignGenerationJob.model_validate(record)
 
 
 async def exists_for_user(
-    session_factory: DbSessionFactory,
     job_id: str,
     user_id: str,
 ) -> bool:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         statement = select(CampaignGenerationJobRecord).filter(
             CampaignGenerationJobRecord.id == job_id,
             CampaignGenerationJobRecord.user_id == user_id,
@@ -121,12 +115,11 @@ async def exists_for_user(
 
 
 async def update_posting_plan_item(
-    session_factory: DbSessionFactory,
     job_id: str,
     item_id: str,
     updated_item: ContentPlanItem,
 ) -> CampaignGenerationJob:
-    async with _POSTING_PLAN_LOCK, session_factory.session() as session:
+    async with _POSTING_PLAN_LOCK, get_session() as session:
         for _ in range(_MAX_LOCK_RETRIES):
             record = await _get_by_id(session, job_id)
             old_version = record.version
@@ -167,7 +160,7 @@ async def update_posting_plan_item(
                 f"updated after {_MAX_LOCK_RETRIES} attempts"
             )
 
-    return await get(session_factory, job_id)
+    return await get(job_id)
 
 
 async def _get_by_id(session: AsyncSession, job_id: str) -> CampaignGenerationJobRecord:

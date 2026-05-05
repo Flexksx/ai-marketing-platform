@@ -7,8 +7,6 @@ from pydantic_ai import format_as_xml
 import src.brand.service as brand_service
 import src.campaign_generation.service as campaign_generation_job_service
 from lib.content_generation import text_with_single_image
-from lib.content_generation.text_with_single_image import TextWithSingleImageDeps
-from lib.db.session_factory import DbSessionFactory
 from lib.model import JobStatus
 from lib.prompts import PromptTemplateName
 from src.campaign_generation.model import (
@@ -23,68 +21,53 @@ from src.content_plan_item.model import ContentPlanItemUpdateRequest
 logger = logging.getLogger(__name__)
 
 
-async def generate_ai_content(
-    job: CampaignGenerationJob,
-    session_factory: DbSessionFactory,
-    content_deps: TextWithSingleImageDeps,
-) -> CampaignGenerationJobResult:
+async def generate_ai_content(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
     plan_items = _get_plan_items_or_raise(job)
     await asyncio.gather(
         *[
             _generate_and_update_item(
-                session_factory,
                 job.id,
                 item,
-                _build_ai_generated_update_request(job.brand_id, item, content_deps),
+                _build_ai_generated_update_request(job.brand_id, item),
             )
             for item in plan_items
         ]
     )
-    return await _collect_final_result(session_factory, job.id)
+    return await _collect_final_result(job.id)
 
 
-async def generate_user_media_content(
-    job: CampaignGenerationJob,
-    session_factory: DbSessionFactory,
-    content_deps: TextWithSingleImageDeps,
-) -> CampaignGenerationJobResult:
-    brand = await brand_service.get(session_factory, job.brand_id)
+async def generate_user_media_content(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+    brand = await brand_service.get(job.brand_id)
     plan_items = _get_plan_items_or_raise(job)
     await asyncio.gather(
         *[
             _generate_and_update_item(
-                session_factory,
                 job.id,
                 item,
-                _build_user_media_update_request(brand.id, item, content_deps),
+                _build_user_media_update_request(brand.id, item),
             )
             for item in plan_items
         ]
     )
-    return await _collect_final_result(session_factory, job.id)
+    return await _collect_final_result(job.id)
 
 
-async def generate_product_lifestyle_content(
-    job: CampaignGenerationJob,
-    session_factory: DbSessionFactory,
-    content_deps: TextWithSingleImageDeps,
-) -> CampaignGenerationJobResult:
+async def generate_product_lifestyle_content(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
     plan_items = _get_plan_items_or_raise(job)
     product_image_urls: list[str] = getattr(job.user_input, "image_urls", []) or []
     await asyncio.gather(
         *[
             _generate_and_update_item(
-                session_factory,
                 job.id,
                 item,
                 _build_product_lifestyle_update_request(
-                    index, item, job.brand_id, content_deps, product_image_urls
+                    index, item, job.brand_id, product_image_urls
                 ),
             )
             for index, item in enumerate(plan_items)
         ]
     )
-    return await _collect_final_result(session_factory, job.id)
+    return await _collect_final_result(job.id)
 
 
 def _get_plan_items_or_raise(job: CampaignGenerationJob) -> list[ContentPlanItem]:
@@ -94,7 +77,6 @@ def _get_plan_items_or_raise(job: CampaignGenerationJob) -> list[ContentPlanItem
 
 
 async def _generate_and_update_item(
-    session_factory: DbSessionFactory,
     job_id: str,
     item: ContentPlanItem,
     update_request_coro: Awaitable[ContentPlanItemUpdateRequest],
@@ -105,15 +87,12 @@ async def _generate_and_update_item(
         logger.error(f"Failed to generate item {item.id}: {e}")
         update_request = ContentPlanItemUpdateRequest(status=JobStatus.FAILED)
     await campaign_generation_job_service.update_posting_plan_item(
-        session_factory, job_id, item.id, update_request
+        job_id, item.id, update_request
     )
 
 
-async def _collect_final_result(
-    session_factory: DbSessionFactory,
-    job_id: str,
-) -> CampaignGenerationJobResult:
-    final_job = await campaign_generation_job_service.get(session_factory, job_id)
+async def _collect_final_result(job_id: str) -> CampaignGenerationJobResult:
+    final_job = await campaign_generation_job_service.get(job_id)
     if not final_job.result:
         raise ValueError("Final job result not found")
     return final_job.result
@@ -122,10 +101,8 @@ async def _collect_final_result(
 async def _build_ai_generated_update_request(
     brand_id: str,
     item: ContentPlanItem,
-    content_deps: TextWithSingleImageDeps,
 ) -> ContentPlanItemUpdateRequest:
     result = await text_with_single_image.generate_full(
-        content_deps,
         brand_id=brand_id,
         channel=item.channel,
         image_prompt_template_name=PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_AI_GENERATED_IMAGE,
@@ -146,13 +123,11 @@ async def _build_ai_generated_update_request(
 async def _build_user_media_update_request(
     brand_id: str,
     item: ContentPlanItem,
-    content_deps: TextWithSingleImageDeps,
 ) -> ContentPlanItemUpdateRequest:
     image_url = item.image_urls[0] if item.image_urls else None
     if not image_url:
         raise ValueError(f"No image URL for item {item.id}")
     caption = await text_with_single_image.generate_caption_for_image(
-        content_deps,
         brand_id=brand_id,
         channel=item.channel,
         caption_prompt_template_name=PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_CAPTION,
@@ -173,7 +148,6 @@ async def _build_product_lifestyle_update_request(
     index: int,
     item: ContentPlanItem,
     brand_id: str,
-    content_deps: TextWithSingleImageDeps,
     product_image_urls: list[str],
 ) -> ContentPlanItemUpdateRequest:
     product_image_url = (
@@ -182,7 +156,6 @@ async def _build_product_lifestyle_update_request(
         else None
     )
     result = await text_with_single_image.generate_full(
-        content_deps,
         brand_id=brand_id,
         channel=item.channel,
         image_prompt_template_name=PromptTemplateName.TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE_IMAGE,

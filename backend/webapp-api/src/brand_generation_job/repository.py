@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from lib.db.session_factory import DbSessionFactory
+from lib.db.session_manager import get_session
 from lib.model import JobStatus
 from lib.utils import new_id
 from src.brand_generation_job.entity import BrandGenerationJobRecord
@@ -14,11 +14,10 @@ from src.brand_generation_job.model import (
 
 
 async def create(
-    session_factory: DbSessionFactory,
     user_id: str,
     request: BrandGenerationJobCreateRequest,
 ) -> BrandGenerationJob:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         job_record = BrandGenerationJobRecord(
             id=new_id(),
             status=JobStatus.PENDING,
@@ -34,11 +33,10 @@ async def create(
 
 
 async def update(
-    session_factory: DbSessionFactory,
     job_id: str,
     request: BrandGenerationJobUpdateRequest,
 ) -> BrandGenerationJob:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         job = await _record_by_id(session, job_id)
         if request.result is not None:
             result_dict = request.result.model_dump(mode="json")
@@ -51,18 +49,17 @@ async def update(
         return BrandGenerationJob.model_validate(job)
 
 
-async def get(session_factory: DbSessionFactory, job_id: str) -> BrandGenerationJob:
-    async with session_factory.session() as session:
+async def get(job_id: str) -> BrandGenerationJob:
+    async with get_session() as session:
         job = await _record_by_id(session, job_id)
         return BrandGenerationJob.model_validate(job)
 
 
 async def exists_for_user(
-    session_factory: DbSessionFactory,
     job_id: str,
     user_id: str,
 ) -> bool:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         statement = select(BrandGenerationJobRecord).filter(
             BrandGenerationJobRecord.id == job_id,
             BrandGenerationJobRecord.user_id == user_id,

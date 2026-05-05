@@ -1,7 +1,7 @@
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from lib.db.session_factory import DbSessionFactory
+from lib.db.session_manager import get_session
 from lib.utils import new_id
 from src.content.entity import ContentRecord
 from src.content.errors import ContentNotFoundException
@@ -14,10 +14,9 @@ from src.content.model import (
 
 
 async def create(
-    session_factory: DbSessionFactory,
     request: ContentCreateRequest,
 ) -> Content:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         record = ContentRecord(
             id=new_id(),
             brand_id=request.brand_id,
@@ -33,17 +32,16 @@ async def create(
         return Content.model_validate(record)
 
 
-async def get(session_factory: DbSessionFactory, post_id: str) -> Content:
-    async with session_factory.session() as session:
+async def get(post_id: str) -> Content:
+    async with get_session() as session:
         post_record = await _record_by_id(session, post_id)
         return Content.model_validate(post_record)
 
 
 async def search(
-    session_factory: DbSessionFactory,
     request: ContentListRequest,
 ) -> list[Content]:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         stmt = select(ContentRecord)
         if request.brand_id:
             stmt = stmt.filter(ContentRecord.brand_id == request.brand_id)
@@ -66,11 +64,10 @@ async def search(
 
 
 async def update(
-    session_factory: DbSessionFactory,
     post_id: str,
     request: ContentUpdateRequest,
 ) -> Content:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         post_record = await _record_by_id(session, post_id)
         update_data = request.model_dump(exclude_unset=True)
         for key, value in update_data.items():

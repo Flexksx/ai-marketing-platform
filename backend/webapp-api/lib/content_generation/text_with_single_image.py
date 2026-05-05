@@ -3,21 +3,17 @@ import base64
 import logging
 import uuid
 from collections.abc import Awaitable, Callable
-from dataclasses import dataclass
 
 import httpx
 import public
-from fastapi import Depends
 from pydantic import BaseModel
 from pydantic_ai import Agent, ImageUrl, RunContext
-from supabase import AsyncClient
 
 import src.brand.service as brand_service
 import src.content_channel.service as content_channel_service
 from lib import nano_banana, prompts
 from lib import supabase_client as supabase_storage
 from lib.ai_agents import PydanticAiModel
-from lib.db.session_factory import DbSessionFactory
 from lib.model import ContentChannelName, ContentFormat
 from lib.nano_banana import NanoBananaRequest, NanoBananaResponse
 from lib.prompts import PromptTemplateName
@@ -35,13 +31,6 @@ class TextWithSingleImageContent(BaseModel):
     image_url: str
     channel: ContentChannelName
     content_type: ContentFormat
-
-
-@public.add
-@dataclass(frozen=True)
-class TextWithSingleImageDeps:
-    session_factory: DbSessionFactory
-    supabase_client: AsyncClient
 
 
 class _ImageGenerationContext(BaseModel):
@@ -75,19 +64,7 @@ def _get_caption_system_prompt(context: RunContext[_CaptionAgentDependencies]) -
 
 
 @public.add
-def get_text_with_single_image_deps(
-    session_factory: DbSessionFactory = Depends(),
-    supabase_client: AsyncClient = Depends(get_async_supabase_service_client),
-) -> TextWithSingleImageDeps:
-    return TextWithSingleImageDeps(
-        session_factory=session_factory,
-        supabase_client=supabase_client,
-    )
-
-
-@public.add
 async def generate_full(
-    deps: TextWithSingleImageDeps,
     *,
     brand_id: str,
     channel: ContentChannelName,
@@ -99,7 +76,6 @@ async def generate_full(
 ) -> TextWithSingleImageContent:
     return await _retry_with_backoff(
         operation=lambda: _generate_full_once(
-            deps=deps,
             brand_id=brand_id,
             channel=channel,
             image_prompt_template_name=image_prompt_template_name,
@@ -116,7 +92,6 @@ async def generate_full(
 
 @public.add
 async def generate_caption_for_image(
-    deps: TextWithSingleImageDeps,
     *,
     brand_id: str,
     channel: ContentChannelName,
@@ -127,7 +102,6 @@ async def generate_caption_for_image(
 ) -> str:
     return await _retry_with_backoff(
         operation=lambda: _generate_caption(
-            session_factory=deps.session_factory,
             brand_id=brand_id,
             channel=channel,
             caption_prompt_template_name=caption_prompt_template_name,
@@ -143,7 +117,6 @@ async def generate_caption_for_image(
 
 async def _generate_full_once(
     *,
-    deps: TextWithSingleImageDeps,
     brand_id: str,
     channel: ContentChannelName,
     image_prompt_template_name: PromptTemplateName,
@@ -151,7 +124,7 @@ async def _generate_full_once(
     user_prompt: str,
     image_url: str | None,
 ) -> TextWithSingleImageContent:
-    brand = await brand_service.get(deps.session_factory, brand_id)
+    brand = await brand_service.get(brand_id)
     context = _ImageGenerationContext(
         brand=brand,
         channel=channel,
@@ -170,12 +143,10 @@ async def _generate_full_once(
         ),
     )
     generated_image_url = await _upload_image(
-        supabase_client=deps.supabase_client,
         brand_id=brand_id,
         nano_banana_response=image_result,
     )
     caption = await _generate_caption(
-        session_factory=deps.session_factory,
         brand_id=brand_id,
         channel=channel,
         caption_prompt_template_name=caption_prompt_template_name,
@@ -192,14 +163,13 @@ async def _generate_full_once(
 
 async def _generate_caption(
     *,
-    session_factory: DbSessionFactory,
     brand_id: str,
     channel: ContentChannelName,
     caption_prompt_template_name: PromptTemplateName,
     user_prompt: str,
     image_url: str,
 ) -> str:
-    brand = await brand_service.get(session_factory, brand_id)
+    brand = await brand_service.get(brand_id)
     deps = _CaptionAgentDependencies(
         brand=brand,
         channel=channel,
@@ -215,7 +185,6 @@ async def _generate_caption(
 
 async def _upload_image(
     *,
-    supabase_client: AsyncClient,
     brand_id: str,
     nano_banana_response: NanoBananaResponse,
 ) -> str:
@@ -223,6 +192,7 @@ async def _upload_image(
     extension = mime_type.split("/")[-1] if "/" in mime_type else "png"
     filename = f"{brand_id}/{uuid.uuid4().hex[:8]}.{extension}"
     image_bytes = base64.b64decode(nano_banana_response.image_data_base64)
+    supabase_client = await get_async_supabase_service_client()
     upload_result = await supabase_storage.upload_public(
         supabase_client,
         StorageUploadRequest(

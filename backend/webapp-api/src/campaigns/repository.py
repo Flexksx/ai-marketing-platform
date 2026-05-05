@@ -1,7 +1,7 @@
 from sqlalchemy import delete, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from lib.db.session_factory import DbSessionFactory
+from lib.db.session_manager import get_session
 from lib.utils import new_id
 from src.campaigns.entity import CampaignRecord, CampaignState
 from src.campaigns.model import (
@@ -13,10 +13,9 @@ from src.campaigns.model import (
 
 
 async def create(
-    session_factory: DbSessionFactory,
     request: CampaignCreateRequest,
 ) -> Campaign:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         campaign_record = CampaignRecord(
             id=new_id(),
             brand_id=request.brand_id,
@@ -30,10 +29,9 @@ async def create(
 
 
 async def get(
-    session_factory: DbSessionFactory,
     campaign_id: str,
 ) -> Campaign | None:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         campaign_record = await _record_by_id(session, campaign_id)
         if not campaign_record:
             return None
@@ -41,10 +39,9 @@ async def get(
 
 
 async def search(
-    session_factory: DbSessionFactory,
     request: CampaignListRequest,
 ) -> list[Campaign]:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         stmt = select(CampaignRecord).filter(
             CampaignRecord.brand_id == request.brand_id
         )
@@ -64,11 +61,10 @@ async def search(
 
 
 async def update(
-    session_factory: DbSessionFactory,
     campaign_id: str,
     request: CampaignUpdateRequest,
 ) -> Campaign | None:
-    async with session_factory.session() as session:
+    async with get_session() as session:
         campaign_record = await _record_by_id(session, campaign_id)
         if not campaign_record:
             return None
@@ -85,8 +81,8 @@ async def update(
         return Campaign.model_validate(campaign_record, from_attributes=True)
 
 
-async def delete(session_factory: DbSessionFactory, campaign_id: str) -> None:
-    async with session_factory.session() as session:
+async def delete(campaign_id: str) -> None:
+    async with get_session() as session:
         campaign_record = await _record_by_id(session, campaign_id)
         if not campaign_record:
             raise ValueError(f"Campaign not found: {campaign_id}")

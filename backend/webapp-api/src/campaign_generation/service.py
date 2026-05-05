@@ -4,7 +4,6 @@ import src.campaign_generation.repository as campaign_generation_job_repository
 import src.campaigns.service as campaign_service
 import src.content.service as content_service
 import src.content_plan_item.service as content_plan_item_service
-from lib.db.session_factory import DbSessionFactory
 from src.campaign_generation.errors import (
     CampaignGenerationJobCreationFailedException,
     CampaignGenerationJobResultNotFoundException,
@@ -31,16 +30,10 @@ from src.content_plan_item.model import ContentPlanItemUpdateRequest
 logger = logging.getLogger(__name__)
 
 
-async def _hydrate_content_plan_items(
-    session_factory: DbSessionFactory,
-    job: CampaignGenerationJob,
-) -> CampaignGenerationJob:
+async def _hydrate_content_plan_items(job: CampaignGenerationJob) -> CampaignGenerationJob:
     if not job.result:
         return job
-    job.result.content_plan_items = await content_plan_item_service.search(
-        session_factory,
-        job.id,
-    )
+    job.result.content_plan_items = await content_plan_item_service.search(job.id)
     return job
 
 
@@ -58,45 +51,33 @@ def _validate_user_media_only_request(
         )
 
 
-async def create(
-    session_factory: DbSessionFactory,
-    request: CampaignGenerationJobCreateRequest,
-) -> CampaignGenerationJob:
+async def create(request: CampaignGenerationJobCreateRequest) -> CampaignGenerationJob:
     _validate_user_media_only_request(request)
 
-    job = await campaign_generation_job_repository.create(session_factory, request)
+    job = await campaign_generation_job_repository.create(request)
     if not job:
         raise CampaignGenerationJobCreationFailedException()
     return job
 
 
-async def get(
-    session_factory: DbSessionFactory,
-    job_id: str,
-) -> CampaignGenerationJob:
-    job = await campaign_generation_job_repository.get(session_factory, job_id)
-    return await _hydrate_content_plan_items(session_factory, job)
+async def get(job_id: str) -> CampaignGenerationJob:
+    job = await campaign_generation_job_repository.get(job_id)
+    return await _hydrate_content_plan_items(job)
 
 
 async def update(
-    session_factory: DbSessionFactory,
     job_id: str,
     request: CampaignCreationJobUpdateInput,
 ) -> CampaignGenerationJob:
-    job = await campaign_generation_job_repository.update(
-        session_factory,
-        job_id,
-        request,
-    )
-    return await _hydrate_content_plan_items(session_factory, job)
+    job = await campaign_generation_job_repository.update(job_id, request)
+    return await _hydrate_content_plan_items(job)
 
 
 async def accept(
-    session_factory: DbSessionFactory,
     job_id: str,
     request: CampaignCreationAcceptRequest,
 ) -> Campaign:
-    job = await get(session_factory, job_id)
+    job = await get(job_id)
 
     if job.result is None or job.result.content_brief is None:
         raise CampaignGenerationJobResultNotFoundException(job_id)
@@ -118,7 +99,7 @@ async def accept(
         data=campaign_data,
     )
 
-    campaign = await campaign_service.create(session_factory, campaign_request)
+    campaign = await campaign_service.create(campaign_request)
 
     if job.result.content_plan_items is None:
         raise CampaignGenerationJobResultNotFoundException(job_id)
@@ -174,32 +155,19 @@ async def accept(
             data=data,
             scheduled_at=scheduled_at,
         )
-        await content_service.create(session_factory, post_request)
+        await content_service.create(post_request)
     return campaign
 
 
-async def validate_access(
-    session_factory: DbSessionFactory,
-    job_id: str,
-    user_id: str,
-) -> bool:
-    return await campaign_generation_job_repository.exists_for_user(
-        session_factory,
-        job_id,
-        user_id,
-    )
+async def validate_access(job_id: str, user_id: str) -> bool:
+    return await campaign_generation_job_repository.exists_for_user(job_id, user_id)
 
 
 async def update_posting_plan_item(
-    session_factory: DbSessionFactory,
     job_id: str,
     item_id: str,
     request: ContentPlanItemUpdateRequest,
 ) -> CampaignGenerationJob:
-    await content_plan_item_service.update(
-        session_factory,
-        item_id,
-        request,
-    )
-    job = await campaign_generation_job_repository.get(session_factory, job_id)
-    return await _hydrate_content_plan_items(session_factory, job)
+    await content_plan_item_service.update(item_id, request)
+    job = await campaign_generation_job_repository.get(job_id)
+    return await _hydrate_content_plan_items(job)

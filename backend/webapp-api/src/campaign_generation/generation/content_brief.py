@@ -6,7 +6,6 @@ import src.campaign_generation.service as campaign_generation_job_service
 import src.content_channel.service as content_channel_service
 from lib import prompts
 from lib.ai_agents import PydanticAiModel
-from lib.db.session_factory import DbSessionFactory
 from lib.model import ContentChannelName
 from lib.prompts import PromptTemplateName
 from src.brand.model import Brand, ContentPillarBusinessGoal
@@ -53,25 +52,23 @@ def _get_system_prompt(context: RunContext[_AgentDependencies]) -> str:
 
 async def generate_content_brief(
     job: CampaignGenerationJob,
-    session_factory: DbSessionFactory,
     image_urls: list[ImageUrl] | None = None,
 ) -> CampaignGenerationJobResult:
-    brand = await brand_service.get(session_factory, job.brand_id)
+    brand = await brand_service.get(job.brand_id)
     content_channels = content_channel_service.search()
     deps = _AgentDependencies(brand=brand, content_channels=content_channels)
     run_result = await _agent.run(
         user_prompt=[job.user_input.prompt, *(image_urls or [])],
         deps=deps,
     )
-    return await _merge_campaign_result(session_factory, job.id, run_result.output)
+    return await _merge_campaign_result(job.id, run_result.output)
 
 
 async def _merge_campaign_result(
-    session_factory: DbSessionFactory,
     job_id: str,
     agent_result: _CampaignContentBriefAgentResult,
 ) -> CampaignGenerationJobResult:
-    job = await campaign_generation_job_service.get(session_factory, job_id)
+    job = await campaign_generation_job_service.get(job_id)
     current_result = job.get_result()
     if current_result is None:
         current_result = CampaignGenerationJobResult()

@@ -1,6 +1,8 @@
 import base64
 import logging
 
+import httpx
+from google import genai
 from google.genai import types
 
 from lib.nano_banana.dependencies import get_genai_client, get_http_client
@@ -33,8 +35,8 @@ _SAFETY_SETTINGS = [
 
 async def generate(request: NanoBananaRequest) -> NanoBananaResponse:
     logger.info("Starting image generation with Nano Banana")
-    client = get_genai_client()
-    parts = [await _fetch_as_image_part(url) for url in request.image_urls]
+    http_client = get_http_client()
+    parts = [await _fetch_as_image_part(url, http_client) for url in request.image_urls]
     parts.append(types.Part.from_text(text=request.prompt))
     contents = [types.Content(role="user", parts=parts)]
     config = types.GenerateContentConfig(
@@ -44,7 +46,7 @@ async def generate(request: NanoBananaRequest) -> NanoBananaResponse:
         safety_settings=_SAFETY_SETTINGS,
         image_config=types.ImageConfig(aspect_ratio=request.aspect_ratio),
     )
-    response = await client.aio.models.generate_content(
+    response = await get_genai_client().aio.models.generate_content(
         model=_MODEL,
         contents=contents,  # pyright: ignore[reportArgumentType]  # ty:ignore[invalid-argument-type]
         config=config,
@@ -52,15 +54,14 @@ async def generate(request: NanoBananaRequest) -> NanoBananaResponse:
     return _extract_image_response(response)
 
 
-async def _fetch_as_image_part(url: str) -> types.Part:
-    image_bytes = await _fetch_image_bytes(url)
+async def _fetch_as_image_part(url: str, http_client: httpx.AsyncClient) -> types.Part:
+    image_bytes = await _fetch_image_bytes(url, http_client)
     return types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg")
 
 
-async def _fetch_image_bytes(url: str) -> bytes:
+async def _fetch_image_bytes(url: str, http_client: httpx.AsyncClient) -> bytes:
     if not url.startswith(("http://", "https://")):
         raise ValueError(f"URL must start with http:// or https://. Received: {url}")
-    http_client = get_http_client()
     response = await http_client.get(url)
     response.raise_for_status()
     return response.content
