@@ -4,9 +4,10 @@ from enum import StrEnum
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_extra_types.language_code import LanguageAlpha2
 
-from lib.model import ContentChannelName, ContentTypeName
+from lib.model import ContentChannelName
 from lib.utils import new_id
 from src.brand.archetype.model import BrandArchetypeName
+from src.content.model import ContentTypeName
 
 
 class ContentType(BaseModel):

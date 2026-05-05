@@ -2,8 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from lib.model import ContentChannelName, ContentFormat, ContentTypeName, JobStatus
-from src.content.model import ContentData
+from lib.model import ContentChannelName, ContentFormat, JobStatus
+from src.content.model import ContentData, ContentTypeName
 
 
 class ContentPlanItem(BaseModel):

@@ -10,7 +10,7 @@ import src.content_plan_item.service as content_plan_item_service
 from lib import prompts
 from lib.ai_agents import PydanticAiModel
 from lib.db.session_factory import DbSessionFactory
-from lib.model import ContentChannelName, ContentFormat, ContentTypeName
+from lib.model import ContentChannelName, ContentFormat
 from lib.prompts import PromptTemplateName
 from src.brand.model import Brand, ContentPillarType
 from src.campaign_generation.errors import (
@@ -26,6 +26,7 @@ from src.campaign_generation.model import (
     ContentBriefCampaignGenerationJobResult,
     UserMediaOnlyCampaignGenerationJobUserInput,
 )
+from src.content.model import ContentTypeName
 from src.content_channel.model import ContentChannel
 from src.content_plan_item.model import ContentPlanItemCreateRequest
 

@@ -5,7 +5,6 @@ from typing import Any, cast
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from lib.model import ContentTypeName
 from lib.prompts.model import (
     PromptConfigError,
     PromptLibraries,
@@ -22,6 +21,7 @@ from src.brand.model import (
     ToneOfVoiceDimensionLevel,
     ToneOfVoiceDimensionName,
 )
+from src.content.model import ContentTypeName
 
 
 def _resolve_prompts_dir() -> Path:

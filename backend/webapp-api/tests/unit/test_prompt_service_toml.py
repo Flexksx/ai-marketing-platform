@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from lib import prompts
-from lib.model import ContentTypeName
+from src.content.model import ContentTypeName
 from lib.prompts.model import PromptConfigError
 from lib.prompts.service import _load_libraries
 from src.brand.archetype.model import BrandArchetypeName
