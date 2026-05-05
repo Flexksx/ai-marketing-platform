@@ -11,6 +11,7 @@ from fastapi import (
     Path,
     UploadFile,
 )
+from pydantic_ai import ImageUrl
 
 import src.campaign_generation.service as campaign_generation_job_service
 from lib.db.session_factory import DbSessionFactory
@@ -22,11 +23,8 @@ from src.campaign_generation.errors import (
     CampaignGenerationJobWorkflowTypeMismatchException,
 )
 from src.campaign_generation.factory import get_from_request_form
-from src.campaign_generation.generation.content_brief import (
-    ai_generated as ai_generated_brief,
-)
-from src.campaign_generation.generation.content_brief import (
-    from_user_media as user_media_brief,
+from src.campaign_generation.generation.content_brief.service import (
+    generate_content_brief,
 )
 from src.campaign_generation.generation.content_generation import (
     ai_generated as ai_generated_content,
@@ -51,6 +49,7 @@ from src.campaign_generation.model import (
     CampaignGenerationJob,
     CampaignGenerationJobResponse,
     CampaignGenerationJobWorkflowType,
+    UserMediaOnlyCampaignGenerationJobUserInput,
 )
 from src.campaigns.model import CampaignResponse
 from src.shared import TextWithSingleImageContentGenerator
@@ -70,10 +69,7 @@ def _get_campaign_steps(
 
     if workflow_type == CampaignGenerationJobWorkflowType.AI_GENERATED:
         return (
-            functools.partial(
-                ai_generated_brief.generate_content_brief,
-                session_factory=session_factory,
-            ),
+            functools.partial(generate_content_brief, session_factory=session_factory),
             functools.partial(
                 ai_generated_plan.generate_content_plan,
                 session_factory=session_factory,
@@ -86,9 +82,13 @@ def _get_campaign_steps(
             ),
         )
     if workflow_type == CampaignGenerationJobWorkflowType.USER_MEDIA_ONLY:
+        assert isinstance(job.user_input, UserMediaOnlyCampaignGenerationJobUserInput)
+        image_urls = [ImageUrl(url=u) for u in job.user_input.image_urls]
         return (
             functools.partial(
-                user_media_brief.generate_content_brief, session_factory=session_factory
+                generate_content_brief,
+                session_factory=session_factory,
+                image_urls=image_urls,
             ),
             functools.partial(
                 user_media_plan.generate_content_plan, session_factory=session_factory
@@ -101,10 +101,7 @@ def _get_campaign_steps(
         )
     if workflow_type == CampaignGenerationJobWorkflowType.PRODUCT_LIFESTYLE:
         return (
-            functools.partial(
-                ai_generated_brief.generate_content_brief,
-                session_factory=session_factory,
-            ),
+            functools.partial(generate_content_brief, session_factory=session_factory),
             functools.partial(
                 ai_generated_plan.generate_content_plan,
                 session_factory=session_factory,

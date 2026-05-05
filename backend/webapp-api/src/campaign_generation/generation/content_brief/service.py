@@ -9,6 +9,7 @@ from lib.db.session_factory import DbSessionFactory
 from lib.prompts import PromptService, PromptTemplateName
 from src.brand.model import Brand, ContentPillarBusinessGoal
 from src.campaign_generation.model import (
+    CampaignGenerationJob,
     CampaignGenerationJobResult,
     ContentBriefCampaignGenerationJobResult,
 )
@@ -50,27 +51,24 @@ def _get_system_prompt(context: RunContext[_AgentDependencies]) -> str:
     )
 
 
-async def generate_campaign_content_brief(
+async def generate_content_brief(
+    job: CampaignGenerationJob,
     session_factory: DbSessionFactory,
-    job_id: str,
-    brand_id: str,
-    user_prompt: str,
-    image_urls: list[ImageUrl],
-    description_prompt_name: PromptTemplateName,
+    image_urls: list[ImageUrl] | None = None,
 ) -> CampaignGenerationJobResult:
-    brand = await brand_service.get(session_factory, brand_id)
+    brand = await brand_service.get(session_factory, job.brand_id)
     content_channels = content_channel_service.search()
     deps = _AgentDependencies(
         brand=brand,
         content_channels=content_channels,
-        description_prompt_name=description_prompt_name,
+        description_prompt_name=PromptTemplateName.CAMPAIGN_GENERATION_DESCRIPTION_STEP,
     )
     run_result = await _agent.run(
-        user_prompt=[user_prompt, *image_urls],
+        user_prompt=[job.user_input.prompt, *(image_urls or [])],
         deps=deps,
     )
     brief_result: CampaignContentBriefAgentResult = run_result.output
-    return await _merge_campaign_result(session_factory, job_id, brief_result)
+    return await _merge_campaign_result(session_factory, job.id, brief_result)
 
 
 async def _merge_campaign_result(
