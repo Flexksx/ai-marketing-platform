@@ -29,7 +29,9 @@ async def update(
     return await content_generation_job_repository.update(job_id, request)
 
 
-async def search(request: ContentGenerationJobSearchRequest) -> list[ContentGenerationJob]:
+async def search(
+    request: ContentGenerationJobSearchRequest,
+) -> list[ContentGenerationJob]:
     return await content_generation_job_repository.search(request)
 
 

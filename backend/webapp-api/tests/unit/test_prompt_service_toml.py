@@ -3,11 +3,11 @@ from pathlib import Path
 import pytest
 
 from lib import prompts
-from src.content.model import ContentTypeName
 from lib.prompts.model import PromptConfigError
 from lib.prompts.service import _load_libraries
 from src.brand.archetype.model import BrandArchetypeName
 from src.brand.model import ToneOfVoiceDimensionName
+from src.content.model import ContentTypeName
 
 
 def test_prompt_service_loads_libraries_from_repo_prompts() -> None:

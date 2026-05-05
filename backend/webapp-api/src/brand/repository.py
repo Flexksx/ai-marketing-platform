@@ -68,13 +68,13 @@ async def update(
         if brand_record_data is None:
             brand_record_data = {}
         if request.name is not None:
-            brand_record.name = request.name
+            brand_record.name = request.name  # ty:ignore[invalid-assignment]
         if request.data is not None:
             current = (brand_record.data or {}).copy()
             data_update = request.data.model_dump(mode="json", exclude_unset=True)
             for key, value in data_update.items():
                 current[key] = value  # ty:ignore[invalid-assignment]
-            brand_record.data = current
+            brand_record.data = current  # ty:ignore[invalid-assignment]
         await session.commit()
         await session.refresh(brand_record)
         return Brand.model_validate(brand_record, from_attributes=True)

@@ -18,7 +18,9 @@ from src.brand_generation_job.model import (
 logger = logging.getLogger(__name__)
 
 
-async def create(user_id: str, request: BrandGenerationJobCreateRequest) -> BrandGenerationJob:
+async def create(
+    user_id: str, request: BrandGenerationJobCreateRequest
+) -> BrandGenerationJob:
     return await brand_generation_job_repository.create(user_id, request)
 
 
@@ -26,7 +28,9 @@ async def get(job_id: str) -> BrandGenerationJob:
     return await brand_generation_job_repository.get(job_id)
 
 
-async def update(job_id: str, request: BrandGenerationJobUpdateRequest) -> BrandGenerationJob:
+async def update(
+    job_id: str, request: BrandGenerationJobUpdateRequest
+) -> BrandGenerationJob:
     return await brand_generation_job_repository.update(job_id, request)
 
 

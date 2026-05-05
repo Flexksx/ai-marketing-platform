@@ -1,12 +1,15 @@
 import asyncio
 import logging
 
-from sqlalchemy import select, update
+from sqlalchemy import select
+from sqlalchemy import update as sa_update
+from sqlalchemy.engine import CursorResult
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lib.db.session_manager import get_session
 from lib.model import JobStatus
 from lib.utils import new_id
+from src.brand.entity import BrandRecord
 from src.campaign_generation.entity import CampaignGenerationJobRecord
 from src.campaign_generation.errors import (
     CampaignGenerationJobNotFoundException,
@@ -76,8 +79,8 @@ async def update(
         if request.result:
             update_values["result"] = request.result.model_dump(mode="json")
 
-        stmt_result = await session.execute(
-            update(CampaignGenerationJobRecord)
+        stmt_result: CursorResult = await session.execute(  # ty:ignore[invalid-assignment]
+            sa_update(CampaignGenerationJobRecord)
             .where(
                 CampaignGenerationJobRecord.id == job_id,
                 CampaignGenerationJobRecord.version == old_version,
@@ -85,7 +88,7 @@ async def update(
             .values(**update_values)
         )
 
-        if stmt_result.rowcount == 0:  # type: ignore
+        if stmt_result.rowcount == 0:
             raise OptimisticLockError(
                 f"Job {job_id} was updated by another process (version conflict)"
             )
@@ -106,9 +109,13 @@ async def exists_for_user(
     user_id: str,
 ) -> bool:
     async with get_session() as session:
-        statement = select(CampaignGenerationJobRecord).filter(
-            CampaignGenerationJobRecord.id == job_id,
-            CampaignGenerationJobRecord.user_id == user_id,
+        statement = (
+            select(CampaignGenerationJobRecord)
+            .join(BrandRecord, CampaignGenerationJobRecord.brand_id == BrandRecord.id)
+            .filter(
+                CampaignGenerationJobRecord.id == job_id,
+                BrandRecord.user_id == user_id,
+            )
         )
         result = await session.execute(statement)
         return result.scalar_one_or_none() is not None
@@ -139,8 +146,8 @@ async def update_posting_plan_item(
             result.content_plan_items[item_index] = updated_item
             updated_result = result.model_dump(mode="json")
 
-            stmt_result = await session.execute(
-                update(CampaignGenerationJobRecord)
+            stmt_result: CursorResult = await session.execute(  # ty:ignore[invalid-assignment]
+                sa_update(CampaignGenerationJobRecord)
                 .where(
                     CampaignGenerationJobRecord.id == job_id,
                     CampaignGenerationJobRecord.version == old_version,
@@ -148,7 +155,7 @@ async def update_posting_plan_item(
                 .values(result=updated_result, version=old_version + 1)
             )
 
-            if stmt_result.rowcount > 0:  # type: ignore
+            if stmt_result.rowcount > 0:
                 await session.commit()
                 logger.debug(f"Updated posting plan item {item_id} for job {job_id}")
                 break

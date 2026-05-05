@@ -26,7 +26,9 @@ async def create_many(
     return await content_plan_item_repository.create_many(requests)
 
 
-async def update(item_id: str, request: ContentPlanItemUpdateRequest) -> ContentPlanItem:
+async def update(
+    item_id: str, request: ContentPlanItemUpdateRequest
+) -> ContentPlanItem:
     return await content_plan_item_repository.update(item_id, request)
 
 

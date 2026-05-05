@@ -30,7 +30,9 @@ from src.content_plan_item.model import ContentPlanItemUpdateRequest
 logger = logging.getLogger(__name__)
 
 
-async def _hydrate_content_plan_items(job: CampaignGenerationJob) -> CampaignGenerationJob:
+async def _hydrate_content_plan_items(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJob:
     if not job.result:
         return job
     job.result.content_plan_items = await content_plan_item_service.search(job.id)

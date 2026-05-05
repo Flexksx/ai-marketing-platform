@@ -41,7 +41,7 @@ async def update(
         if request.result is not None:
             result_dict = request.result.model_dump(mode="json")
         if request.status is not None:
-            job.status = request.status  # pyright: ignore[reportAttributeAccessIssue]
+            job.status = request.status  # ty:ignore[invalid-assignment]
         if request.result is not None:
             job.result = result_dict  # pyright: ignore[reportAttributeAccessIssue]
         await session.commit()

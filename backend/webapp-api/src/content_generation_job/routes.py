@@ -31,11 +31,20 @@ logger = logging.getLogger(__name__)
 
 def _get_generate_fn(job: ContentGenerationJob):
     workflow_type = job.user_input.workflow_type
-    if workflow_type == ContentGenerationJobWorkflowType.TEXT_WITH_SINGLE_IMAGE_FROM_USER_MEDIA:
+    if (
+        workflow_type
+        == ContentGenerationJobWorkflowType.TEXT_WITH_SINGLE_IMAGE_FROM_USER_MEDIA
+    ):
         return generate_from_user_media_result
-    if workflow_type == ContentGenerationJobWorkflowType.TEXT_WITH_SINGLE_IMAGE_AI_GENERATED:
+    if (
+        workflow_type
+        == ContentGenerationJobWorkflowType.TEXT_WITH_SINGLE_IMAGE_AI_GENERATED
+    ):
         return generate_ai_image_result
-    if workflow_type == ContentGenerationJobWorkflowType.TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE:
+    if (
+        workflow_type
+        == ContentGenerationJobWorkflowType.TEXT_WITH_SINGLE_IMAGE_PRODUCT_LIFESTYLE
+    ):
         return generate_product_lifestyle_result
     raise ContentGenerationJobInvalidUserInputException(
         job.id,

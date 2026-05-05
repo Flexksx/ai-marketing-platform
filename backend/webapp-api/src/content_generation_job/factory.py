@@ -4,7 +4,7 @@ import public
 from fastapi import UploadFile
 from supabase import AsyncClient
 
-import lib.supabase_client as supabase_storage
+import lib.supabase_client.service as supabase_client_service
 from lib.supabase_client import StorageBucket, StorageUploadRequest, StorageUploadResult
 from src.content_generation_job.model import (
     ContentGenerationJobCreateRequest,
@@ -47,7 +47,7 @@ async def __upload_user_media(
 ) -> list[str]:
     upload_tasks = []
     for image_file in request_files:
-        task = supabase_storage.upload_public(
+        task = supabase_client_service.upload_public(
             supabase_client,
             StorageUploadRequest(
                 bucket=StorageBucket.CONTENT_GENERATION_JOBS_USER_MEDIA,

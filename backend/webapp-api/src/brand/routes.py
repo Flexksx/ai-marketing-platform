@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
 from supabase import AsyncClient
 
-import lib.supabase_client as supabase_storage
+import lib.supabase_client.service as supabase_client_service
 import src.brand.service as brand_service
 from lib.supabase_client import StorageBucket, StorageUploadRequest
 from src.auth import get_async_supabase_service_client, get_current_user_id
@@ -88,7 +88,7 @@ async def update(
 
     if logo_file is not None:
         logo_content = await logo_file.read()
-        upload_result = await supabase_storage.upload_public(
+        upload_result = await supabase_client_service.upload_public(
             supabase_client,
             StorageUploadRequest(
                 bucket=StorageBucket.BRAND_LOGOS,

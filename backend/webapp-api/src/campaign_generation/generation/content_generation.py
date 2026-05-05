@@ -21,7 +21,9 @@ from src.content_plan_item.model import ContentPlanItemUpdateRequest
 logger = logging.getLogger(__name__)
 
 
-async def generate_ai_content(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+async def generate_ai_content(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJobResult:
     plan_items = _get_plan_items_or_raise(job)
     await asyncio.gather(
         *[
@@ -36,7 +38,9 @@ async def generate_ai_content(job: CampaignGenerationJob) -> CampaignGenerationJ
     return await _collect_final_result(job.id)
 
 
-async def generate_user_media_content(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+async def generate_user_media_content(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJobResult:
     brand = await brand_service.get(job.brand_id)
     plan_items = _get_plan_items_or_raise(job)
     await asyncio.gather(
@@ -52,7 +56,9 @@ async def generate_user_media_content(job: CampaignGenerationJob) -> CampaignGen
     return await _collect_final_result(job.id)
 
 
-async def generate_product_lifestyle_content(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+async def generate_product_lifestyle_content(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJobResult:
     plan_items = _get_plan_items_or_raise(job)
     product_image_urls: list[str] = getattr(job.user_input, "image_urls", []) or []
     await asyncio.gather(

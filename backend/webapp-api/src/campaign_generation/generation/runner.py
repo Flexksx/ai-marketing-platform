@@ -63,7 +63,9 @@ async def run(job: CampaignGenerationJob) -> None:
         raise
 
 
-async def _run_content_brief_step(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+async def _run_content_brief_step(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJobResult:
     if job.workflow_type == CampaignGenerationJobWorkflowType.USER_MEDIA_ONLY:
         assert isinstance(job.user_input, UserMediaOnlyCampaignGenerationJobUserInput)
         image_urls = [ImageUrl(url=u) for u in job.user_input.image_urls]
@@ -71,13 +73,17 @@ async def _run_content_brief_step(job: CampaignGenerationJob) -> CampaignGenerat
     return await generate_content_brief(job)
 
 
-async def _run_content_plan_step(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+async def _run_content_plan_step(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJobResult:
     if job.workflow_type == CampaignGenerationJobWorkflowType.USER_MEDIA_ONLY:
         return await generate_user_media_content_plan(job)
     return await generate_ai_content_plan(job)
 
 
-async def _run_content_generation_step(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+async def _run_content_generation_step(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJobResult:
     if job.workflow_type == CampaignGenerationJobWorkflowType.AI_GENERATED:
         return await generate_ai_content(job)
     if job.workflow_type == CampaignGenerationJobWorkflowType.USER_MEDIA_ONLY:

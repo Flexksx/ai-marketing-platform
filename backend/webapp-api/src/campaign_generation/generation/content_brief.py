@@ -35,7 +35,7 @@ class _AgentDependencies(BaseModel):
     content_channels: list[ContentChannel]
 
 
-_agent: Agent[_AgentDependencies, _CampaignContentBriefAgentResult] = Agent(
+_agent: Agent[_AgentDependencies, _CampaignContentBriefAgentResult] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
     deps_type=_AgentDependencies,
     output_type=_CampaignContentBriefAgentResult,

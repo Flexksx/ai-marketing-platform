@@ -48,7 +48,7 @@ async def lifespan(application: FastAPI):
 
 def _operation_id(route: APIRoute) -> str:
     tag = route.tags[0] if route.tags else "default"
-    tag_slug = re.sub(r"[\s\-]+", "_", tag).lower()
+    tag_slug = re.sub(r"[\s\-]+", "_", str(tag)).lower()
     return f"{tag_slug}_{route.name}"
 
 

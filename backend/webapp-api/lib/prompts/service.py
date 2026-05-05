@@ -97,7 +97,7 @@ def _load_tone_library(
             levels.items(), key=lambda item: int(item[0])
         ):
             try:
-                scale_number = int(scale_key)
+                scale_number = int(scale_key)  # ty:ignore[invalid-argument-type]
             except ValueError as e:
                 raise PromptConfigError(
                     f"Invalid level key {scale_key} for dimension {section_name} in {path}"

@@ -1,5 +1,7 @@
 import logging
+from collections.abc import Sequence
 from datetime import UTC, datetime
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_ai import Agent, ImageUrl, RunContext, format_as_xml
@@ -71,13 +73,13 @@ class _UserMediaAgentDeps(BaseModel):
     available_channels: list[ContentChannel]
 
 
-_ai_generated_agent: Agent[_AiGeneratedAgentDeps, _PostingPlanResult] = Agent(
+_ai_generated_agent: Agent[_AiGeneratedAgentDeps, _PostingPlanResult] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LATEST,
     deps_type=_AiGeneratedAgentDeps,
     output_type=_PostingPlanResult,
 )
 
-_user_media_agent: Agent[_UserMediaAgentDeps, _UserMediaPlanResult] = Agent(
+_user_media_agent: Agent[_UserMediaAgentDeps, _UserMediaPlanResult] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
     deps_type=_UserMediaAgentDeps,
     output_type=_UserMediaPlanResult,
@@ -100,7 +102,9 @@ def _user_media_system_prompt(context: RunContext[_UserMediaAgentDeps]) -> str:
     )
 
 
-async def generate_ai_content_plan(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+async def generate_ai_content_plan(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJobResult:
     try:
         brand = await brand_service.get(job.brand_id)
         content_brief = job.result.content_brief if job.result else None
@@ -115,7 +119,9 @@ async def generate_ai_content_plan(job: CampaignGenerationJob) -> CampaignGenera
             user_prompt=[format_as_xml([job.user_input.prompt, content_brief])],
             deps=deps,
         )
-        return await _merge_plan_items(job, result.output.plan_items, image_urls_per_item=None)
+        return await _merge_plan_items(
+            job, result.output.plan_items, image_urls_per_item=None
+        )
     except Exception as e:
         logger.error(
             f"Failed to generate content plan for job {job.id}: {e}",
@@ -127,7 +133,9 @@ async def generate_ai_content_plan(job: CampaignGenerationJob) -> CampaignGenera
         ) from e
 
 
-async def generate_user_media_content_plan(job: CampaignGenerationJob) -> CampaignGenerationJobResult:
+async def generate_user_media_content_plan(
+    job: CampaignGenerationJob,
+) -> CampaignGenerationJobResult:
     brand = await brand_service.get(job.brand_id)
     user_input = _get_user_media_input_or_raise(job)
     content_brief = _get_content_brief_or_raise(job)
@@ -151,7 +159,9 @@ async def generate_user_media_content_plan(job: CampaignGenerationJob) -> Campai
             "No output from agent for content plan generation",
         )
     image_urls_by_item = {item: item.image_url for item in plan_output.plan_items}
-    return await _merge_plan_items(job, plan_output.plan_items, image_urls_per_item=image_urls_by_item)
+    return await _merge_plan_items(
+        job, plan_output.plan_items, image_urls_per_item=image_urls_by_item
+    )
 
 
 def _get_user_media_input_or_raise(
@@ -175,8 +185,8 @@ def _get_content_brief_or_raise(
 
 async def _merge_plan_items(
     job: CampaignGenerationJob,
-    plan_items: list[_PostingPlanItem],
-    image_urls_per_item: dict[_PostingPlanItem, str] | None,
+    plan_items: Sequence[_PostingPlanItem],
+    image_urls_per_item: dict[Any, str] | None,
 ) -> CampaignGenerationJobResult:
     current_result = job.get_result()
     if not current_result:
@@ -199,6 +209,8 @@ async def _merge_plan_items(
             )
             for item in plan_items
         ]
-        existing_items = await content_plan_item_service.create_many(job.id, create_requests)
+        existing_items = await content_plan_item_service.create_many(
+            job.id, create_requests
+        )
     current_result.content_plan_items = existing_items
     return current_result

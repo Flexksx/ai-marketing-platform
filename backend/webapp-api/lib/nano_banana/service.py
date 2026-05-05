@@ -2,7 +2,6 @@ import base64
 import logging
 
 import httpx
-from google import genai
 from google.genai import types
 
 from lib.nano_banana.dependencies import get_genai_client, get_http_client

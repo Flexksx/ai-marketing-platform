@@ -26,4 +26,4 @@ async def delete_campaign(
     brand_id: str = Depends(validate_brand_access),  # noqa: ARG001
     campaign_id: str = Path(...),
 ):
-    return await campaign_service.delete(campaign_id)
+    return await campaign_service.remove(campaign_id)

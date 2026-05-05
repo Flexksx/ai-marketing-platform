@@ -41,7 +41,9 @@ async def run(
         raise ContentGenerationJobRuntimeException(job_id, e) from e
 
 
-async def _complete_job(job_id: str, result: ContentGenerationJobResult) -> ContentGenerationJob:
+async def _complete_job(
+    job_id: str, result: ContentGenerationJobResult
+) -> ContentGenerationJob:
     return await content_generation_job_service.update(
         job_id,
         ContentGenerationJobUpdateRequest(status=JobStatus.COMPLETED, result=result),

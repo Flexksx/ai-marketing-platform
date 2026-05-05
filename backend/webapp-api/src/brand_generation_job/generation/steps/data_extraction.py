@@ -30,35 +30,35 @@ from src.brand_generation_job.model import BrandGenerationJob, BrandGenerationRe
 
 logger = logging.getLogger(__name__)
 
-_core_identity_agent: Agent[None, BrandGenerationJobTextualDescriptionResult] = Agent(
+_core_identity_agent: Agent[None, BrandGenerationJobTextualDescriptionResult] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LATEST,
     system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_TEXTUAL_DESCRIPTION, {}
     ),
     output_type=BrandGenerationJobTextualDescriptionResult,
 )
-_strategy_agent: Agent[None, PositioningBrandDataResult] = Agent(
+_strategy_agent: Agent[None, PositioningBrandDataResult] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
     system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_STRATEGIC_PROFILING, {}
     ),
     output_type=PositioningBrandDataResult,
 )
-_tone_of_voice_agent: Agent[None, BrandGenerationJobToneOfVoiceProfilingResult] = Agent(
+_tone_of_voice_agent: Agent[None, BrandGenerationJobToneOfVoiceProfilingResult] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
     system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_TONE_OF_VOICE_PROFILING, {}
     ),
     output_type=BrandGenerationJobToneOfVoiceProfilingResult,
 )
-_audience_agent: Agent[None, BrandGenerationJobAudienceProfilingResult] = Agent(
+_audience_agent: Agent[None, BrandGenerationJobAudienceProfilingResult] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
     system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_AUDIENCE_PROFILING, {}
     ),
     output_type=BrandGenerationJobAudienceProfilingResult,
 )
-_marketing_agent: Agent[None, BrandGenerationContentPillarResult] = Agent(
+_marketing_agent: Agent[None, BrandGenerationContentPillarResult] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LITE_LATEST,
     system_prompt=prompts.render(
         PromptTemplateName.BRAND_GENERATION_MARKETING_PROFILING, {}

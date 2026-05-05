@@ -69,19 +69,19 @@ async def update(
         if not campaign_record:
             return None
         if request.state is not None:
-            campaign_record.state = request.state
+            campaign_record.state = request.state  # ty:ignore[invalid-assignment]
         if request.data is not None:
             current = (campaign_record.data or {}).copy()
             data_update = request.data.model_dump(mode="json", exclude_unset=True)
             for key, value in data_update.items():
                 current[key] = value  # ty:ignore[invalid-assignment]
-            campaign_record.data = current
+            campaign_record.data = current  # ty:ignore[invalid-assignment]
         await session.commit()
         await session.refresh(campaign_record)
         return Campaign.model_validate(campaign_record, from_attributes=True)
 
 
-async def delete(campaign_id: str) -> None:
+async def remove(campaign_id: str) -> None:
     async with get_session() as session:
         campaign_record = await _record_by_id(session, campaign_id)
         if not campaign_record:

@@ -11,7 +11,6 @@ from src.brand.model import (
     BrandColor,
     BrandData,
     BrandToneOfVoice,
-    SentenceLengthPreference,
 )
 
 
@@ -23,17 +22,11 @@ class BrandMockFactory:
     @staticmethod
     def create_tone_of_voice() -> BrandToneOfVoice:
         return BrandToneOfVoice(
-            formality_level=fake.random_int(min=1, max=4),
-            humour_level=fake.random_int(min=1, max=4),
-            irreverence_level=fake.random_int(min=1, max=4),
-            enthusiasm_level=fake.random_int(min=1, max=4),
-            industry_jargon_usage_level=fake.random_int(min=1, max=4),
-            sensory_keywords=[fake.word() for _ in range(3)],
-            excluded_words=[fake.word() for _ in range(2)],
-            signature_words=[fake.word() for _ in range(2)],
-            sentence_length_preference=fake.random_element(
-                elements=list(SentenceLengthPreference)
-            ),
+            archetype=fake.random_element(elements=list(BrandArchetypeName)),
+            jargon_density=fake.random_int(min=1, max=4),
+            visual_density=fake.random_int(min=1, max=4),
+            must_use_words=[fake.word() for _ in range(2)],
+            forbidden_words=[fake.word() for _ in range(2)],
         )
 
     @classmethod
@@ -46,7 +39,6 @@ class BrandMockFactory:
                 BrandColor(name="Secondary", hex_value=fake.hex_color()),
             ],
             brand_mission=fake.sentence(nb_words=10),
-            archetype=fake.random_element(elements=list(BrandArchetypeName)),
             locale=LanguageAlpha2("en"),
             audiences=[
                 cls.create_brand_audience(),

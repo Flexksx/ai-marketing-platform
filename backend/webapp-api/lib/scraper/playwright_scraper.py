@@ -5,7 +5,7 @@ import public
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 from supabase import AsyncClient
 
-import lib.supabase_client as supabase_storage
+import lib.supabase_client.service as supabase_client_service
 from lib.scraper.model import ScrapeResult
 from lib.supabase_client import StorageBucket, StorageUploadRequest
 from lib.utils import new_id
@@ -324,7 +324,7 @@ class PlaywrightScraper:
                 content_type="image/png",
             )
 
-            upload_result = await supabase_storage.upload_public(
+            upload_result = await supabase_client_service.upload_public(
                 self._supabase_client, upload_request
             )
             logger.info(f"Screenshot uploaded to Supabase: {upload_result.public_url}")

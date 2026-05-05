@@ -9,10 +9,10 @@ import public
 from pydantic import BaseModel
 from pydantic_ai import Agent, ImageUrl, RunContext
 
+import lib.supabase_client.service as supabase_client_service
 import src.brand.service as brand_service
 import src.content_channel.service as content_channel_service
 from lib import nano_banana, prompts
-from lib import supabase_client as supabase_storage
 from lib.ai_agents import PydanticAiModel
 from lib.model import ContentChannelName, ContentFormat
 from lib.nano_banana import NanoBananaRequest, NanoBananaResponse
@@ -193,7 +193,7 @@ async def _upload_image(
     filename = f"{brand_id}/{uuid.uuid4().hex[:8]}.{extension}"
     image_bytes = base64.b64decode(nano_banana_response.image_data_base64)
     supabase_client = await get_async_supabase_service_client()
-    upload_result = await supabase_storage.upload_public(
+    upload_result = await supabase_client_service.upload_public(
         supabase_client,
         StorageUploadRequest(
             bucket=StorageBucket.CONTENT_GENERATION_AI_IMAGES,

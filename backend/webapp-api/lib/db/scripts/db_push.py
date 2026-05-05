@@ -4,11 +4,11 @@ Push database schema changes directly to the database (equivalent to drizzle-kit
 This creates/updates tables based on the current SQLAlchemy models without creating migration files.
 """
 
-import os
 import sys
+from pathlib import Path
 
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from sqlalchemy import create_engine
 
@@ -17,7 +17,7 @@ from lib.db.schema_registry import Base
 
 
 def main():
-    print("Pushing database schema changes...")
+    print("Pushing database schema changes...")  # noqa: T201
     try:
         # Create a synchronous engine for schema operations
         # (create_all is a synchronous operation)
@@ -32,9 +32,9 @@ def main():
 
         Base.metadata.create_all(sync_engine)
         sync_engine.dispose()
-        print("✓ Database schema pushed successfully!")
+        print("✓ Database schema pushed successfully!")  # noqa: T201
     except Exception as e:
-        print(f"✗ Error pushing schema: {e}", file=sys.stderr)
+        print(f"✗ Error pushing schema: {e}", file=sys.stderr)  # noqa: T201
         sys.exit(1)
 
 

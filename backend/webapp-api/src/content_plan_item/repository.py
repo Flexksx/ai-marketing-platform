@@ -108,7 +108,7 @@ async def update(
                 setattr(record, key, value)
                 continue
             if value is None:
-                record.scheduled_at = None
+                record.scheduled_at = None  # ty:ignore[invalid-assignment]
                 continue
             if value.tzinfo is None:
                 record.scheduled_at = value.replace(tzinfo=UTC)
@@ -116,7 +116,7 @@ async def update(
             record.scheduled_at = value.astimezone(UTC)
 
         if "content_data" in request.model_fields_set:
-            record.content_data = (
+            record.content_data = (  # ty:ignore[invalid-assignment]
                 request.content_data.model_dump(mode="json")
                 if request.content_data
                 else None

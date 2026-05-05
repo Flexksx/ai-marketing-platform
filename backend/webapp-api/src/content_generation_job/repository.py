@@ -42,7 +42,7 @@ async def update(
     async with get_session() as session:
         record = await _get_by_id(session, job_id)
         if request.status is not None:
-            record.status = request.status
+            record.status = request.status  # ty:ignore[invalid-assignment]
         if request.result is not None:
             record.result = request.result.model_dump(mode="json")
         await session.commit()

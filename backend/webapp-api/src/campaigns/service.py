@@ -23,5 +23,5 @@ async def update(campaign_id: str, request: CampaignUpdateRequest) -> Campaign |
     return await campaign_repository.update(campaign_id, request)
 
 
-async def delete(campaign_id: str) -> None:
-    await campaign_repository.delete(campaign_id)
+async def remove(campaign_id: str) -> None:
+    await campaign_repository.remove(campaign_id)

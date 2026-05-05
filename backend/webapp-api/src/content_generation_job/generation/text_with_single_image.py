@@ -34,7 +34,7 @@ class _FromUserMediaAgentOutput(BaseModel):
 
 _from_user_media_agent: Agent[
     _FromUserMediaAgentDependencies, _FromUserMediaAgentOutput
-] = Agent(
+] = Agent(  # ty:ignore[invalid-assignment]
     model=PydanticAiModel.GEMINI_FLASH_LATEST,
     deps_type=_FromUserMediaAgentDependencies,
     output_type=_FromUserMediaAgentOutput,
