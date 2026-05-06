@@ -371,3 +371,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# pnpm content-addressable store
+.pnpm-store/
