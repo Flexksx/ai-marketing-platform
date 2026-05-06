@@ -253,6 +253,7 @@ services:
       - ENVIRONMENT=development
       - LOG_LEVEL=INFO
       - PORT=8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4318
     volumes:
       - ./backend:/app/backend
       - ./prompts:/app/prompts
@@ -299,6 +300,7 @@ services:
       - ENVIRONMENT=development
       - LOG_LEVEL=INFO
       - PORT=8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4318
     volumes:
       - ./backend:/app/backend
       - ./prompts:/app/prompts
@@ -310,21 +312,97 @@ services:
       start_period: 40s
     command: sh -c "uv run uvicorn worker_api.main:app --host 0.0.0.0 --port 8080 --reload"
 
-  # ── Tooling: Log viewer ───────────────────────────────────────────────────
+  # ── Observability: Vector (log pipeline) ─────────────────────────────────
 
-  dozzle:
-    image: amir20/dozzle:latest
-    container_name: vozai-logs
+  vector:
+    image: timberio/vector:0.43.1-distroless-libc
+    container_name: vozai-vector
     restart: unless-stopped
-    ports:
-      - "8888:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./infra/dev/observability/vector.toml:/etc/vector/vector.toml:ro
+    depends_on:
+      - loki
+
+  # ── Observability: Loki (log storage) ────────────────────────────────────
+
+  loki:
+    image: grafana/loki:3.3.2
+    container_name: vozai-loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - ./infra/dev/observability/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - loki_data:/loki
+
+  # ── Observability: Tempo (trace storage) ─────────────────────────────────
+
+  tempo:
+    image: grafana/tempo:2.7.0
+    container_name: vozai-tempo
+    restart: unless-stopped
+    command: -config.file=/etc/tempo/tempo-config.yaml
+    volumes:
+      - ./infra/dev/observability/tempo-config.yaml:/etc/tempo/tempo-config.yaml:ro
+      - tempo_data:/var/tempo
+    ports:
+      - "4317:4317"   # OTLP gRPC (optional direct access)
+      - "4318:4318"   # OTLP HTTP (optional direct access)
+
+  # ── Observability: Prometheus (metrics) ──────────────────────────────────
+
+  prometheus:
+    image: prom/prometheus:v3.1.0
+    container_name: vozai-prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=7d
+    volumes:
+      - ./infra/dev/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+
+  # ── Observability: cAdvisor (container CPU/mem metrics) ──────────────────
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.51.0
+    container_name: vozai-cadvisor
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+
+  # ── Observability: Grafana (dashboards) ──────────────────────────────────
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: vozai-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"   # Grafana UI: http://localhost:3000
     environment:
-      - DOZZLE_LEVEL=info
-      - DOZZLE_TAILSIZE=300
-      - DOZZLE_FILTER=name=vozai-*
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+    volumes:
+      - ./infra/dev/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - loki
+      - tempo
+      - prometheus
 
 volumes:
   supabase_db_data:
   supabase_storage_data:
+  loki_data:
+  tempo_data:
+  prometheus_data:
+  grafana_data:

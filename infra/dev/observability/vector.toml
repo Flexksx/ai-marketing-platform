@@ -1,0 +1,45 @@
+# Vector — log pipeline: Docker → Loki
+# Runs inside Docker, reads logs via the Docker socket.
+
+[sources.docker]
+type = "docker_logs"
+
+[transforms.enrich]
+type = "remap"
+inputs = ["docker"]
+source = '''
+  .container = string!(.container_name)
+
+  # Attempt to parse our structured JSON logs.
+  parsed, err = parse_json(.message)
+  if err == null {
+    .level     = downcase(string(parsed.severity) ?? "info")
+    .service   = string(parsed.service) ?? .container
+    .env       = string(parsed.environment) ?? "dev"
+    .trace_id  = string(parsed.trace_id) ?? ""
+  } else {
+    .level   = "info"
+    .service = .container
+    .env     = "dev"
+  }
+'''
+
+[sinks.loki]
+type = "loki"
+inputs = ["enrich"]
+endpoint = "http://loki:3100"
+encoding.codec = "json"
+
+# Low-cardinality labels only — high-cardinality fields stay in the log body.
+[sinks.loki.labels]
+service   = "{{ service }}"
+level     = "{{ level }}"
+container = "{{ container }}"
+env       = "{{ env }}"
+
+[sinks.loki.batch]
+max_bytes     = 1_048_576
+timeout_secs  = 1
+
+[sinks.loki.request]
+concurrency = 10

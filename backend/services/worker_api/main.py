@@ -14,6 +14,7 @@ from services.worker_api.routes.content_generation_tasks import (
 from vozai.config import get_settings
 from vozai.http_logging import http_logging_middleware
 from vozai.logging_config import configure_logging
+from vozai.telemetry import setup_telemetry
 
 
 settings = get_settings()
@@ -31,6 +32,8 @@ app = FastAPI(
 )
 
 app.middleware("http")(http_logging_middleware)
+
+setup_telemetry(app, service_name="worker-api", environment=settings.environment)
 
 app.add_middleware(
     CORSMiddleware,  # ty:ignore[invalid-argument-type]

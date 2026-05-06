@@ -34,6 +34,8 @@ dependencies = [
   "scalar-fastapi>=1.8.0",
   "python-ulid>=3.1.0",
   "faker>=40.15.0",
+  "logfire[fastapi,httpx,sqlalchemy,asyncpg]>=3.0.0",
+  "opentelemetry-exporter-otlp-proto-http>=1.25.0",
 ]
 
 [build-system]

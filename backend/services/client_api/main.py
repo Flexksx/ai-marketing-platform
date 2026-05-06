@@ -11,6 +11,7 @@ from services.client_api.routes.docs import router as docs_router
 from vozai.config import get_settings
 from vozai.http_logging import http_logging_middleware
 from vozai.logging_config import configure_logging
+from vozai.telemetry import setup_telemetry
 
 
 settings = get_settings()
@@ -32,6 +33,8 @@ app = FastAPI(
 )
 
 app.middleware("http")(http_logging_middleware)
+
+setup_telemetry(app, service_name="client-api", environment=settings.environment)
 
 allowed_origins = [
     "https://vozai.pages.dev",
