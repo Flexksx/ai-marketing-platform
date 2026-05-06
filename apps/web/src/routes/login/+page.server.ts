@@ -57,13 +57,19 @@ export const actions: Actions = {
 			return fail(400, {
 				error: errorMessage,
 			});
-		} else {
-			// Return success message instead of redirecting
-			return {
-				success: true,
-				message: SUPABASE_AUTH_ERROR_MESSAGES.SIGNUP_SUCCESS,
-			};
 		}
+
+		// Auto-confirm is enabled in dev — attempt immediate sign-in.
+		const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+		if (!loginError) {
+			redirect(303, '/');
+		}
+
+		// Email confirmation required (production) — prompt user to check inbox.
+		return {
+			success: true,
+			message: SUPABASE_AUTH_ERROR_MESSAGES.SIGNUP_SUCCESS,
+		};
 	},
 	login: async ({ request, locals: { supabase } }) => {
 		const formData = await request.formData();

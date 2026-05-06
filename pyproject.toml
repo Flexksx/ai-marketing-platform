@@ -25,7 +25,6 @@ dependencies = [
   "jinja2>=3.1.0",
   "psycopg2-binary>=2.9.10",
   "asyncpg>=0.31.0",
-  "alembic>=1.18.0",
   "pydantic-settings>=2.14.0",
   "supabase>=2.29.0",
   "python-dotenv>=1.0.1",
@@ -51,14 +50,8 @@ packages = [
 ]
 
 [project.scripts]
-migrate-generate = "scripts.migrate_generate:main"
-migrate-push = "scripts.migrate_push:main"
 serve-api = "services.client_api.main:main"
 serve-worker = "services.worker_api.main:main"
-db-migrate = "db.scripts.db_migrate:main"
-db-push = "db.scripts.db_push:main"
-db-generate = "db.scripts.db_generate:main"
-db-reset = "db.scripts.db_reset:main"
 
 [dependency-groups]
 dev = [
@@ -89,7 +82,6 @@ extend-exclude = [
   "build",
   "dist",
   "__pycache__",
-  "alembic/versions",
 ]
 
 [tool.ruff.lint]
@@ -120,8 +112,6 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F403"]
-"alembic/versions/*.py" = ["E501", "F401", "F403", "F841"]
-"alembic/env.py" = ["E402"]
 "backend/db/scripts/*.py" = ["T20"]
 "tests/*.py" = ["ARG001", "ARG002", "PLR2004"]
 

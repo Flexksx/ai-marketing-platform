@@ -1,8 +1,10 @@
 import uvicorn
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import db.schema_registry  # noqa: F401 - Ensures all SQLAlchemy models are registered
+from db.schema_init import ensure_schema
 from services.client_api.routes.brand_generation import (
     router as brand_generation_router,
 )
@@ -23,6 +25,12 @@ configure_logging(
 )
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await ensure_schema(settings.environment)
+    yield
+
+
 app = FastAPI(
     title="Vozai API",
     description="Vozai marketing automation platform API",
@@ -30,6 +38,7 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
     redirect_slashes=False,
+    lifespan=lifespan,
 )
 
 app.middleware("http")(http_logging_middleware)

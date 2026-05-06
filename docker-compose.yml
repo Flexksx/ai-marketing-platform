@@ -79,7 +79,7 @@ services:
   # ── Supabase: REST (PostgREST) ────────────────────────────────────────────
 
   rest:
-    image: postgrest/postgrest:v12.2.8
+    image: postgrest/postgrest:latest
     depends_on:
       db:
         condition: service_healthy
@@ -122,7 +122,7 @@ services:
   # ── Supabase: Image proxy ─────────────────────────────────────────────────
 
   imgproxy:
-    image: darthsim/imgproxy:v3.8.0
+    image: darthsim/imgproxy:latest
     environment:
       IMGPROXY_BIND: 0.0.0.0:5001
       IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
@@ -145,7 +145,7 @@ services:
   # ── Supabase: Kong API gateway ────────────────────────────────────────────
 
   kong:
-    image: kong:2.8.5
+    image: kong:latest
     depends_on:
       db:
         condition: service_healthy
@@ -169,7 +169,7 @@ services:
   # ── Supabase: Email catcher ───────────────────────────────────────────────
 
   inbucket:
-    image: inbucket/inbucket:3.0.4
+    image: inbucket/inbucket:latest
     ports:
       - "9000:9000"  # web UI: http://localhost:9000
 
@@ -190,35 +190,11 @@ services:
       SUPABASE_ANON_KEY: ${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
       SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
       AUTH_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      EDGE_FUNCTIONS_MANAGEMENT_FOLDER: /opt/studio/edge-functions
+    volumes:
+      - studio_edge_functions:/opt/studio/edge-functions
     ports:
       - "3001:3000"  # Studio UI: http://localhost:3001
-
-  # ── Application schema init ───────────────────────────────────────────────
-
-  db-init:
-    image: postgres:16-alpine
-    container_name: vozai-db-init
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - supabase_db_data:/var/lib/postgresql/data
-      - ./scripts/init-local-db.sql:/scripts/init-local-db.sql:ro
-    environment:
-      PGPASSWORD: ${DB_PASSWORD}
-    entrypoint: >
-      sh -c "
-        MARKER=/var/lib/postgresql/data/.db_initialized;
-        if [ -f \"$$MARKER\" ]; then
-          echo '[db-init] Already initialized — skipping';
-        else
-          echo '[db-init] Applying application schema...' &&
-          psql -h db -U postgres -d postgres -f /scripts/init-local-db.sql &&
-          touch \"$$MARKER\" &&
-          echo '[db-init] Done';
-        fi
-      "
-    restart: "no"
 
   # ── Backend: API ──────────────────────────────────────────────────────────
 
@@ -258,10 +234,10 @@ services:
       - ./backend:/app/backend
       - ./prompts:/app/prompts
     depends_on:
+      db:
+        condition: service_healthy
       kong:
         condition: service_healthy
-      db-init:
-        condition: service_completed_successfully
       worker:
         condition: service_started
     healthcheck:
@@ -318,6 +294,7 @@ services:
     image: timberio/vector:0.43.1-distroless-libc
     container_name: vozai-vector
     restart: unless-stopped
+    command: ["--config", "/etc/vector/vector.toml"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./infra/dev/observability/vector.toml:/etc/vector/vector.toml:ro
@@ -402,6 +379,7 @@ services:
 volumes:
   supabase_db_data:
   supabase_storage_data:
+  studio_edge_functions:
   loki_data:
   tempo_data:
   prometheus_data:

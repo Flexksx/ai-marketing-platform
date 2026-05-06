@@ -33,7 +33,7 @@
 </script>
 
 <svelte:head>
-	<title>{isSignup ? 'Sign Up' : 'Login'} - VOISSO</title>
+	<title>{isSignup ? 'Sign Up' : 'Login'} - Voz AI</title>
 </svelte:head>
 
 <div
@@ -42,7 +42,7 @@
 	<div class="w-full max-w-md">
 		<!-- Welcome Header -->
 		<div class="mb-8 text-center">
-			<h1 class="mb-2 text-4xl font-bold text-slate-900 dark:text-slate-100">Welcome to VOISSO</h1>
+			<h1 class="mb-2 text-4xl font-bold text-slate-900 dark:text-slate-100">Welcome to Voz AI</h1>
 			<p class="text-slate-600 dark:text-slate-400">
 				{isSignup ? 'Create your account to get started' : 'Sign in to your account'}
 			</p>

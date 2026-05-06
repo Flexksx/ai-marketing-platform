@@ -1,0 +1,364 @@
+{
+  "title": "Backend Overview",
+  "uid": "backend-overview",
+  "description": "CPU, memory, network and log activity for the api and worker services.",
+  "tags": ["vozai", "backend"],
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "graphTooltip": 1,
+  "time": { "from": "now-1h", "to": "now" },
+  "links": [
+    {
+      "title": "Supabase Dashboard",
+      "type": "link",
+      "icon": "dashboard",
+      "url": "/d/supabase/supabase",
+      "targetBlank": false,
+      "tooltip": "Supabase services"
+    },
+    {
+      "title": "Service Logs",
+      "type": "link",
+      "icon": "dashboard",
+      "url": "/d/service-logs/service-logs",
+      "targetBlank": false,
+      "tooltip": "Explore logs across all services"
+    },
+    {
+      "title": "Supabase Studio",
+      "type": "link",
+      "icon": "external link",
+      "url": "http://localhost:3001",
+      "targetBlank": true,
+      "tooltip": "Local Supabase Studio"
+    },
+    {
+      "title": "Inbucket (email)",
+      "type": "link",
+      "icon": "external link",
+      "url": "http://localhost:9000",
+      "targetBlank": true,
+      "tooltip": "Local email catcher"
+    }
+  ],
+  "panels": [
+    {
+      "type": "row",
+      "title": "Log Activity",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "Log Rate — api",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "id": 2,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "red", "value": 50 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum(rate({component=\"backend\", service=~\".*api.*\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "api"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Log Rate — worker",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "id": 3,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "red", "value": 50 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum(rate({component=\"backend\", service=~\".*worker.*\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "worker"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Error Rate — backend",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 5 },
+      "id": 4,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.01 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum(rate({component=\"backend\", level=\"error\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "errors"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Warn Rate — backend",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 5 },
+      "id": 5,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum(rate({component=\"backend\", level=\"warning\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "warnings"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Log Volume by Service & Level",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+      "id": 6,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum by (service, level) (rate({component=\"backend\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "{{service}} / {{level}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Container Resources",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "id": 7
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU Usage %",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 10 },
+      "id": 8,
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "sum by (container_label_com_docker_compose_service) (rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_service=~\"api|worker\",name=~\".+\"}[$__rate_interval])) * 100",
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Usage (MB)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 10 },
+      "id": 9,
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decmbytes",
+          "min": 0,
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "container_memory_working_set_bytes{container_label_com_docker_compose_service=~\"api|worker\",name=~\".+\"} / 1024 / 1024",
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Network I/O",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "id": 10
+    },
+    {
+      "type": "timeseries",
+      "title": "Network Receive (bytes/s)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 19 },
+      "id": 11,
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "min": 0,
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "sum by (container_label_com_docker_compose_service) (rate(container_network_receive_bytes_total{container_label_com_docker_compose_service=~\"api|worker\",name=~\".+\"}[$__rate_interval]))",
+          "legendFormat": "{{container_label_com_docker_compose_service}} RX",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Network Transmit (bytes/s)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 19 },
+      "id": 12,
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "min": 0,
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "sum by (container_label_com_docker_compose_service) (rate(container_network_transmit_bytes_total{container_label_com_docker_compose_service=~\"api|worker\",name=~\".+\"}[$__rate_interval]))",
+          "legendFormat": "{{container_label_com_docker_compose_service}} TX",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Recent Errors",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+      "id": 13
+    },
+    {
+      "type": "logs",
+      "title": "Error Logs — backend",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 28 },
+      "id": 14,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "options": {
+        "showTime": true,
+        "enableLogDetails": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "{component=\"backend\", level=\"error\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}

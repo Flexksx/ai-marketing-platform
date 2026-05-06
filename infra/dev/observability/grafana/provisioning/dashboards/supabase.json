@@ -1,0 +1,325 @@
+{
+  "title": "Supabase",
+  "uid": "supabase",
+  "description": "Resource usage and logs for all local Supabase services (Kong, Auth, PostgREST, Storage, DB).",
+  "tags": ["vozai", "supabase"],
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "graphTooltip": 1,
+  "time": { "from": "now-1h", "to": "now" },
+  "links": [
+    {
+      "title": "Backend Overview",
+      "type": "link",
+      "icon": "dashboard",
+      "url": "/d/backend-overview/backend-overview",
+      "targetBlank": false,
+      "tooltip": "API and worker services"
+    },
+    {
+      "title": "Service Logs",
+      "type": "link",
+      "icon": "dashboard",
+      "url": "/d/service-logs/service-logs",
+      "targetBlank": false,
+      "tooltip": "Explore logs across all services"
+    },
+    {
+      "title": "Supabase Studio",
+      "type": "link",
+      "icon": "external link",
+      "url": "http://localhost:3001",
+      "targetBlank": true,
+      "tooltip": "Local Supabase Studio — table editor, auth, storage"
+    },
+    {
+      "title": "Inbucket (email)",
+      "type": "link",
+      "icon": "external link",
+      "url": "http://localhost:9000",
+      "targetBlank": true,
+      "tooltip": "Local email catcher — see outgoing auth emails"
+    }
+  ],
+  "panels": [
+    {
+      "type": "row",
+      "title": "Container Resources",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU Usage %",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 1 },
+      "id": 2,
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "sum by (container_label_com_docker_compose_service) (rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_service=~\"kong|auth|rest|storage|db\",name=~\".+\"}[$__rate_interval])) * 100",
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Usage (MB)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+      "id": 3,
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decmbytes",
+          "min": 0,
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "container_memory_working_set_bytes{container_label_com_docker_compose_service=~\"kong|auth|rest|storage|db\",name=~\".+\"} / 1024 / 1024",
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Log Activity",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "id": 4
+    },
+    {
+      "type": "stat",
+      "title": "Log Rate — supabase total",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 10 },
+      "id": 5,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 20 },
+              { "color": "red", "value": 100 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum(rate({component=\"supabase\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "total"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Error Rate — supabase",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 10 },
+      "id": 6,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.01 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum(rate({component=\"supabase\", level=\"error\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "errors"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Log Volume by Service",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 10 },
+      "id": 7,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum by (service) (rate({component=\"supabase\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "{{service}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Kong — API Gateway Logs",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "id": 8
+    },
+    {
+      "type": "logs",
+      "title": "Kong Logs",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 19 },
+      "id": 9,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "options": {
+        "showTime": true,
+        "enableLogDetails": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "{container=~\".*kong.*\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Auth (GoTrue) Logs",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+      "id": 10
+    },
+    {
+      "type": "logs",
+      "title": "Auth Logs",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 28 },
+      "id": 11,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "options": {
+        "showTime": true,
+        "enableLogDetails": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "{container=~\".*auth.*\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "PostgREST Logs",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 },
+      "id": 12
+    },
+    {
+      "type": "logs",
+      "title": "PostgREST Logs",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 37 },
+      "id": 13,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "options": {
+        "showTime": true,
+        "enableLogDetails": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "{container=~\".*rest.*\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Storage Logs",
+      "collapsed": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 45 },
+      "id": 14,
+      "panels": [
+        {
+          "type": "logs",
+          "title": "Storage Logs",
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 46 },
+          "id": 15,
+          "datasource": { "type": "loki", "uid": "loki" },
+          "options": {
+            "showTime": true,
+            "enableLogDetails": true,
+            "wrapLogMessage": true,
+            "sortOrder": "Descending",
+            "dedupStrategy": "none"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "loki", "uid": "loki" },
+              "expr": "{container=~\".*storage.*\"}",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

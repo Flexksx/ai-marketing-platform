@@ -1,7 +1,9 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import db.schema_registry  # noqa: F401 - Ensures all SQLAlchemy models are registered
+from db.schema_init import ensure_schema
 from services.worker_api.routes.brand_generation_tasks import (
     router as brand_generation_tasks_router,
 )
@@ -25,10 +27,18 @@ configure_logging(
     environment=settings.environment,
 )
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await ensure_schema(settings.environment)
+    yield
+
+
 app = FastAPI(
     title="Vozai Worker Service",
     description="Background job processing service for campaign and post generation",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.middleware("http")(http_logging_middleware)

@@ -22,6 +22,15 @@ source = '''
     .service = .container
     .env     = "dev"
   }
+
+  # Assign a component group for coarse-grained Loki filtering.
+  if match(.container, r'(api|worker)') {
+    .component = "backend"
+  } else if match(.container, r'(kong|auth|rest|storage|db|studio|imgproxy|meta|inbucket)') {
+    .component = "supabase"
+  } else {
+    .component = "infra"
+  }
 '''
 
 [sinks.loki]
@@ -36,6 +45,7 @@ service   = "{{ service }}"
 level     = "{{ level }}"
 container = "{{ container }}"
 env       = "{{ env }}"
+component = "{{ component }}"
 
 [sinks.loki.batch]
 max_bytes     = 1_048_576

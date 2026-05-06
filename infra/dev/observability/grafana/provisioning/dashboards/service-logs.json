@@ -1,0 +1,188 @@
+{
+  "title": "Service Logs",
+  "uid": "service-logs",
+  "description": "Filterable log explorer across all services. Use the variables to narrow by component, service and level.",
+  "tags": ["vozai", "logs"],
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "graphTooltip": 1,
+  "time": { "from": "now-1h", "to": "now" },
+  "links": [
+    {
+      "title": "Backend Overview",
+      "type": "link",
+      "icon": "dashboard",
+      "url": "/d/backend-overview/backend-overview",
+      "targetBlank": false,
+      "tooltip": "API and worker metrics"
+    },
+    {
+      "title": "Supabase Dashboard",
+      "type": "link",
+      "icon": "dashboard",
+      "url": "/d/supabase/supabase",
+      "targetBlank": false,
+      "tooltip": "Supabase services"
+    },
+    {
+      "title": "Supabase Studio",
+      "type": "link",
+      "icon": "external link",
+      "url": "http://localhost:3001",
+      "targetBlank": true,
+      "tooltip": "Local Supabase Studio"
+    },
+    {
+      "title": "Inbucket (email)",
+      "type": "link",
+      "icon": "external link",
+      "url": "http://localhost:9000",
+      "targetBlank": true,
+      "tooltip": "Local email catcher"
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "component",
+        "label": "Component",
+        "type": "custom",
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".+",
+        "multi": false,
+        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "options": [
+          { "selected": false, "text": "backend", "value": "backend" },
+          { "selected": false, "text": "supabase", "value": "supabase" },
+          { "selected": false, "text": "infra", "value": "infra" }
+        ],
+        "query": "backend,supabase,infra",
+        "refresh": 0
+      },
+      {
+        "name": "service",
+        "label": "Service",
+        "type": "query",
+        "datasource": { "type": "loki", "uid": "loki" },
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".+",
+        "multi": true,
+        "query": {
+          "label": "service",
+          "refId": "LokiVariableQueryEditor-VariableQuery",
+          "stream": "{component=~\"$component\"}",
+          "type": 1
+        },
+        "refresh": 2,
+        "sort": 1
+      },
+      {
+        "name": "level",
+        "label": "Level",
+        "type": "custom",
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".+",
+        "multi": true,
+        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "options": [
+          { "selected": false, "text": "error", "value": "error" },
+          { "selected": false, "text": "warning", "value": "warning" },
+          { "selected": false, "text": "info", "value": "info" },
+          { "selected": false, "text": "debug", "value": "debug" }
+        ],
+        "query": "error,warning,info,debug",
+        "refresh": 0
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Log Volume by Service",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "stacking": { "mode": "normal" } }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum by (service, level) (rate({component=~\"$component\", service=~\"$service\", level=~\"$level\"}[$__interval]))",
+          "queryType": "range",
+          "refId": "A",
+          "legendFormat": "{{service}} / {{level}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Log Stream",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+      "id": 2
+    },
+    {
+      "type": "logs",
+      "title": "Logs — $component / $service / $level",
+      "gridPos": { "h": 20, "w": 24, "x": 0, "y": 9 },
+      "id": 3,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "options": {
+        "showTime": true,
+        "enableLogDetails": true,
+        "wrapLogMessage": false,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none",
+        "prettifyLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "{component=~\"$component\", service=~\"$service\", level=~\"$level\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Error Summary",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 },
+      "id": 4
+    },
+    {
+      "type": "logs",
+      "title": "Errors only — all services",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 30 },
+      "id": 5,
+      "datasource": { "type": "loki", "uid": "loki" },
+      "options": {
+        "showTime": true,
+        "enableLogDetails": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "{component=~\"$component\", service=~\"$service\", level=\"error\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}
