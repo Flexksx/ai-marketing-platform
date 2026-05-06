@@ -1,47 +1,226 @@
+name: vozai
+
+# All values sourced from the root .env file — see .env.example for local dev defaults.
+# Kong's declarative config (infra/dev/supabase/kong.yml) hardcodes the anon/service keys
+# because Kong does not support env var substitution in declarative configs.
+
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: vozai-postgres-dev
-    restart: unless-stopped
-    ports:
-      - "5433:5432"
+
+  # ── Supabase: Database ────────────────────────────────────────────────────
+
+  db:
+    image: supabase/postgres:15.8.1.060
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - log_min_messages=fatal
     environment:
-      POSTGRES_USER: vozai
-      POSTGRES_PASSWORD: vozai_dev_password
-      POSTGRES_DB: vozai_dev
+      POSTGRES_HOST: /var/run/postgresql
+      PGPORT: 5432
+      POSTGRES_PORT: 5432
+      PGPASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATABASE: postgres
+      POSTGRES_DB: postgres
+      JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      JWT_EXP: 3600
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - supabase_db_data:/var/lib/postgresql/data
+      - ./infra/dev/supabase/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:ro
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vozai -d vozai_dev"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Supabase: Auth (GoTrue) ───────────────────────────────────────────────
+
+  auth:
+    image: supabase/gotrue:v2.170.0
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${PUBLIC_SUPABASE_URL}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgresql://supabase_auth_admin:${DB_PASSWORD}@db:5432/postgres
+      GOTRUE_SITE_URL: ${SPA_URL}
+      GOTRUE_URI_ALLOW_LIST: ""
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_SMTP_ADMIN_EMAIL: admin@localhost
+      GOTRUE_SMTP_HOST: inbucket
+      GOTRUE_SMTP_PORT: 2500
+      GOTRUE_SMTP_USER: fake
+      GOTRUE_SMTP_PASS: fake
+      GOTRUE_SMTP_SENDER_NAME: vozai-dev
+      GOTRUE_MAILER_URLPATHS_INVITE: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_CONFIRMATION: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_RECOVERY: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: /auth/v1/verify
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Supabase: REST (PostgREST) ────────────────────────────────────────────
+
+  rest:
+    image: postgrest/postgrest:v12.2.8
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgresql://authenticator:${DB_PASSWORD}@db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage,graphql_public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: 3600
+    command: postgrest
+
+  # ── Supabase: Storage ─────────────────────────────────────────────────────
+
+  storage:
+    image: supabase/storage-api:v1.58.4
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
+    environment:
+      ANON_KEY: ${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+      SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://rest:3000
+      PGRST_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      DATABASE_URL: postgresql://supabase_storage_admin:${DB_PASSWORD}@db:5432/postgres
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      REGION: local
+      GLOBAL_S3_BUCKET: stub
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      IMGPROXY_URL: http://imgproxy:5001
+    volumes:
+      - supabase_storage_data:/var/lib/storage
+
+  # ── Supabase: Image proxy ─────────────────────────────────────────────────
+
+  imgproxy:
+    image: darthsim/imgproxy:v3.8.0
+    environment:
+      IMGPROXY_BIND: 0.0.0.0:5001
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+      IMGPROXY_USE_ETAG: "true"
+      IMGPROXY_ENABLE_WEBP_DETECTION: "true"
+    volumes:
+      - supabase_storage_data:/var/lib/storage:ro
+
+  # ── Supabase: Postgres meta ───────────────────────────────────────────────
+
+  meta:
+    image: supabase/postgres-meta:v0.85.0
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_URL: postgresql://supabase_admin:${DB_PASSWORD}@db:5432/postgres
+
+  # ── Supabase: Kong API gateway ────────────────────────────────────────────
+
+  kong:
+    image: kong:2.8.5
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+    volumes:
+      - ./infra/dev/supabase/kong.yml:/var/lib/kong/kong.yml:ro
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "kong", "health"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - vozai-network
+
+  # ── Supabase: Email catcher ───────────────────────────────────────────────
+
+  inbucket:
+    image: inbucket/inbucket:3.0.4
+    ports:
+      - "9000:9000"  # web UI: http://localhost:9000
+
+  # ── Supabase: Studio ──────────────────────────────────────────────────────
+
+  studio:
+    image: supabase/studio:latest
+    depends_on:
+      kong:
+        condition: service_healthy
+    environment:
+      STUDIO_PG_META_URL: http://meta:8080
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      DEFAULT_ORGANIZATION_NAME: vozai-local
+      DEFAULT_PROJECT_NAME: vozai-dev
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_PUBLIC_URL: ${PUBLIC_SUPABASE_URL}
+      SUPABASE_ANON_KEY: ${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      AUTH_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+    ports:
+      - "3001:3000"  # Studio UI: http://localhost:3001
+
+  # ── Application schema init ───────────────────────────────────────────────
 
   db-init:
     image: postgres:16-alpine
     container_name: vozai-db-init
     depends_on:
-      postgres:
+      db:
         condition: service_healthy
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - supabase_db_data:/var/lib/postgresql/data
       - ./scripts/init-local-db.sql:/scripts/init-local-db.sql:ro
     environment:
-      PGPASSWORD: vozai_dev_password
+      PGPASSWORD: ${DB_PASSWORD}
     entrypoint: >
-      sh -c " MARKER=/var/lib/postgresql/data/.db_initialized; if [ -f \"$$MARKER\" ]; then
-        echo '[db-init] Database already initialized — skipping';
-      else
-        echo '[db-init] Applying schema & seed...' &&
-        psql -h postgres -U vozai -d vozai_dev -f /scripts/init-local-db.sql &&
-        touch \"$$MARKER\" &&
-        echo '[db-init] Done';
-      fi "
+      sh -c "
+        MARKER=/var/lib/postgresql/data/.db_initialized;
+        if [ -f \"$$MARKER\" ]; then
+          echo '[db-init] Already initialized — skipping';
+        else
+          echo '[db-init] Applying application schema...' &&
+          psql -h db -U postgres -d postgres -f /scripts/init-local-db.sql &&
+          touch \"$$MARKER\" &&
+          echo '[db-init] Done';
+        fi
+      "
     restart: "no"
-    networks:
-      - vozai-network
+
+  # ── Backend: API ──────────────────────────────────────────────────────────
 
   api:
     build:
@@ -51,18 +230,19 @@ services:
     container_name: vozai-client-api
     restart: unless-stopped
     ports:
-      - "8000:8080"
+      - "8080:8080"
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - DIRECT_URL=${DIRECT_URL}
-      - SUPABASE_URL=${PUBLIC_SUPABASE_URL}
+      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD}@db:5432/postgres
+      - DIRECT_URL=postgresql://postgres:${DB_PASSWORD}@db:5432/postgres
+      - SUPABASE_URL=http://kong:8000
+      - PUBLIC_SUPABASE_URL=http://kong:8000
       - SUPABASE_KEY=${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+      - PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - PYTHONPATH=/app/backend/services:/app/backend/
       - GOOGLE_CLOUD_SERVICES_API_KEY=${GOOGLE_CLOUD_SERVICES_API_KEY:-}
-      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-local-dev}
       - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-global}
       - GCP_PROJECT_ID=${GCP_PROJECT_ID:-local-dev}
@@ -77,7 +257,7 @@ services:
       - ./backend:/app/backend
       - ./prompts:/app/prompts
     depends_on:
-      postgres:
+      kong:
         condition: service_healthy
       db-init:
         condition: service_completed_successfully
@@ -89,9 +269,9 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    networks:
-      - vozai-network
     command: sh -c "uv run uvicorn client_api.main:app --host 0.0.0.0 --port 8080 --reload"
+
+  # ── Backend: Worker ───────────────────────────────────────────────────────
 
   worker:
     build:
@@ -101,18 +281,19 @@ services:
     container_name: vozai-worker
     restart: unless-stopped
     ports:
-      - "8001:8080"
+      - "8081:8080"
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - DIRECT_URL=${DIRECT_URL}
-      - SUPABASE_URL=${PUBLIC_SUPABASE_URL}
+      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD}@db:5432/postgres
+      - DIRECT_URL=postgresql://postgres:${DB_PASSWORD}@db:5432/postgres
+      - SUPABASE_URL=http://kong:8000
+      - PUBLIC_SUPABASE_URL=http://kong:8000
       - SUPABASE_KEY=${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+      - PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - PYTHONPATH=/app/backend/services:/app/backend/
       - GOOGLE_CLOUD_SERVICES_API_KEY=${GOOGLE_CLOUD_SERVICES_API_KEY:-}
-      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-local-dev}
       - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-global}
       - ENVIRONMENT=development
@@ -127,10 +308,9 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    networks:
-      - vozai-network
-
     command: sh -c "uv run uvicorn worker_api.main:app --host 0.0.0.0 --port 8080 --reload"
+
+  # ── Tooling: Log viewer ───────────────────────────────────────────────────
 
   dozzle:
     image: amir20/dozzle:latest
@@ -144,13 +324,7 @@ services:
       - DOZZLE_LEVEL=info
       - DOZZLE_TAILSIZE=300
       - DOZZLE_FILTER=name=vozai-*
-    networks:
-      - vozai-network
 
 volumes:
-  postgres_data:
-    driver: local
-
-networks:
-  vozai-network:
-    driver: bridge
+  supabase_db_data:
+  supabase_storage_data:
