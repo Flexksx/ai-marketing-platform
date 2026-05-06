@@ -1,8 +1,0 @@
-sync:
-    uv sync
-
-format module:
-    ../bin/format.sh {{module}}
-
-lint module:
-    ../bin/lint.sh {{module}}

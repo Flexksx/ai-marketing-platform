@@ -1,8 +1,156 @@
-name: vozai
-
 services:
-  frontend-build:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vozai-postgres-dev
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: vozai
+      POSTGRES_PASSWORD: vozai_dev_password
+      POSTGRES_DB: vozai_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vozai -d vozai_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vozai-network
+
+  db-init:
+    image: postgres:16-alpine
+    container_name: vozai-db-init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-local-db.sql:/scripts/init-local-db.sql:ro
+    environment:
+      PGPASSWORD: vozai_dev_password
+    entrypoint: >
+      sh -c " MARKER=/var/lib/postgresql/data/.db_initialized; if [ -f \"$$MARKER\" ]; then
+        echo '[db-init] Database already initialized — skipping';
+      else
+        echo '[db-init] Applying schema & seed...' &&
+        psql -h postgres -U vozai -d vozai_dev -f /scripts/init-local-db.sql &&
+        touch \"$$MARKER\" &&
+        echo '[db-init] Done';
+      fi "
+    restart: "no"
+    networks:
+      - vozai-network
+
+  api:
     build:
       context: .
-      dockerfile: apps/webapp/Dockerfile
-      target: build
+      dockerfile: backend/Dockerfile
+      target: api
+    container_name: vozai-client-api
+    restart: unless-stopped
+    ports:
+      - "8000:8080"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DIRECT_URL=${DIRECT_URL}
+      - SUPABASE_URL=${PUBLIC_SUPABASE_URL}
+      - SUPABASE_KEY=${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app/backend/services:/app/backend/
+      - GOOGLE_CLOUD_SERVICES_API_KEY=${GOOGLE_CLOUD_SERVICES_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-local-dev}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-global}
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-local-dev}
+      - GCP_LOCATION=${GCP_LOCATION:-local}
+      - CLOUD_TASKS_QUEUE=local-campaign-queue
+      - WORKER_SERVICE_URL=http://worker:8080
+      - WORKER_SERVICE_ACCOUNT_EMAIL=local@dev.local
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+      - PORT=8080
+    volumes:
+      - ./backend:/app/backend
+      - ./prompts:/app/prompts
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+      worker:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - vozai-network
+    command: sh -c "uv run uvicorn client_api.main:app --host 0.0.0.0 --port 8080 --reload"
+
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: worker
+    container_name: vozai-worker
+    restart: unless-stopped
+    ports:
+      - "8001:8080"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DIRECT_URL=${DIRECT_URL}
+      - SUPABASE_URL=${PUBLIC_SUPABASE_URL}
+      - SUPABASE_KEY=${PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PYTHONPATH=/app/backend/services:/app/backend/
+      - GOOGLE_CLOUD_SERVICES_API_KEY=${GOOGLE_CLOUD_SERVICES_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-local-dev}
+      - GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-global}
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+      - PORT=8080
+    volumes:
+      - ./backend:/app/backend
+      - ./prompts:/app/prompts
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - vozai-network
+
+    command: sh -c "uv run uvicorn worker_api.main:app --host 0.0.0.0 --port 8080 --reload"
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: vozai-logs
+    restart: unless-stopped
+    ports:
+      - "8888:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DOZZLE_LEVEL=info
+      - DOZZLE_TAILSIZE=300
+      - DOZZLE_FILTER=name=vozai-*
+    networks:
+      - vozai-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  vozai-network:
+    driver: bridge

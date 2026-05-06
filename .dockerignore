@@ -1,9 +1,46 @@
-backend/
-.git/
-.github/
-.idea/
+# Exclude files within backend/ that aren't needed
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/**/*.pyo
+backend/**/*.pyd
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/.venv/
+backend/venv/
+backend/env/
+backend/ENV/
+backend/.env
+backend/.env.*
+backend/**/*.log
+backend/tests/
+backend/**/*test*.py
+backend/*.md
+backend/Dockerfile*
+backend/.dockerignore
+backend/build-docker*.sh
+backend/alembic/
+
+# Exclude node_modules and frontend
+apps/
 node_modules/
-apps/webapp/spa/node_modules/
-lib/platform-api-client/node_modules/
-apps/webapp/spa/dist/
-**/*.log
+
+# Exclude infrastructure and docs
+infra/
+docs/
+
+# Exclude version control
+.git/
+.gitignore
+
+# Exclude other root level files not needed
+*.sql
+flake.nix
+flake.lock
+docker-compose.yml
+deploy.sh
+pnpm-*.yaml
+package*.json
+tsconfig.json
+pyrightconfig.json

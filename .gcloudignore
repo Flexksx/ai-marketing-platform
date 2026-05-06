@@ -1,0 +1,52 @@
+# Exclude everything by default
+*
+
+# Include only what's needed for backend Docker builds
+!pyproject.toml
+!uv.lock
+!README.md
+!backend/
+!prompts/
+
+# Exclude files within backend/ that aren't needed
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/**/*.pyo
+backend/**/*.pyd
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/.venv/
+backend/venv/
+backend/env/
+backend/ENV/
+backend/.env
+backend/.env.*
+backend/**/*.log
+backend/tests/
+backend/**/*test*.py
+backend/*.md
+backend/README*
+backend/build-docker*.sh
+backend/alembic/
+
+# Always exclude
+.git
+.gitignore
+node_modules/
+apps/
+infra/
+docs/
+*.sql
+flake.nix
+flake.lock
+docker-compose.yml
+deploy.sh
+pnpm-*.yaml
+package*.json
+tsconfig.json
+pyrightconfig.json
+MICROSERVICES_MIGRATION.md
+AUTOMATED_DEPLOYMENT_SUMMARY.md
+
